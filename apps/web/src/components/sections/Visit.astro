@@ -1,0 +1,137 @@
+---
+import { lexicalToHtml } from '../../lib/lexical'
+import Egg from '../Egg.astro'
+
+interface Props {
+  block: {
+    anchor?: string
+    eyebrow?: string
+    heading: string
+    body?: unknown
+    infos?: { label: string; value: string; url?: string }[]
+    cta?: { label?: string; url?: string }
+    secondaryCta?: { label?: string; url?: string }
+  }
+}
+
+const { block } = Astro.props
+---
+
+<section class="pinot" id={block.anchor ?? 'pinot'}>
+  <Egg name="lauch" size={56} bg="var(--mint)" pos="left:3.5%;bottom:64px;transform-origin:50% 100%" anim="tzStretch 5.8s ease-in-out infinite 0.4s" />
+  <div class="container pinot__panel">
+    <Egg name="quitte" size={44} bg="transparent" pos="right:30px;top:28px" />
+    <div class="pinot__grid">
+      <div>
+        {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+        <h2>{block.heading}</h2>
+        {block.body ? <div class="pinot__body" set:html={lexicalToHtml(block.body)} /> : null}
+        <div class="pinot__ctas">
+          {
+            block.cta?.label && (
+              <a class="pill pill--green" href={block.cta.url ?? '#'} target={block.cta.url?.startsWith('http') ? '_blank' : undefined} rel="noopener">
+                {block.cta.label}
+              </a>
+            )
+          }
+          {
+            block.secondaryCta?.label && (
+              <a class="pill pill--white" href={block.secondaryCta.url ?? '#'}>
+                {block.secondaryCta.label}
+              </a>
+            )
+          }
+        </div>
+      </div>
+      {
+        block.infos?.length ? (
+          <div class="pinot__infos">
+            {block.infos.map((info) => (
+              <div>
+                <div class="pinot__info-label">{info.label}</div>
+                <div class="pinot__info-value">{info.url ? <a href={info.url}>{info.value}</a> : info.value}</div>
+              </div>
+            ))}
+          </div>
+        ) : null
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .pinot {
+    position: relative;
+    padding: 34px 40px 100px;
+    background: var(--bg);
+  }
+
+  .pinot__panel {
+    position: relative;
+    background: var(--mint);
+    border-radius: 34px;
+    padding: 76px 64px;
+    overflow: hidden;
+  }
+
+  .pinot__grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 55px;
+    align-items: start;
+  }
+
+  .pinot h2 {
+    margin: 16px 0 18px;
+    font-size: 38px;
+    letter-spacing: -0.01em;
+    color: var(--green);
+  }
+
+  .pinot__body :global(p) {
+    margin: 0 0 13px;
+    font-size: 15.5px;
+    line-height: 1.75;
+    color: rgba(47, 53, 56, 0.8);
+  }
+
+  .pinot__ctas {
+    display: flex;
+    gap: 13px;
+    flex-wrap: wrap;
+    margin-top: 34px;
+  }
+
+  .pinot__infos {
+    background: #fff;
+    border-radius: 22px;
+    padding: 34px;
+    display: grid;
+    gap: 21px;
+  }
+
+  .pinot__info-label {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-45);
+  }
+
+  .pinot__info-value {
+    margin-top: 5px;
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+
+  @media (max-width: 860px) {
+    .pinot__panel {
+      padding: 47px 30px;
+    }
+
+    .pinot__grid {
+      grid-template-columns: 1fr;
+      gap: 34px;
+    }
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+import { resolveIcon, type IconRef } from '../lib/payload'
+
+interface Props {
+  icon: IconRef
+  size?: number
+}
+
+const { icon, size = 60 } = Astro.props
+const resolved = await resolveIcon(icon)
+---
+
+{
+  resolved?.svg && (
+    <button
+      type="button"
+      class="icon-circle"
+      data-egg={resolved.name}
+      aria-label={`Zutat: ${resolved.name}`}
+      style={`width:${size}px;height:${size}px`}
+      set:html={resolved.svg}
+    />
+  )
+}

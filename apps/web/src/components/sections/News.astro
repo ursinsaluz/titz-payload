@@ -1,0 +1,146 @@
+---
+import { getCollection, mediaUrl, type Media } from '../../lib/payload'
+import Egg from '../Egg.astro'
+
+interface NewsItem {
+  id: number
+  title: string
+  date: string
+  excerpt: string
+  image?: Media | number | null
+  link?: { label?: string; url?: string }
+}
+
+interface Props {
+  block: {
+    anchor?: string
+    eyebrow?: string
+    heading: string
+    limit?: number
+  }
+}
+
+const { block } = Astro.props
+const items = await getCollection<NewsItem>('news', `&sort=-date&where[_status][equals]=published`)
+const visible = items.slice(0, block.limit ?? 4)
+
+const formatDate = (iso: string) => {
+  const date = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${pad(date.getUTCDate())}.${pad(date.getUTCMonth() + 1)}.${date.getUTCFullYear()}`
+}
+const tilts = ['-0.3deg', '0.3deg']
+---
+
+<section class="news" id={block.anchor ?? 'aktuelles'}>
+  <Egg name="birne" size={56} bg="var(--cream)" pos="left:8%;top:45%" anim="tzWobble 6.8s ease-in-out infinite 0.8s" />
+  <div class="news__inner">
+    <div class="section-head" style="margin-bottom:42px">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      {block.heading && <h2 class="news__heading">{block.heading}</h2>}
+    </div>
+    <div class="news__grid">
+      {
+        visible.map((item, index) => {
+          const image = mediaUrl(item.image)
+          return (
+            <article class="news__card" style={`--card-tilt:${tilts[index % 2]}`}>
+              {image && <img src={image} alt={typeof item.image === 'object' ? (item.image?.alt ?? '') : ''} loading="lazy" />}
+              <div class="news__body">
+                <div class="news__date">{formatDate(item.date)}</div>
+                {item.link?.url ? (
+                  <a class="news__title" href={item.link.url} target="_blank" rel="noopener">
+                    {item.title} <span style="color:var(--gold)">→</span>
+                  </a>
+                ) : (
+                  <span class="news__title">{item.title}</span>
+                )}
+                <p>{item.excerpt}</p>
+              </div>
+            </article>
+          )
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .news {
+    position: relative;
+    padding: 34px 40px 100px;
+    background: var(--bg-soft);
+  }
+
+  .news__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .news__heading {
+    display: none;
+  }
+
+  .news__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+  }
+
+  .news__card {
+    background: #fff;
+    border: 1.5px solid var(--rule);
+    border-radius: 22px;
+    overflow: hidden;
+    transition:
+      transform 250ms,
+      box-shadow 250ms;
+  }
+
+  .news__card:hover {
+    transform: translateY(-5px) rotate(var(--card-tilt));
+    box-shadow: 0 13px 34px rgba(47, 53, 56, 0.08);
+  }
+
+  .news__card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .news__body {
+    padding: 24px 28px 28px;
+  }
+
+  .news__date {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--ink-45);
+  }
+
+  .news__title {
+    display: block;
+    margin-top: 6px;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.35;
+    transition: color 200ms;
+  }
+
+  a.news__title:hover {
+    color: var(--gold);
+  }
+
+  .news__body p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(47, 53, 56, 0.65);
+  }
+
+  @media (max-width: 640px) {
+    .news__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

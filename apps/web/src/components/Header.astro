@@ -1,0 +1,83 @@
+---
+import { getGlobal } from '../lib/payload'
+import { hrefFor, type NavLink } from '../lib/links'
+
+interface HeaderGlobal {
+  logo?: { text?: string }
+  nav?: NavLink[]
+  cta?: { label?: string; url?: string }
+}
+
+const header = await getGlobal<HeaderGlobal>('header')
+---
+
+<header class="site-header">
+  <a href="/" class="site-header__brand">
+    <img src="/titz-mark.svg" alt="" width="40" height="26" />
+    <span>{header.logo?.text ?? 'Titz'}</span>
+  </a>
+  <nav class="site-header__nav">
+    {header.nav?.map((link) => <a href={hrefFor(link)}>{link.label}</a>)}
+    {
+      header.cta?.label && (
+        <a href={header.cta.url ?? '#'} class="pill pill--mint" target={header.cta.url?.startsWith('http') ? '_blank' : undefined} rel="noopener">
+          {header.cta.label}
+        </a>
+      )
+    }
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px 40px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .site-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+  }
+
+  .site-header__brand span {
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .site-header__nav {
+    display: flex;
+    gap: 24px;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .site-header__nav > a:not(.pill) {
+    padding: 2px 0;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-70);
+    transition: color 200ms;
+  }
+
+  .site-header__nav > a:not(.pill):hover {
+    color: var(--green);
+  }
+
+  @media (max-width: 900px) {
+    .site-header__nav > a:not(.pill) {
+      display: none;
+    }
+  }
+</style>

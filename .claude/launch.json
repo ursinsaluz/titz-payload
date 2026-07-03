@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@titz/web", "dev"],
+      "port": 4321
+    },
+    {
+      "name": "cms",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@titz/cms", "dev"],
+      "port": 3000
+    }
+  ]
+}

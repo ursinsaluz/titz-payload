@@ -1,0 +1,107 @@
+---
+import { getEggData, getGlobal } from '../lib/payload'
+import { hrefFor, type NavLink } from '../lib/links'
+
+interface FooterGlobal {
+  contact?: { address?: string; phone?: string; email?: string }
+  socials?: { label: string; url: string }[]
+  legalLinks?: NavLink[]
+  copyright?: string
+  location?: string
+}
+
+const footer = await getGlobal<FooterGlobal>('footer')
+const header = await getGlobal<{ logo?: { text?: string } }>('header')
+const { total: eggTotal } = await getEggData()
+const locationLine = footer.contact?.address?.split('\n').pop()
+---
+
+<footer class="site-footer" id="kontakt">
+  <img src="/titz-mark.svg" alt="" width="64" height="42" />
+  <div class="site-footer__brand">{header.logo?.text ?? 'Titz'}</div>
+  <div class="site-footer__links">
+    {footer.contact?.email && <a href={`mailto:${footer.contact.email}`}>{footer.contact.email}</a>}
+    {
+      footer.socials?.map((social) => (
+        <a href={social.url} target="_blank" rel="noopener">
+          {social.label}
+        </a>
+      ))
+    }
+    {locationLine && <span>{locationLine}</span>}
+  </div>
+  {
+    footer.legalLinks?.length ? (
+      <div class="site-footer__links site-footer__legal-links">
+        {footer.legalLinks.map((link) => (
+          <a href={hrefFor(link)}>{link.label}</a>
+        ))}
+      </div>
+    ) : null
+  }
+  <div class="site-footer__meta">
+    <span data-egg-count>0</span> / {eggTotal} Zutaten entdeckt · {footer.copyright}
+    <span data-egg-star style="cursor:pointer;color:var(--gold)">✦</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--cream);
+    color: var(--ink);
+    padding: 76px 40px 42px;
+    text-align: center;
+  }
+
+  .site-footer > img {
+    margin: 0 auto;
+  }
+
+  .site-footer__brand {
+    margin: 13px 0 34px;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-right: -0.4em;
+  }
+
+  .site-footer__links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .site-footer__links a {
+    transition: color 200ms;
+  }
+
+  .site-footer__links a:hover {
+    color: var(--gold);
+  }
+
+  .site-footer__links span {
+    color: rgba(47, 53, 56, 0.6);
+  }
+
+  .site-footer__legal-links {
+    margin-top: 21px;
+    font-size: 10.5px;
+  }
+
+  .site-footer__legal-links a {
+    color: rgba(47, 53, 56, 0.6);
+  }
+
+  .site-footer__meta {
+    margin-top: 42px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(47, 53, 56, 0.5);
+  }
+</style>

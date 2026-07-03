@@ -1,0 +1,21 @@
+---
+import { resolveIcon, type IconRef } from '../lib/payload'
+
+interface Props {
+  icon: IconRef
+  class?: string
+}
+
+const { icon, class: className } = Astro.props
+const resolved = await resolveIcon(icon)
+---
+
+{
+  resolved?.svg ? (
+    <span class:list={['icon', className]} set:html={resolved.svg} />
+  ) : resolved?.url ? (
+    <span class:list={['icon', className]}>
+      <img src={resolved.url} alt={resolved.name} />
+    </span>
+  ) : null
+}

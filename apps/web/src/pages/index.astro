@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro'
+import Stage from '../components/Stage.astro'
+import SectionRenderer from '../components/SectionRenderer.astro'
+import { getPageBySlug } from '../lib/payload'
+
+interface Page {
+  title: string
+  sections?: ({ blockType: string } & Record<string, unknown>)[]
+  seo?: Record<string, unknown>
+}
+
+const page = await getPageBySlug<Page>('home')
+---
+
+<Base seo={page?.seo as never}>
+  <Stage />
+  <SectionRenderer sections={page?.sections} />
+</Base>

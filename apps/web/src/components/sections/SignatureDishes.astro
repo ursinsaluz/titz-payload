@@ -1,0 +1,122 @@
+---
+import { getCollection } from '../../lib/payload'
+import IconCircle from '../IconCircle.astro'
+import Egg from '../Egg.astro'
+
+interface Dish {
+  id: number
+  name: string
+  tag?: string
+  icon?: unknown
+  description?: string
+  videoUrl?: string
+}
+
+interface Props {
+  block: {
+    anchor?: string
+    eyebrow?: string
+    heading: string
+    intro?: string
+  }
+}
+
+const { block } = Astro.props
+const dishes = await getCollection<Dish>('signature-dishes', '&sort=order')
+const cardColors = ['var(--cream)', 'var(--kraut)', 'var(--rosa)', 'var(--sand)']
+const cardTilts = ['-0.6deg', '0.6deg', '-0.6deg', '0.6deg']
+---
+
+<section class="dishes" id={block.anchor ?? 'dishes'}>
+  <Egg name="radieschen" size={58} bg="var(--rosa)" pos="left:5%;top:96px" anim="tzHop 5s ease-in-out infinite" />
+  <div class="container">
+    <div class="section-head">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      <h2>{block.heading}</h2>
+      {block.intro && <p class="dishes__intro">{block.intro}</p>}
+    </div>
+    <div class="dishes__grid">
+      {
+        dishes.map((dish, index) => (
+          <article
+            data-rev={index * 100}
+            class="dishes__card"
+            style={`background:${cardColors[index % 4]};--card-tilt:${cardTilts[index % 4]}`}
+          >
+            {dish.icon ? <IconCircle icon={dish.icon as never} size={55} /> : null}
+            {dish.tag && <div class="dishes__tag">{dish.tag}</div>}
+            <h3>{dish.videoUrl ? <a href={dish.videoUrl} target="_blank" rel="noopener">{dish.name}</a> : dish.name}</h3>
+            {dish.description && <p>{dish.description}</p>}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .dishes {
+    position: relative;
+    padding: 100px 40px;
+    background: var(--bg);
+  }
+
+  .dishes__intro {
+    max-width: 560px;
+    margin: 21px auto 0;
+    color: var(--ink-70);
+  }
+
+  .dishes__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 21px;
+  }
+
+  .dishes__card {
+    border-radius: 22px;
+    padding: 30px 26px;
+    transition: transform 300ms;
+  }
+
+  .dishes__card:hover {
+    transform: translateY(-6px) rotate(var(--card-tilt));
+  }
+
+  .dishes__tag {
+    margin: 18px 0 3px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-55);
+  }
+
+  .dishes__card h3 {
+    margin: 0 0 8px;
+    font-size: 17.5px;
+    line-height: 1.3;
+  }
+
+  .dishes__card h3 a:hover {
+    color: var(--gold);
+  }
+
+  .dishes__card p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-70);
+  }
+
+  @media (max-width: 960px) {
+    .dishes__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .dishes__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

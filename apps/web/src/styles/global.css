@@ -1,0 +1,379 @@
+/* titz.cooking — Design «Verspielt» */
+:root {
+  --bg: #ffffff;
+  --bg-soft: #fbfaf7;
+  --ink: #2f3538;
+  --ink-70: rgba(47, 53, 56, 0.7);
+  --ink-55: rgba(47, 53, 56, 0.55);
+  --ink-45: rgba(47, 53, 56, 0.45);
+  --rule: rgba(47, 53, 56, 0.08);
+  --green: #2a4d38;
+  --gold: #c5a059;
+
+  /* Pastell-Chips */
+  --mint: #dff0e3;
+  --mint-deep: #cfe8d6;
+  --cream: #faf0d2;
+  --rosa: #f7dee2;
+  --blau: #e0ecf4;
+  --pfirsich: #f9e3d4;
+  --flieder: #eae3f2;
+  --kraut: #e8f0dc;
+  --sand: #eee9df;
+  --spirale: #e9dfc8;
+
+  --font: 'Space Grotesk', sans-serif;
+  --max-width: 1080px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+::selection {
+  background: #f9edd2;
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.section-head {
+  text-align: center;
+  margin-bottom: 55px;
+}
+
+.section-head h2 {
+  margin: 16px 0 0;
+  font-size: 40px;
+  letter-spacing: -0.01em;
+}
+
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 13px 26px;
+  transition: transform 200ms;
+}
+
+.pill--dark {
+  background: var(--ink);
+  color: #fff;
+}
+
+.pill--green {
+  background: var(--green);
+  color: #fff;
+}
+
+.pill--white {
+  background: #fff;
+  color: var(--green);
+}
+
+.pill--mint {
+  background: var(--mint);
+  color: var(--green);
+  padding: 10px 20px;
+}
+
+.pill--dark:hover,
+.pill--green:hover {
+  transform: translateY(-3px) rotate(-1deg);
+}
+
+.pill--white:hover {
+  transform: translateY(-3px) rotate(1deg);
+}
+
+.pill--mint:hover {
+  transform: translateY(-2px) rotate(-1deg);
+  background: var(--mint-deep);
+}
+
+/* Icon-Kreis (Karten) */
+.icon-circle {
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 300ms;
+  color: var(--ink);
+}
+
+.icon-circle:hover {
+  transform: rotate(-10deg) scale(1.15);
+}
+
+.icon-circle svg {
+  width: 50%;
+  height: 50%;
+}
+
+/* Gemüse-Easter-Eggs */
+.egg {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 3;
+}
+
+.egg__btn {
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 300ms;
+  color: var(--ink);
+  padding: 0;
+}
+
+.egg__btn:hover {
+  transform: scale(1.18);
+}
+
+.egg__btn svg {
+  width: 50%;
+  height: 50%;
+}
+
+/* Scroll-Reveal */
+[data-rev] {
+  transition:
+    opacity 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+[data-rev].rev-hidden {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 26px;
+  bottom: 26px;
+  z-index: 900;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 14px;
+  padding: 15px 24px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  max-width: 420px;
+  box-shadow: 0 8px 30px rgba(47, 53, 56, 0.25);
+  animation: tzToast 250ms ease-out;
+}
+
+/* Animationen */
+@keyframes tzBob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translateY(-9px) rotate(var(--tilt, 0deg));
+  }
+}
+@keyframes tzSway {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+@keyframes tzPulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(-4deg);
+  }
+  50% {
+    transform: scale(1.09) rotate(-4deg);
+  }
+}
+@keyframes tzDriftX {
+  0%,
+  100% {
+    transform: translateX(0) rotate(4deg);
+  }
+  50% {
+    transform: translateX(12px) rotate(-4deg);
+  }
+}
+@keyframes tzFloatSpin {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(8deg);
+  }
+}
+@keyframes tzBreath {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.06) translateY(-4px);
+  }
+}
+@keyframes tzOrbit {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(7px, -6px);
+  }
+  50% {
+    transform: translate(0, -11px);
+  }
+  75% {
+    transform: translate(-7px, -6px);
+  }
+}
+@keyframes tzHop {
+  0%,
+  55%,
+  100% {
+    transform: translateY(0);
+  }
+  62% {
+    transform: translateY(-14px) rotate(-6deg);
+  }
+  72% {
+    transform: translateY(0) rotate(3deg);
+  }
+  80% {
+    transform: translateY(-5px);
+  }
+  88% {
+    transform: translateY(0);
+  }
+}
+@keyframes tzSwing {
+  0%,
+  100% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+@keyframes tzWobble {
+  0%,
+  100% {
+    transform: rotate(-4deg) translateY(0);
+  }
+  33% {
+    transform: rotate(3deg) translateY(-4px);
+  }
+  66% {
+    transform: rotate(-2deg) translateY(-8px);
+  }
+}
+@keyframes tzStretch {
+  0%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  50% {
+    transform: scaleY(1.07) translateY(-3px);
+  }
+}
+@keyframes tzTip {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+  78% {
+    transform: rotate(-12deg);
+  }
+  86% {
+    transform: rotate(8deg);
+  }
+  93% {
+    transform: rotate(-4deg);
+  }
+}
+@keyframes tzToast {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes tzSpiralZoom {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+  to {
+    transform: rotate(90deg) scale(1.618);
+  }
+}
+
+@media (max-width: 720px) {
+  .section-head h2 {
+    font-size: 30px;
+  }
+
+  .egg {
+    display: none;
+  }
+}

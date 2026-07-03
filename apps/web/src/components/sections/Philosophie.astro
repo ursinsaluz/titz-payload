@@ -1,0 +1,97 @@
+---
+import { lexicalToHtml } from '../../lib/lexical'
+import IconCircle from '../IconCircle.astro'
+import Egg from '../Egg.astro'
+
+interface Props {
+  block: {
+    anchor?: string
+    eyebrow?: string
+    heading: string
+    body?: unknown
+    values?: { icon?: unknown; title: string; text?: string }[]
+  }
+}
+
+const { block } = Astro.props
+const cardColors = ['var(--mint)', 'var(--cream)', 'var(--rosa)', 'var(--blau)']
+const cardTilts = ['-0.5deg', '0.5deg', '-0.5deg', '0.5deg']
+---
+
+<section class="philo" id={block.anchor ?? 'philosophie'}>
+  <Egg name="tomate" size={62} bg="var(--rosa)" pos="right:4%;top:110px" anim="tzOrbit 9s ease-in-out infinite" />
+  <Egg name="kraeuter" size={56} bg="var(--kraut)" pos="left:4%;bottom:76px;transform-origin:50% 100%" anim="tzTip 6s ease-in-out infinite 1s" />
+  <div class="container">
+    <div class="section-head">
+      {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+      <h2>{block.heading}</h2>
+      {block.body ? <div class="philo__body" set:html={lexicalToHtml(block.body)} /> : null}
+    </div>
+    {
+      block.values?.length ? (
+        <div class="philo__grid" style={`grid-template-columns:repeat(${Math.min(block.values.length, 3)},1fr)`}>
+          {block.values.map((value, index) => (
+            <article
+              data-rev={index * 120}
+              class="philo__card"
+              style={`background:${cardColors[index % 4]};--card-tilt:${cardTilts[index % 4]}`}
+            >
+              {value.icon ? <IconCircle icon={value.icon as never} size={64} /> : null}
+              <h3>{value.title}</h3>
+              {value.text && <p>{value.text}</p>}
+            </article>
+          ))}
+        </div>
+      ) : null
+    }
+  </div>
+</section>
+
+<style>
+  .philo {
+    position: relative;
+    padding: 100px 40px;
+    background: var(--bg-soft);
+  }
+
+  .philo__body {
+    max-width: 620px;
+    margin: 21px auto 0;
+    color: var(--ink-70);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .philo__grid {
+    display: grid;
+    gap: 26px;
+  }
+
+  .philo__card {
+    border-radius: 26px;
+    padding: 42px 34px;
+    transition: transform 300ms;
+  }
+
+  .philo__card:hover {
+    transform: translateY(-6px) rotate(var(--card-tilt));
+  }
+
+  .philo__card h3 {
+    margin: 21px 0 10px;
+    font-size: 22px;
+  }
+
+  .philo__card p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-70);
+  }
+
+  @media (max-width: 860px) {
+    .philo__grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

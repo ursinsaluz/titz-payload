@@ -1,0 +1,1266 @@
+{
+  "site": {
+    "domain": "https://titz.cooking",
+    "language": "de",
+    "generator": "Astro v5.18.0",
+    "stylesheet": "/_astro/birthday.CG86PyZq.css",
+    "favicon": [
+      "/favicon.png",
+      "/favicon.ico"
+    ]
+  },
+  "seo": {
+    "home": {
+      "title": "Sebastian Titz | Chefkoch",
+      "description": "Sebastian Titz – Kulinarik zwischen Michelin-Stern und Bündner Bodenständigkeit. Besuchen Sie das Restaurant PINOT in Fläsch.",
+      "canonical": "https://titz.cooking/",
+      "ogTitle": "Sebastian Titz | Chefkoch",
+      "ogDescription": "Sebastian Titz – Kulinarik zwischen Michelin-Stern und Bündner Bodenständigkeit. Besuchen Sie das Restaurant PINOT in Fläsch.",
+      "ogImage": "https://titz.cooking/images/hero-poster.jpg",
+      "ogType": "website",
+      "twitterCard": "summary_large_image"
+    },
+    "stationen": {
+      "title": "Lebenslauf - Sebastian Titz",
+      "description": "Erfahren Sie mehr über die beruflichen Stationen und Erfahrungen von Sebastian Titz.",
+      "canonical": "https://titz.cooking/stationen/",
+      "ogTitle": "Lebenslauf - Sebastian Titz",
+      "ogDescription": "Erfahren Sie mehr über die beruflichen Stationen und Erfahrungen von Sebastian Titz.",
+      "ogImage": "https://titz.cooking/images/hero-poster.jpg",
+      "ogType": "website",
+      "twitterCard": "summary_large_image"
+    },
+    "impressum": {
+      "title": "Impressum - Sebastian Titz | Sebastian Titz",
+      "description": "Impressum und rechtliche Hinweise von Sebastian Titz",
+      "canonical": "https://titz.cooking/impressum/",
+      "ogTitle": "Impressum - Sebastian Titz | Sebastian Titz",
+      "ogDescription": "Impressum und rechtliche Hinweise von Sebastian Titz",
+      "ogImage": "https://titz.cooking/images/hero-poster.jpg",
+      "ogType": "website",
+      "twitterCard": "summary_large_image"
+    },
+    "datenschutz": {
+      "title": "Datenschutz - Sebastian Titz | Sebastian Titz",
+      "description": "Datenschutzerklärung von Sebastian Titz. Informationen zur Erhebung und Verarbeitung personenbezogener Daten.",
+      "canonical": "https://titz.cooking/datenschutz/",
+      "ogTitle": "Datenschutz - Sebastian Titz | Sebastian Titz",
+      "ogDescription": "Datenschutzerklärung von Sebastian Titz. Informationen zur Erhebung und Verarbeitung personenbezogener Daten.",
+      "ogImage": "https://titz.cooking/images/hero-poster.jpg",
+      "ogType": "website",
+      "twitterCard": "summary_large_image"
+    }
+  },
+  "header": {
+    "logo": {
+      "type": "image",
+      "src": "/_astro/logo.IyvT8Bnm_kOolI.webp",
+      "alt": "Sebastian Titz Logo",
+      "width": "138",
+      "height": "204"
+    },
+    "navigation": [
+      {
+        "label": "Home",
+        "href": "/#"
+      },
+      {
+        "label": "Philosophie",
+        "href": "/#philosophy"
+      },
+      {
+        "label": "Stationen",
+        "href": "/stationen"
+      },
+      {
+        "label": "Angebot",
+        "href": "/#offerings"
+      },
+      {
+        "label": "Kontakt",
+        "href": "/#contact"
+      }
+    ],
+    "mobileNavigation": [
+      {
+        "label": "Home",
+        "href": "/#"
+      },
+      {
+        "label": "Philosophie",
+        "href": "/#philosophy"
+      },
+      {
+        "label": "Stationen",
+        "href": "/stationen"
+      },
+      {
+        "label": "Angebot",
+        "href": "/#offerings"
+      },
+      {
+        "label": "Kontakt",
+        "href": "/#contact"
+      }
+    ],
+    "behavior": "transparent on top, blurred background after scroll; mobile fullscreen overlay menu"
+  },
+  "hero": {
+    "headline": "Authentisch. Regional. Exzellent.",
+    "subline": "Sebastian Titz – Kulinarik zwischen Michelin-Stern und Bündner Bodenständigkeit.",
+    "backgroundImage": {
+      "src": "/_astro/image.Dcy6YYdw_2llzf7.webp",
+      "alt": "Hero Background"
+    },
+    "ctas": [
+      {
+        "label": "Meine Philosophie",
+        "href": "/#philosophy"
+      },
+      {
+        "label": "Kontakt aufnehmen",
+        "href": "/#contact"
+      }
+    ]
+  },
+  "philosophie": {
+    "heading": "Authentisch. Regional. Exzellent.",
+    "intro": [
+      {
+        "type": "lead",
+        "text": "Authentisch: Ehrlich und ohne Schnickschnack"
+      },
+      {
+        "type": "paragraph",
+        "text": "Ich koche so, wie ich bin: bodenständig und direkt. Ich möchte schnörkellose Gerichte kreieren, ohne viel Chichi, aber dafür mit einem echten Wow-Effekt im Mund. Kochen hat für mich auch immer etwas Spirituelles – es ist ein tiefer Respekt vor dem Ursprung unserer Nahrung und dem Leben selbst."
+      },
+      {
+        "type": "lead",
+        "text": "Regional: Aus der Heimat auf den Teller"
+      },
+      {
+        "type": "paragraph",
+        "text": "Die besten Lebensmittel finde ich direkt hier in der Region. Ich arbeite eng mit lokalen Produzenten zusammen, die meine Leidenschaft für nachhaltige und ehrliche Produkte teilen. Gekocht wird frisch und immer im natürlichen Rhythmus der vier Jahreszeiten."
+      },
+      {
+        "type": "lead",
+        "text": "Exzellent: Die Natur als Massstab"
+      },
+      {
+        "type": "paragraph",
+        "text": "Exzellenz bedeutet für mich, der Natur den perfekten Rahmen zu geben. Muster wie der Goldene Schnitt oder die Fibonacci-Reihe zeigen uns, wie vollkommene Harmonie aussieht. Diese natürliche Ordnung inspiriert mich beim Anrichten meiner Teller. Wenn sich diese vollendeten Zutaten dann mit einem richtig guten Glas Wein verbinden, wird aus einem Essen ein Erlebnis, das in Erinnerung bleibt."
+      }
+    ],
+    "badges": [
+      {
+        "value": "16",
+        "label": "GaultMillau"
+      },
+      {
+        "value": "Bib",
+        "label": "Michelin"
+      }
+    ],
+    "bottomContent": [
+      {
+        "heading": "Regionale Partner & Produzenten",
+        "text": "Die Grundlage für eine kompromisslose Qualität ist das kompromisslose Streben meiner Partner nach den besten Grundprodukten. Ich beziehe mein Fleisch von ausgewählten Höfen und Metzgereien in Graubünden und der Ostschweiz, bei denen das Tierwohl an erster Stelle steht. Unser Gemüse stammt frisch vom Feld aus dem Bündner Rheintal. Wir kennen unsere Bauern, Käsereien und Bäcker persönlich – das ist spürbar auf dem Teller."
+      },
+      {
+        "heading": "Stimmen & Auszeichnungen",
+        "text": "Im Laufe meiner Karriere wurde meine Art zu kochen glücklicherweise nicht nur von meinen geschätzten Gästen honoriert, sondern auch von etablierten Kritikern der Gastro-Szene: Gault & Millau: Bis zu 17 Punkte, sowie die Auszeichnung für 15 Punkte im Restaurant Verve by Sven (Bad Ragaz).Michelin: Ausgezeichnet mit 1 Michelin Stern im Gasthof Rössli, Hotel Restaurant Jörg Müller und Restaurant Verve by Sven.Falstaff: Konstante Erwähnungen als aufstrebendes Talent der \"Avantgardistischen Naturküche\"."
+      }
+    ],
+    "images": [
+      {
+        "src": "/_astro/image.DowCgSM7_1YTYGN.webp",
+        "alt": "Authentisch. Regional. Exzellent."
+      },
+      {
+        "src": "/_astro/image2.BL2a87_s_13hA4A.webp",
+        "alt": "Authentisch. Regional. Exzellent."
+      }
+    ]
+  },
+  "aktuelles": {
+    "heading": "Aktuelles",
+    "cards": [
+      {
+        "title": "falstaff - Restaurants & Beizen Guide 2026",
+        "date": "2.1.2026",
+        "text": "Das Restaurant Pinot wurde von Falstaff Schweiz ausgezeichnet. Diese Anerkennung würdigt unsere regionale Küche, hochwertige Zutaten und die kreative Handschrift von Sebastian.",
+        "image": {
+          "src": "/_astro/image.CzPOq6F-_Amxi5.webp",
+          "alt": "falstaff - Restaurants & Beizen Guide 2026"
+        },
+        "link": {
+          "label": "Mehr lesen",
+          "href": "https://www.falstaff.com/ch/restaurants/pinot-flaesch"
+        }
+      },
+      {
+        "title": "Was kochst du?!",
+        "date": "21.10.2025",
+        "text": "Gespräch mit Freunden: Die Chefs Andy Piesche, Felix Jarzina und Sebastian Titz",
+        "image": {
+          "src": "/_astro/image.zHpokzL2_Y8tGT.webp",
+          "alt": "Was kochst du?!"
+        },
+        "link": {
+          "label": "Mehr lesen",
+          "href": "https://www.youtube.com/watch?v=8Kh9AnolQBA"
+        }
+      },
+      {
+        "title": "Mit Leidenschaft kochen",
+        "date": "20.8.2025",
+        "text": "Ein Porträt über 20 Jahre Erfahrung in der Gourmetgastronomie und die Liebe zum Handwerk.",
+        "image": {
+          "src": "/_astro/image.OuEJtoQp_Z1HF7LO.webp",
+          "alt": "Mit Leidenschaft kochen"
+        },
+        "link": {
+          "label": "Mehr lesen",
+          "href": "https://www.salz-pfeffer.ch/artikel/mit-leidenschaft-kochen/"
+        }
+      },
+      {
+        "title": "Bib Gourmand für das Restaurant Pinot",
+        "date": "15.10.2024",
+        "text": "Der Guide Michelin zeichnet uns für unser exzellentes Preis-Leistungs-Verhältnis aus. 'Simply brilliant'.",
+        "image": {
+          "src": "/_astro/image.Dr7lKXoq_ZpmuhO.webp",
+          "alt": "Bib Gourmand für das Restaurant Pinot"
+        },
+        "link": {
+          "label": "Mehr lesen",
+          "href": "https://guide.michelin.com/de/de/graubunden/flsch/restaurant/pinot"
+        }
+      },
+      {
+        "title": "GaultMillau Auszeichnung 2024",
+        "date": "1.10.2024",
+        "text": "Wir freuen uns über 16 Punkte im neuen Guide GaultMillau und die Bestätigung unserer Arbeit.",
+        "image": {
+          "src": "/_astro/image.C76JiBk7_Z1CajoT.webp",
+          "alt": "GaultMillau Auszeichnung 2024"
+        },
+        "link": {
+          "label": "Mehr lesen",
+          "href": "https://www.leaderdigital.ch/news/gaultmillau-punktgewinn-fuer-verve-by-sven-9893.html"
+        }
+      },
+      {
+        "title": "Tschüss Verve! Titz kocht in der Klinik Gut",
+        "date": "1.10.2024",
+        "text": "Nach erfolgreichen Jahren im Grand Resort Bad Ragaz zieht es Sebastian Titz in die Bündner Herrschaft.",
+        "image": {
+          "src": "/_astro/image.C-MBlF43_VNAFH.webp",
+          "alt": "Tschüss Verve! Titz kocht in der Klinik Gut"
+        },
+        "link": {
+          "label": "Mehr lesen",
+          "href": "https://www.gaultmillau.ch/starchefs/tschuss-verve-titz-kocht-in-der-klinik-gut-734991"
+        }
+      },
+      {
+        "title": "Früh übt sich",
+        "date": "20.8.1998",
+        "text": "Im Pfadilager auf der Moosalp hat sich Sebastian bereits kulinarisch betätigt.",
+        "image": {
+          "src": "/_astro/image.DpNonCZf_Z1peSVb.webp",
+          "alt": "Früh übt sich"
+        },
+        "link": null
+      }
+    ]
+  },
+  "angebote": {
+    "heading": "Angebote",
+    "items": [
+      {
+        "id": "dialog-beratung",
+        "title": "Beratung",
+        "teaser": "Kulinarische Konzepte für Health- & Lifestyle-Resorts. Profitieren Sie von meiner Erfahrung.",
+        "cardImage": {
+          "src": "/_astro/image.1v9w6gDS_1wBXhH.webp",
+          "alt": "Beratung"
+        },
+        "cardCta": "Beratung anfragen",
+        "dialog": {
+          "image": {
+            "src": "/_astro/image.1v9w6gDS_ZwdASV.webp",
+            "alt": "Beratung"
+          },
+          "title": "Beratung",
+          "teaser": "Kulinarische Konzepte für Health- & Lifestyle-Resorts. Profitieren Sie von meiner Erfahrung.",
+          "content": [
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "Gastronomie-Consulting mit Weitblick"
+            },
+            {
+              "type": "paragraph",
+              "text": "Durch meine langjährige Erfahrung als Executive Küchenchef in renommierten Häusern (unter anderem im Grand Resort Bad Ragaz) kenne ich die Herausforderungen der modernen Spitzen- und Konzeptgastronomie. Ich unterstütze Hotels, Resorts und Restaurants dabei, ihre kulinarische Ausrichtung zu schärfen und Qualitätsstandards zu definieren oder zu verbessern."
+            },
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "Meine Leistungen"
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "items": [
+                "Küchenplanung & Workflow-Optimierung: Effizienz ist der Schlüssel in der Gastronomie. Ich helfe bei der Konzeption neuer Küchen oder der Optimierung bestehender Abläufe (Mise en place, Postenaufteilung).",
+                "Menükonzeption & Rezepturentwicklung: Entwicklung von Signature Dishes oder kompletten Speisekarten, die genau auf Ihre Zielgruppe und Philosophie abgestimmt sind. Besonderer Fokus auf Health-, Lifestyle- und nachhaltige Naturküche.",
+                "Mitarbeiterschulung & Coaching: \"Leadership\" anstelle von klassischen Hierarchien. Ich schule Ihr Küchenteam in neuen Techniken, Qualitätsbewusstsein und Kommunikation.",
+                "Prozessmanagement: Integration branchenspezifischer Software (Mirus, Eurotime, Kochtopf) zur Kalkulation und Dienstplanung."
+              ]
+            },
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "Warum externes Consulting?"
+            },
+            {
+              "type": "paragraph",
+              "text": "Betriebsblindheit ist menschlich. Ein Blick von aussen hilft, ineffiziente Prozesse zu erkennen und das volle Potenzial des Teams zu entfalten. Mein Ziel ist es, Ihnen nicht nur ein Konzept zu übergeben, sondern Ihre Mannschaft so auszubilden, dass sie dieses langfristig und selbstständig auf Sterneniveau umsetzen kann."
+            }
+          ],
+          "cta": {
+            "label": "Jetzt anfragen",
+            "href": "mailto:info@titz.cooking?subject=Anfrage: Beratung"
+          }
+        }
+      },
+      {
+        "id": "dialog-catering",
+        "title": "Catering",
+        "teaser": "Nachhaltige Sternenküche für Ihren Event. Wir bringen exzellenten Genuss zu Ihnen.",
+        "cardImage": {
+          "src": "/_astro/image.D07sE1pA_12kTof.webp",
+          "alt": "Catering"
+        },
+        "cardCta": "Weitere Informationen",
+        "dialog": {
+          "image": {
+            "src": "/_astro/image.D07sE1pA_ZEi97m.webp",
+            "alt": "Catering"
+          },
+          "title": "Catering",
+          "teaser": "Nachhaltige Sternenküche für Ihren Event. Wir bringen exzellenten Genuss zu Ihnen.",
+          "content": [
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "Authentisches Event-Catering auf Sterneniveau"
+            },
+            {
+              "type": "paragraph",
+              "text": "Ob exklusive Privatanlässe, Hochzeitsfeiern oder Firmen-Events – mein Team und ich bringen die Philosophie der \"Avantgardistischen Naturküche\" direkt zu Ihnen. Dabei legen wir den Fokus auf Nachhaltigkeit, regionale Topprodukte und ehrliches Handwerk."
+            },
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "Unsere geografische Abdeckung"
+            },
+            {
+              "type": "paragraph",
+              "text": "Wir bieten unser Catering hauptsächlich in folgenden Regionen an:"
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "items": [
+                "Graubünden und Bündner Herrschaft",
+                "St. Galler Rheintal",
+                "Gesamte Ostschweiz",
+                "Auf Anfrage auch schweizweit oder international"
+              ]
+            },
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "Menü-Stilrichtungen"
+            },
+            {
+              "type": "paragraph",
+              "text": "Jeder Anlass ist einzigartig. Deshalb erarbeiten wir gemeinsam ein Konzept, das Ihre Gäste verblüfft. Beliebte Ansätze sind:"
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "items": [
+                "Soil to Soul Menü: 100% regional und im perfekten Einklang mit der Natur.",
+                "Classic Fine Dining: Französische Basis mit modernem Twist, inspiriert durch meine Stationen in den besten Küchen Europas.",
+                "Flying Dinner & Tavolata: Ungezwungener Genuss auf höchstem Niveau für lockere Gesellschaften."
+              ]
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "Ablauf & Planung"
+            },
+            {
+              "type": "list",
+              "ordered": true,
+              "items": [
+                "Erstgespräch: Wir besprechen Ihre Vision, das Datum, die Location und das ungefähre Budget.",
+                "Konzepterstellung: Sie erhalten einen massgeschneiderten Menüvorschlag.",
+                "Tasting (Optional): Bei grösseren Events (z.B. Hochzeiten) laden wir Sie zu einer exklusiven Degustation ein.",
+                "Durchführung: Mein Team kümmert sich um den reibungslosen Ablauf – vom Mise en Place bis zum Abwasch."
+              ]
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "heading",
+              "level": 3,
+              "text": "FAQ - Häufig gestellte Fragen"
+            },
+            {
+              "type": "paragraph",
+              "text": "Wie viele Personen können Sie bewirten? Wir fokussieren uns auf Qualität statt Quantität. Ideal sind Gesellschaften von 10 bis 100 Personen, je nach Art des Anlasses und der Location."
+            },
+            {
+              "type": "paragraph",
+              "text": "Bringen Sie Geschirr und Personal mit? Ja, auf Wunsch organisieren wir das komplette Equipment sowie geschultes Servicepersonal."
+            },
+            {
+              "type": "paragraph",
+              "text": "Gibt es auch vegetarische/vegane Optionen? Selbstverständlich. Durch meinen Fokus auf Naturküche haben gerade pflanzenbasierte Gerichte bei uns einen extrem hohen Stellenwert."
+            }
+          ],
+          "cta": {
+            "label": "Jetzt anfragen",
+            "href": "mailto:info@titz.cooking?subject=Anfrage: Catering"
+          }
+        }
+      },
+      {
+        "id": "dialog-pinot",
+        "title": "Restaurant Pinot",
+        "teaser": "Rückkehr zur Intimität. Schnörkellose Gerichte mit Wow-Effekt in der Bündner Herrschaft.",
+        "cardImage": {
+          "src": "/_astro/image.C8NoGQOd_1dSmJ4.webp",
+          "alt": "Restaurant Pinot"
+        },
+        "cardCta": "Tisch reservieren",
+        "dialog": {
+          "image": {
+            "src": "/_astro/image.C8NoGQOd_Z1PoDK9.webp",
+            "alt": "Restaurant Pinot"
+          },
+          "title": "Restaurant Pinot",
+          "teaser": "Rückkehr zur Intimität. Schnörkellose Gerichte mit Wow-Effekt in der Bündner Herrschaft.",
+          "content": [
+            {
+              "type": "paragraph",
+              "text": "In der Klinik Gut im wunderschönen Fläsch leite ich seit 2025 das Restaurant Pinot."
+            },
+            {
+              "type": "paragraph",
+              "text": "Hier konzentrieren wir uns auf das Wesentliche: Herausragende Produkte, handwerkliche Perfektion und eine tiefe Verbundenheit mit der Region. Die Bündner Herrschaft bietet dafür die perfekten Voraussetzungen."
+            },
+            {
+              "type": "paragraph",
+              "text": "Kommen Sie vorbei und erleben Sie ehrliche Küche ohne Kompromisse."
+            }
+          ],
+          "cta": {
+            "label": "Jetzt anfragen",
+            "href": "mailto:info@titz.cooking?subject=Anfrage: Restaurant Pinot"
+          }
+        }
+      }
+    ]
+  },
+  "instagramWidget": {
+    "type": "elfsight-widget",
+    "appId": "e7cf8644-53f1-4eb1-9a7c-55b6ff367ed4",
+    "script": "https://elfsightcdn.com/platform.js",
+    "note": "Extern geladenes Elfsight-Widget (vermutlich Instagram-Feed), kein statischer Inhalt im HTML."
+  },
+  "signatureDishes": {
+    "heading": "Signature Dishes",
+    "component": "Karussell (React astro-island, EmblaCarousel) mit Prev/Next-Pfeilen",
+    "dishes": [
+      {
+        "name": "Milcheis mit Spekulatius",
+        "description": "Winterliche Aromen treffen auf technische Finesse. Geflämmte Meringue, Apfel und Spekulatius.",
+        "category": "signature",
+        "videoUrl": "https://www.youtube.com/watch?v=6t92tOv0Hvk",
+        "image": "@assets/images/portfolio/dessert_ice_cream.png"
+      },
+      {
+        "name": "Heusuppe",
+        "description": "Eine Hommage an meine Zeit bei Stefan Wiesner. Der Geschmack von getrocknetem Heu, eingefangen in einer samtigen Suppe. Natur pur.",
+        "category": "signature",
+        "videoUrl": null,
+        "image": "@assets/images/portfolio/hay_soup.png"
+      },
+      {
+        "name": "Angus Beef Tartare",
+        "description": "Eine Hommage an die Erde. Das Rohe des Rindes trifft auf die Textur des Selleries.",
+        "category": "starter",
+        "videoUrl": "https://www.youtube.com/watch?v=e2ldyEvxs_I",
+        "image": "@assets/images/portfolio/tartare/image.png"
+      },
+      {
+        "name": "Kalb mit Schwarzem Trüffel",
+        "description": "Heimat trifft Luxus. Zartes Kalb, veredelt mit der Tiefe des Trüffels und Serviettenknödel.",
+        "category": "signature",
+        "videoUrl": "https://www.youtube.com/watch?v=XQ7KfpsiT5Y",
+        "image": null
+      }
+    ]
+  },
+  "visit": {
+    "heading": "Besuchen Sie uns",
+    "intro": "Erleben Sie meine neue Küche im Restaurant Pinot in Fläsch.",
+    "address": {
+      "heading": "Adresse",
+      "lines": [
+        "Restaurant PINOT",
+        "Steigstrasse 14",
+        "7306 Fläsch"
+      ],
+      "icon": "map-pin"
+    },
+    "openingHours": {
+      "heading": "Öffnungszeiten",
+      "lines": [
+        "Täglich 09:00 – 18:00",
+        "Donnerstags Abendessen ab 18:00"
+      ],
+      "icon": "clock"
+    },
+    "ctas": [
+      {
+        "label": "Tisch reservieren",
+        "href": "https://www.restaurant-pinot.ch/"
+      },
+      {
+        "label": "Email schreiben",
+        "href": "mailto:info@titz.cooking"
+      }
+    ],
+    "map": {
+      "type": "google-maps-embed",
+      "src": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2719.816642150272!2d9.511540376407655!3d47.02420402801314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4784cb64cae8cc35%3A0x9ecbfd0d800751e3!2sRestaurant%20Pinot!5e0!3m2!1sde!2sch!4v1764192644461!5m2!1sde!2sch"
+    }
+  },
+  "footer": {
+    "heading": "Kontakt",
+    "text": "Interessiert an einem unvergesslichen kulinarischen Erlebnis? Schreiben Sie mir oder rufen Sie an.",
+    "contact": {
+      "email": {
+        "label": "info@titz.cooking",
+        "href": "mailto:info@titz.cooking",
+        "icon": "mail"
+      },
+      "phone": {
+        "label": "+41 79 123 45 67",
+        "href": "tel:+41791234567",
+        "icon": "phone"
+      },
+      "location": {
+        "label": "Fläsch GR, Schweiz",
+        "icon": "map-pin"
+      }
+    },
+    "social": [
+      {
+        "platform": "Instagram",
+        "label": "Follow on Instagram",
+        "href": "https://www.instagram.com/titzsebastian/",
+        "icon": "instagram"
+      }
+    ],
+    "form": {
+      "name": "contact",
+      "action": "/danke",
+      "method": "POST",
+      "fields": [
+        {
+          "field": "name",
+          "label": "Name",
+          "type": "text",
+          "placeholder": "Ihr Name",
+          "required": true,
+          "rows": null
+        },
+        {
+          "field": "email",
+          "label": "Email",
+          "type": "email",
+          "placeholder": "ihre@email.com",
+          "required": true,
+          "rows": null
+        },
+        {
+          "field": "message",
+          "label": "Nachricht",
+          "type": "textarea",
+          "placeholder": "Wie kann ich Ihnen helfen?",
+          "required": true,
+          "rows": "4"
+        }
+      ],
+      "submitLabel": "Nachricht senden",
+      "submitAriaLabel": "Nachricht an Sebastian Titz senden"
+    },
+    "copyright": "© 2026 Sebastian Titz. Alle Rechte vorbehalten.",
+    "legalLinks": [
+      {
+        "label": "Impressum",
+        "href": "/impressum"
+      },
+      {
+        "label": "Datenschutz",
+        "href": "/datenschutz"
+      }
+    ]
+  },
+  "cookieBanner": {
+    "text": "Wir verwenden Cookies, um Ihre Erfahrung auf unserer Website zu verbessern. Durch die weitere Nutzung unserer Website stimmen Sie unserer Verwendung von Cookies zu. Weitere Informationen finden Sie in unserer Datenschutzerklärung.",
+    "link": {
+      "label": "Datenschutzerklärung",
+      "href": "/datenschutz"
+    },
+    "buttons": [
+      "Akzeptieren",
+      "Ablehnen"
+    ]
+  },
+  "birthdayEasterEgg": {
+    "heading": "Happy Birthday!",
+    "text": "Alles Gute zum Geburtstag, Sebastian!",
+    "note": "Birthday-Easter-Egg-Overlay, per Script ausgelöst (auf allen Seiten vorhanden)"
+  },
+  "stationen": {
+    "groups": [
+      {
+        "heading": "Meine Stationen",
+        "entries": [
+          {
+            "period": "seit 2025",
+            "title": "Klinik Gut & Restaurant Pinot",
+            "place": "Fläsch, Graubünden",
+            "description": "Küchenchef. Rückkehr zur Intimität. Schnörkellose Gerichte mit Wow-Effekt in der Bündner Herrschaft.",
+            "images": null
+          },
+          {
+            "period": "2019 – 2025",
+            "title": "Restaurant Verve by Sven, Grand Resort Bad Ragaz",
+            "place": "Bad Ragaz",
+            "description": "Küchenchef / Executive Sous Chef. Verantwortung für 15 Gault Millau Punkte und 1 Michelin Stern. Konzeption und Umsetzung des Lifestyle- und Health-Konzepts. Führung von 16 Mitarbeitern und Ausbildung von Lernenden. Auszeichnung: Manager of the Quarter 2022.",
+            "images": null
+          },
+          {
+            "period": "2015 – 2018",
+            "title": "Hotel Villa Honegg",
+            "place": "Ennetbürgen",
+            "description": "Küchenchef. Verantwortung für 14 Gault Millau Punkte. Führung von 12 Mitarbeitern und Ausbildung von zwei Lernenden.",
+            "images": null
+          },
+          {
+            "period": "2008 – 2015",
+            "title": "Gasthof Rössli",
+            "place": "Escholzmatt",
+            "description": "Küchenchef bei Stefan Wiesner. Zusammenarbeit mit dem \"Hexer aus dem Entlebuch\" (17 GM, 1 Michelin Stern). Führung von 6 Mitarbeitern und drei Lernenden. Nomination \"Lehrmeister des Jahres\" (Zukunftsträger 2013).",
+            "images": null
+          },
+          {
+            "period": "2007 – 2008",
+            "title": "Hotel Restaurant Jörg Müller",
+            "place": "Westerland-Sylt",
+            "description": "Chef de Partie Garde Manger (18 Gault Millau Punkte, 1 Michelin Stern).",
+            "images": null
+          },
+          {
+            "period": "2006 – 2007",
+            "title": "Tschuggen Grand Hotel",
+            "place": "Arosa",
+            "description": "Chef de Partie Entremetier / Pasta im Grand Restaurant & La Vetta (14 GM).",
+            "images": null
+          },
+          {
+            "period": "2006",
+            "title": "Le Club by Armin Amrein",
+            "place": "Bürgenstock Resorts",
+            "description": "Demi-Chef Saucier (17 Gault Millau Punkte).",
+            "images": null
+          },
+          {
+            "period": "2005 – 2006",
+            "title": "Tschuggen Grand Hotel",
+            "place": "Arosa",
+            "description": "Commis Tournant (Garde Manger / La Vetta).",
+            "images": null
+          },
+          {
+            "period": "2002 – 2005",
+            "title": "Frühe Stationen",
+            "place": "Zermatt, Davos, Küssnacht",
+            "description": "Chef de Partie Stationen: Seiler Hotels Schweizerhof (Zermatt), Sheraton Derby (Davos), Hirschen (Küssnacht).",
+            "images": null
+          }
+        ]
+      },
+      {
+        "heading": "Aus- und Weiterbildung",
+        "entries": [
+          {
+            "period": "2014 – 2016",
+            "title": "HFP Eidg. Dipl. Küchenchef",
+            "place": "Hotel & Gastro Formation Weggis",
+            "description": "Höchster Bildungsabschluss im Schweizer Gastgewerbe.",
+            "images": null
+          },
+          {
+            "period": "2011 – 2012",
+            "title": "Chefkoch mit Eidg. Fachausweis",
+            "place": "Weggis",
+            "description": "Weiterbildung zum Chefkoch.",
+            "images": null
+          },
+          {
+            "period": "2003 – 2004",
+            "title": "Militärischer Küchenchef / Unteroffizier",
+            "place": "Schweizer Armee",
+            "description": "Dienstpflicht erfüllt.",
+            "images": null
+          },
+          {
+            "period": "1999 – 2002",
+            "title": "Koch EFZ",
+            "place": "Restaurant Schneggen (14 GM)",
+            "description": "Grundbildung in Buchs SG.",
+            "images": null
+          }
+        ]
+      },
+      {
+        "heading": "Besondere Qualifikationen & Projekte",
+        "entries": [
+          {
+            "period": "Weiterbildung",
+            "title": "Gewaltfreie Kommunikation",
+            "place": "Workshop",
+            "description": "Kommunikationstraining für Kaderkräfte.",
+            "images": null
+          },
+          {
+            "period": "Qualifikation",
+            "title": "IT & Sprachen",
+            "place": "Versiert",
+            "description": "Branchensoftware (Mirus, Eurotime, Kochtopf) sowie gute Sprachenkenntnisse (DE, EN, FR).",
+            "images": null
+          },
+          {
+            "period": "2011",
+            "title": "Publikation \"Avantgardistische Naturküche\"",
+            "place": "Mitautor von Stefan Wiesner",
+            "description": "Rezeptentwicklung und Dokumentation.",
+            "images": null
+          }
+        ]
+      },
+      {
+        "heading": "Hobbies & Interessen",
+        "entries": [
+          {
+            "period": "Freizeit",
+            "title": "Biken",
+            "place": "Natur & Leidenschaft",
+            "description": "Mountainbiken in der freien Natur.",
+            "images": null
+          },
+          {
+            "period": "Freizeit",
+            "title": "Garten",
+            "place": "Natur & Leidenschaft",
+            "description": "Pflege und Anbau im eigenen Garten, um Bezug zur Natur zu bewahren.",
+            "images": [
+              {
+                "src": "/_astro/image.DK1ujMxF_Z1HjGov.webp",
+                "alt": "Impression"
+              }
+            ]
+          },
+          {
+            "period": "Freizeit",
+            "title": "Pfadfinder & Lagerkoch",
+            "place": "Natur & Leidenschaft",
+            "description": "Das Arbeiten im Team und die Liebe zum Kochen über dem offenen Feuer entdeckte er früh in seiner Zeit als begeisterter Pfadileiter und Lagerkoch. Diese Wurzeln in der Gemeinschaft prägen seinen Führungsstil bis heute.",
+            "images": [
+              {
+                "src": "/_astro/image.BQbaMjn7_Zr3PVp.webp",
+                "alt": "Impression"
+              },
+              {
+                "src": "/_astro/image.a1Sbolsd_4TtBE.webp",
+                "alt": "Impression"
+              },
+              {
+                "src": "/_astro/image.BRNGMBWU_Z1JGpPc.webp",
+                "alt": "Impression"
+              }
+            ]
+          },
+          {
+            "period": "Freizeit",
+            "title": "Sauerteig & Backen",
+            "place": "Natur & Leidenschaft",
+            "description": "Die Hingabe zu handwerklichen Prozessen zeigt sich besonders in seiner Liebe für Sauerteigbrote. Langsame Fermentation, perfekte Kruste und der einzigartige Geschmack sind für ihn pure Magie.",
+            "images": null
+          },
+          {
+            "period": "Freizeit",
+            "title": "Skitouren",
+            "place": "Natur & Leidenschaft",
+            "description": "Die Berge abseits der Pisten erkunden.",
+            "images": null
+          },
+          {
+            "period": "Freizeit",
+            "title": "Trailrunning",
+            "place": "Natur & Leidenschaft",
+            "description": "Sebastian verbringt am liebsten jede freie Minute in der Natur. Beim Trailrunning auf den Bündner Bergen findet er den idealen Ausgleich zum hektischen Küchenalltag und sammelt neue Energie und Inspiration für seine Gerichte.",
+            "images": [
+              {
+                "src": "/_astro/image.DT0GDesk_22WRxQ.webp",
+                "alt": "Impression"
+              }
+            ]
+          },
+          {
+            "period": "Freizeit",
+            "title": "Yoga",
+            "place": "Natur & Leidenschaft",
+            "description": "In meiner Freizeit mache ich Yoga zum Ausgleich.",
+            "images": [
+              {
+                "src": "/_astro/image.CDO_sBJr_8Thi6.webp",
+                "alt": "Impression"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "impressum": {
+    "heading": "Impressum",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Verantwortlich für den Inhalt: Sebastian Titz, Steigstrasse 14 7306 Fläsch Schweiz"
+      },
+      {
+        "type": "paragraph",
+        "text": "Kontakt: E-Mail: info@titz.cooking Telefon: +41 79 123 45 67"
+      },
+      {
+        "type": "paragraph",
+        "text": "Haftungsausschluss: Der Autor übernimmt keinerlei Gewähr hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen. Haftungsansprüche gegen den Autor wegen Schäden materieller oder immaterieller Art, welche aus dem Zugriff oder der Nutzung bzw. Nichtnutzung der veröffentlichten Informationen, durch Missbrauch der Verbindung oder durch technische Störungen entstanden sind, werden ausgeschlossen."
+      },
+      {
+        "type": "paragraph",
+        "text": "Urheberrechte: Die Urheber- und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen Dateien auf der Website gehören ausschliesslich Sebastian Titz oder den speziell genannten Rechtsinhabern. Für die Reproduktion jeglicher Elemente ist die schriftliche Zustimmung der Urheberrechtsträger im Voraus einzuholen."
+      }
+    ]
+  },
+  "datenschutz": {
+    "heading": "Datenschutzerklärung",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften der Schweiz (DSG) sowie dieser Datenschutzerklärung."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Erhebung und Verarbeitung von Daten"
+      },
+      {
+        "type": "paragraph",
+        "text": "Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder E-Mail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Cookies"
+      },
+      {
+        "type": "paragraph",
+        "text": "Unsere Website verwendet teilweise so genannte Cookies. Cookies richten auf Ihrem Rechner keinen Schaden an und enthalten keine Viren. Cookies dienen dazu, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen. Die meisten der von uns verwendeten Cookies sind so genannte „Session-Cookies“. Sie werden nach Ende Ihres Besuchs automatisch gelöscht. Andere Cookies bleiben auf Ihrem Endgerät gespeichert, bis Sie diese löschen."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Server-Log-Files"
+      },
+      {
+        "type": "paragraph",
+        "text": "Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Files, die Ihr Browser automatisch an uns übermittelt. Dies sind Browser-Typ/-Version, verwendetes Betriebssystem, Referrer URL, Hostname des zugreifenden Rechners und die Uhrzeit der Serveranfrage. Diese Daten sind nicht bestimmten Personen zuordenbar. Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Kontaktformular"
+      },
+      {
+        "type": "paragraph",
+        "text": "Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Ihre Rechte"
+      },
+      {
+        "type": "paragraph",
+        "text": "Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten. Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit an uns wenden."
+      }
+    ]
+  },
+  "images": [
+    {
+      "src": "/_astro/logo.IyvT8Bnm_kOolI.webp",
+      "alt": "Sebastian Titz Logo",
+      "width": "138",
+      "height": "204",
+      "context": [
+        "header logo (alle Seiten)"
+      ]
+    },
+    {
+      "src": "/_astro/image.Dcy6YYdw_2llzf7.webp",
+      "alt": "Hero Background",
+      "width": "1920",
+      "height": "1080",
+      "context": [
+        "hero background (home)"
+      ]
+    },
+    {
+      "src": "/_astro/image.DowCgSM7_1YTYGN.webp",
+      "alt": "Authentisch. Regional. Exzellent.",
+      "width": "800",
+      "height": "1000",
+      "context": [
+        "philosophie section (home)"
+      ]
+    },
+    {
+      "src": "/_astro/image2.BL2a87_s_13hA4A.webp",
+      "alt": "Authentisch. Regional. Exzellent.",
+      "width": "800",
+      "height": "1000",
+      "context": [
+        "philosophie section (home)"
+      ]
+    },
+    {
+      "src": "/_astro/image.CzPOq6F-_Amxi5.webp",
+      "alt": "falstaff - Restaurants & Beizen Guide 2026",
+      "width": "991",
+      "height": "1402",
+      "context": [
+        "news card: falstaff - Restaurants & Beizen Guide 2026"
+      ]
+    },
+    {
+      "src": "/_astro/image.zHpokzL2_Y8tGT.webp",
+      "alt": "Was kochst du?!",
+      "width": "1024",
+      "height": "768",
+      "context": [
+        "news card: Was kochst du?!"
+      ]
+    },
+    {
+      "src": "/_astro/image.OuEJtoQp_Z1HF7LO.webp",
+      "alt": "Mit Leidenschaft kochen",
+      "width": "1920",
+      "height": "1080",
+      "context": [
+        "news card: Mit Leidenschaft kochen"
+      ]
+    },
+    {
+      "src": "/_astro/image.Dr7lKXoq_ZpmuhO.webp",
+      "alt": "Bib Gourmand für das Restaurant Pinot",
+      "width": "991",
+      "height": "991",
+      "context": [
+        "news card: Bib Gourmand für das Restaurant Pinot"
+      ]
+    },
+    {
+      "src": "/_astro/image.C76JiBk7_Z1CajoT.webp",
+      "alt": "GaultMillau Auszeichnung 2024",
+      "width": "1200",
+      "height": "675",
+      "context": [
+        "news card: GaultMillau Auszeichnung 2024"
+      ]
+    },
+    {
+      "src": "/_astro/image.C-MBlF43_VNAFH.webp",
+      "alt": "Tschüss Verve! Titz kocht in der Klinik Gut",
+      "width": "1770",
+      "height": "996",
+      "context": [
+        "news card: Tschüss Verve! Titz kocht in der Klinik Gut"
+      ]
+    },
+    {
+      "src": "/_astro/image.DpNonCZf_Z1peSVb.webp",
+      "alt": "Früh übt sich",
+      "width": "1128",
+      "height": "1504",
+      "context": [
+        "news card: Früh übt sich"
+      ]
+    },
+    {
+      "src": "/_astro/image.1v9w6gDS_1wBXhH.webp",
+      "alt": "Beratung",
+      "width": "600",
+      "height": "400",
+      "context": [
+        "angebot card: Beratung"
+      ]
+    },
+    {
+      "src": "/_astro/image.1v9w6gDS_ZwdASV.webp",
+      "alt": "Beratung",
+      "width": "1000",
+      "height": "600",
+      "context": [
+        "angebot dialog: Beratung"
+      ]
+    },
+    {
+      "src": "/_astro/image.D07sE1pA_12kTof.webp",
+      "alt": "Catering",
+      "width": "600",
+      "height": "400",
+      "context": [
+        "angebot card: Catering"
+      ]
+    },
+    {
+      "src": "/_astro/image.D07sE1pA_ZEi97m.webp",
+      "alt": "Catering",
+      "width": "1000",
+      "height": "600",
+      "context": [
+        "angebot dialog: Catering"
+      ]
+    },
+    {
+      "src": "/_astro/image.C8NoGQOd_1dSmJ4.webp",
+      "alt": "Restaurant Pinot",
+      "width": "600",
+      "height": "400",
+      "context": [
+        "angebot card: Restaurant Pinot"
+      ]
+    },
+    {
+      "src": "/_astro/image.C8NoGQOd_Z1PoDK9.webp",
+      "alt": "Restaurant Pinot",
+      "width": "1000",
+      "height": "600",
+      "context": [
+        "angebot dialog: Restaurant Pinot"
+      ]
+    },
+    {
+      "src": "@assets/images/portfolio/dessert_ice_cream.png",
+      "alt": "Milcheis mit Spekulatius",
+      "width": null,
+      "height": null,
+      "context": [
+        "signature dish (Build-Pfad aus astro-island props): Milcheis mit Spekulatius"
+      ]
+    },
+    {
+      "src": "@assets/images/portfolio/hay_soup.png",
+      "alt": "Heusuppe",
+      "width": null,
+      "height": null,
+      "context": [
+        "signature dish (Build-Pfad aus astro-island props): Heusuppe"
+      ]
+    },
+    {
+      "src": "@assets/images/portfolio/tartare/image.png",
+      "alt": "Angus Beef Tartare",
+      "width": null,
+      "height": null,
+      "context": [
+        "signature dish (Build-Pfad aus astro-island props): Angus Beef Tartare"
+      ]
+    },
+    {
+      "src": "/_astro/image.DK1ujMxF_Z1HjGov.webp",
+      "alt": "Impression",
+      "width": "1024",
+      "height": "1024",
+      "context": [
+        "stationen: Garten"
+      ]
+    },
+    {
+      "src": "/_astro/image.BQbaMjn7_Zr3PVp.webp",
+      "alt": "Impression",
+      "width": "2160",
+      "height": "3840",
+      "context": [
+        "stationen: Pfadfinder & Lagerkoch"
+      ]
+    },
+    {
+      "src": "/_astro/image.a1Sbolsd_4TtBE.webp",
+      "alt": "Impression",
+      "width": "453",
+      "height": "604",
+      "context": [
+        "stationen: Pfadfinder & Lagerkoch"
+      ]
+    },
+    {
+      "src": "/_astro/image.BRNGMBWU_Z1JGpPc.webp",
+      "alt": "Impression",
+      "width": "1488",
+      "height": "1984",
+      "context": [
+        "stationen: Pfadfinder & Lagerkoch"
+      ]
+    },
+    {
+      "src": "/_astro/image.DT0GDesk_22WRxQ.webp",
+      "alt": "Impression",
+      "width": "2016",
+      "height": "1134",
+      "context": [
+        "stationen: Trailrunning"
+      ]
+    },
+    {
+      "src": "/_astro/image.CDO_sBJr_8Thi6.webp",
+      "alt": "Impression",
+      "width": "1536",
+      "height": "2040",
+      "context": [
+        "stationen: Yoga"
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "name": "menu",
+      "file": "icons/menu.svg",
+      "usedIn": [
+        "home: #menu-icon",
+        "stationen: #menu-icon",
+        "impressum: #menu-icon",
+        "datenschutz: #menu-icon"
+      ]
+    },
+    {
+      "name": "x",
+      "file": "icons/x.svg",
+      "usedIn": [
+        "home: #mobile-close-btn",
+        "home: #lightbox-close",
+        "stationen: #mobile-close-btn",
+        "impressum: #mobile-close-btn",
+        "datenschutz: #mobile-close-btn"
+      ]
+    },
+    {
+      "name": "close",
+      "file": "icons/close.svg",
+      "usedIn": [
+        "home: dialog dialog-beratung",
+        "home: dialog dialog-catering",
+        "home: dialog dialog-pinot"
+      ]
+    },
+    {
+      "name": "arrow-left",
+      "file": "icons/arrow-left.svg",
+      "usedIn": [
+        "home: #signature-dishes"
+      ]
+    },
+    {
+      "name": "arrow-right",
+      "file": "icons/arrow-right.svg",
+      "usedIn": [
+        "home: #signature-dishes"
+      ]
+    },
+    {
+      "name": "map-pin",
+      "file": "icons/map-pin.svg",
+      "usedIn": [
+        "home: #visit",
+        "home: #contact",
+        "stationen: #contact",
+        "impressum: #contact",
+        "datenschutz: #contact"
+      ]
+    },
+    {
+      "name": "clock",
+      "file": "icons/clock.svg",
+      "usedIn": [
+        "home: #visit"
+      ]
+    },
+    {
+      "name": "mail",
+      "file": "icons/mail.svg",
+      "usedIn": [
+        "home: #visit",
+        "home: #contact",
+        "stationen: #contact",
+        "impressum: #contact",
+        "datenschutz: #contact"
+      ]
+    },
+    {
+      "name": "phone",
+      "file": "icons/phone.svg",
+      "usedIn": [
+        "home: #contact",
+        "stationen: #contact",
+        "impressum: #contact",
+        "datenschutz: #contact"
+      ]
+    },
+    {
+      "name": "instagram",
+      "file": "icons/instagram.svg",
+      "usedIn": [
+        "home: #contact",
+        "stationen: #contact",
+        "impressum: #contact",
+        "datenschutz: #contact"
+      ]
+    }
+  ]
+}

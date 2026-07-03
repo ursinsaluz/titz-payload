@@ -1,0 +1,75 @@
+---
+import { getEggData, getGlobal, mediaUrl, type Media } from '../lib/payload'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import '../styles/global.css'
+
+interface Props {
+  seo?: {
+    title?: string | null
+    description?: string | null
+    image?: Media | number | null
+    noIndex?: boolean | null
+  }
+  pageTitle?: string
+}
+
+interface SiteSettings {
+  siteName?: string
+  domain?: string
+  defaultSeo?: {
+    title?: string
+    titleTemplate?: string
+    description?: string
+    image?: Media | number | null
+  }
+}
+
+const { seo, pageTitle } = Astro.props
+const settings = await getGlobal<SiteSettings>('site-settings')
+const eggData = await getEggData()
+
+const template = settings.defaultSeo?.titleTemplate ?? `%s | ${settings.siteName ?? 'Sebastian Titz'}`
+const title = seo?.title
+  ? seo.title
+  : pageTitle
+    ? template.replace('%s', pageTitle)
+    : (settings.defaultSeo?.title ?? settings.siteName ?? 'Sebastian Titz')
+const description = seo?.description ?? settings.defaultSeo?.description ?? ''
+const ogImage = mediaUrl(seo?.image) ?? mediaUrl(settings.defaultSeo?.image)
+const canonical = new URL(Astro.url.pathname, settings.domain ?? Astro.site ?? 'https://titz.cooking')
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {seo?.noIndex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+    />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script type="application/json" id="egg-data" set:html={JSON.stringify(eggData)} />
+    <script src="../scripts/playful.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+---
+import { lexicalToHtml } from '../../lib/lexical'
+
+interface Props {
+  block: {
+    anchor?: string
+    heading?: string
+    body: unknown
+  }
+}
+
+const { block } = Astro.props
+---
+
+<section class="section" id={block.anchor ?? undefined}>
+  <div class="container rich-text">
+    {block.heading && <h1>{block.heading}</h1>}
+    <div set:html={lexicalToHtml(block.body)} />
+  </div>
+</section>
+
+<style>
+  .rich-text {
+    max-width: 760px;
+  }
+
+  .rich-text h1 {
+    font-size: clamp(2.2rem, 4vw, 3rem);
+    margin-bottom: 32px;
+  }
+
+  .rich-text :global(h2) {
+    margin-top: 40px;
+    font-size: 1.6rem;
+  }
+
+  .rich-text :global(h3) {
+    margin-top: 28px;
+    font-size: 1.25rem;
+  }
+
+  .rich-text :global(a) {
+    color: var(--accent-deep);
+  }
+</style>

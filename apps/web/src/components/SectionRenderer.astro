@@ -1,0 +1,32 @@
+---
+import Philosophie from './sections/Philosophie.astro'
+import Angebote from './sections/Angebote.astro'
+import News from './sections/News.astro'
+import SignatureDishes from './sections/SignatureDishes.astro'
+import Stationen from './sections/Stationen.astro'
+import Visit from './sections/Visit.astro'
+import RichTextSection from './sections/RichTextSection.astro'
+
+interface Props {
+  sections: ({ blockType: string } & Record<string, unknown>)[] | null | undefined
+}
+
+const { sections } = Astro.props
+
+const components: Record<string, unknown> = {
+  philosophie: Philosophie,
+  angeboteSection: Angebote,
+  newsSection: News,
+  signatureDishesSection: SignatureDishes,
+  stationenSection: Stationen,
+  visitSection: Visit,
+  richTextSection: RichTextSection,
+}
+---
+
+{
+  sections?.map((section) => {
+    const Component = components[section.blockType] as never
+    return Component ? <Component block={section} /> : null
+  })
+}

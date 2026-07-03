@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro'
+import SectionRenderer from '../components/SectionRenderer.astro'
+import { getCollection } from '../lib/payload'
+
+interface Page {
+  title: string
+  slug: string
+  sections?: ({ blockType: string } & Record<string, unknown>)[]
+  seo?: Record<string, unknown>
+}
+
+export async function getStaticPaths() {
+  const pages = await getCollection<Page>('pages', '&where[_status][equals]=published')
+  return pages
+    .filter((page) => page.slug !== 'home')
+    .map((page) => ({ params: { slug: page.slug }, props: { page } }))
+}
+
+const { page } = Astro.props
+---
+
+<Base seo={page.seo as never} pageTitle={page.title}>
+  <SectionRenderer sections={page.sections} />
+</Base>

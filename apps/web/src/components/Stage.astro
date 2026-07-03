@@ -1,0 +1,169 @@
+---
+import { getEggData, getGlobal } from '../lib/payload'
+import Egg from './Egg.astro'
+
+interface StageData {
+  stage?: {
+    eyebrow?: string
+    headline?: string
+    subline?: string
+    badges?: { label: string }[]
+    scrollHint?: string
+  }
+}
+
+const { stage } = await getGlobal<StageData>('header')
+const { total: eggTotal } = await getEggData()
+
+const chipColors = ['var(--mint)', 'var(--cream)', 'var(--rosa)']
+const chipTilts = ['-1.2deg', '0.8deg', '-0.6deg']
+const words = (stage?.headline ?? '')
+  .split('.')
+  .map((word) => word.trim())
+  .filter(Boolean)
+  .map((word) => `${word}.`)
+---
+
+<section class="stage" id="top">
+  <div class="stage__spiral" aria-hidden="true">
+    <div>
+      <svg viewBox="-500 -500 1000 1000"><path data-spiralpath d="" fill="none" stroke="var(--spirale)" stroke-width="1.2"></path></svg>
+    </div>
+  </div>
+
+  <Egg name="karotte" size={82} bg="var(--pfirsich)" pos="left:4%;top:13%;--tilt:-8deg" anim="tzBob 5.2s ease-in-out infinite" />
+  <Egg name="kuerbis" size={88} bg="var(--cream)" pos="right:5%;top:15%" anim="tzSway 6s ease-in-out infinite 0.3s" />
+  <Egg name="beeren" size={60} bg="var(--flieder)" pos="left:19%;top:79%" anim="tzDriftX 7s ease-in-out infinite 0.5s" />
+  <Egg name="spargel" size={62} bg="var(--blau)" pos="left:3.5%;top:56%" anim="tzFloatSpin 6.5s ease-in-out infinite 0.9s" />
+  <Egg name="pilz" size={70} bg="var(--sand)" pos="right:5%;top:56%" anim="tzPulse 4.6s ease-in-out infinite 1.8s" />
+  <Egg name="knoblauch" size={54} bg="var(--kraut)" pos="right:20%;top:82%" anim="tzBreath 5.4s ease-in-out infinite 1.6s" />
+
+  <div class="stage__content">
+    {stage?.eyebrow && <div class="stage__eyebrow">{stage.eyebrow}</div>}
+    <h1>
+      {
+        words.map((word, index) => (
+          <>
+            <span style={`background:${chipColors[index % 3]};transform:rotate(${chipTilts[index % 3]})${index ? ';margin-top:8px' : ''}`}>{word}</span>
+            <br />
+          </>
+        ))
+      }
+    </h1>
+    {stage?.subline && <p class="stage__subline">{stage.subline}</p>}
+    {
+      stage?.badges?.length ? (
+        <div class="stage__badges">
+          {stage.badges.map((badge) => (
+            <span>{badge.label}</span>
+          ))}
+        </div>
+      ) : null
+    }
+    {
+      stage?.scrollHint && (
+        <p class="stage__hint">
+          Psst: <span data-egg-count>0</span> von {eggTotal} Zutaten entdeckt — {stage.scrollHint}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .stage {
+    position: relative;
+    min-height: 88vh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 76px 34px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .stage__spiral {
+    position: absolute;
+    right: -18%;
+    top: -22%;
+    width: 70vw;
+    max-width: 1000px;
+    aspect-ratio: 1;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .stage__spiral > div {
+    width: 100%;
+    height: 100%;
+    animation: tzSpiralZoom 120s linear infinite;
+    will-change: transform;
+  }
+
+  .stage__spiral svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .stage__content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+  }
+
+  .stage__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 21px;
+  }
+
+  .stage h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .stage h1 span {
+    display: inline-block;
+    border-radius: 12px;
+    padding: 0 14px;
+  }
+
+  .stage__subline {
+    margin: 34px auto 0;
+    max-width: 520px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-70);
+  }
+
+  .stage__badges {
+    display: flex;
+    justify-content: center;
+    gap: 13px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+  }
+
+  .stage__badges span {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 18px;
+  }
+
+  .stage__hint {
+    margin: 42px 0 0;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    color: var(--ink-45);
+  }
+</style>
