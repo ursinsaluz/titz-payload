@@ -31,8 +31,8 @@ yarn-error.log*
 .env
 .env*.local
 
-# payload local media
-media/
+# payload local media (uploads landen in R2; lokal nur Fallback)
+apps/cms/media/
 
 # OpenNext / Cloudflare
 .open-next/
