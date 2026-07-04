@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "titz-web",
+  "name": "titz-payload-web",
   "compatibility_date": "2025-08-15",
   "assets": {
     "directory": "./dist",
