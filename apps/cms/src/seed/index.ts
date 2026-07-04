@@ -76,7 +76,7 @@ async function run() {
     await wipe(payload, collection)
   }
   // Auf frischer DB existieren die Globals noch nicht / scheitern an Pflichtfeldern — dann gibt es auch nichts abzuräumen.
-  const clearGlobal = async (slug: string, data: Record<string, unknown>) => {
+  const clearGlobal = async (slug: string, data: any) => {
     try {
       await payload.updateGlobal({ slug: slug as never, data })
     } catch {
@@ -269,7 +269,7 @@ async function run() {
   ]
   order = 0
   for (const station of stationen) {
-    await payload.create({ collection: 'stationen', data: { ...station, order: order++ } })
+    await payload.create({ collection: 'stationen', data: { ...station, order: order++ } as any })
   }
   payload.logger.info(`${stationen.length} Stationen angelegt`)
 
