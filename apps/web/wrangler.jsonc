@@ -1,7 +1,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "titz-payload-web",
-  "compatibility_date": "2025-08-15",
+  "compatibility_date": "2026-07-04",
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "titz.cooking",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "PAYLOAD_URL": "https://admin.titz.cooking"
+  },
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page"

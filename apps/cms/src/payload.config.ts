@@ -65,7 +65,7 @@ export default buildConfig({
   collections: [Users, Media, Icons, Pages, News, Angebote, SignatureDishes, Stationen],
   globals: [Header, Footer, SiteSettings],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: (globalThis as any).PAYLOAD_SECRET || cloudflare.env.PAYLOAD_SECRET || process.env.PAYLOAD_SECRET || 'ignore-secret-during-build',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
