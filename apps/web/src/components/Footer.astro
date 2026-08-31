@@ -1,17 +1,9 @@
 ---
 import { getEggData, getGlobal } from '../lib/payload'
-import { hrefFor, type NavLink } from '../lib/links'
+import { hrefFor } from '../lib/links'
 
-interface FooterGlobal {
-  contact?: { address?: string; phone?: string; email?: string }
-  socials?: { label: string; url: string }[]
-  legalLinks?: NavLink[]
-  copyright?: string
-  location?: string
-}
-
-const footer = await getGlobal<FooterGlobal>('footer')
-const header = await getGlobal<{ logo?: { text?: string } }>('header')
+const footer = await getGlobal('footer')
+const header = await getGlobal('header')
 const { total: eggTotal } = await getEggData()
 const locationLine = footer.contact?.address?.split('\n').pop()
 ---

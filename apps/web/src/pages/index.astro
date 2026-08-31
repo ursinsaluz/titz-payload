@@ -4,16 +4,10 @@ import Stage from '../components/Stage.astro'
 import SectionRenderer from '../components/SectionRenderer.astro'
 import { getPageBySlug } from '../lib/payload'
 
-interface Page {
-  title: string
-  sections?: ({ blockType: string } & Record<string, unknown>)[]
-  seo?: Record<string, unknown>
-}
-
-const page = await getPageBySlug<Page>('home')
+const page = await getPageBySlug('home')
 ---
 
-<Base seo={page?.seo as never}>
+<Base seo={page?.seo}>
   <Stage />
   <SectionRenderer sections={page?.sections} />
 </Base>

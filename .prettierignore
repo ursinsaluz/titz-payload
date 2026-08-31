@@ -1,0 +1,19 @@
+# Erzeugt — wer das formatiert, formatiert es beim nächsten Generieren wieder um.
+pnpm-lock.yaml
+apps/cms/cloudflare-env.d.ts
+apps/cms/src/payload-types.ts
+apps/cms/src/migrations/
+apps/cms/src/app/(payload)/admin/importMap.js
+packages/types/src/payload.ts
+
+# Build-Ausgaben
+**/dist/
+**/.next/
+**/.open-next/
+**/.astro/
+**/.wrangler/
+**/playwright-report/
+**/test-results/
+
+# Inhalts-Inventar für den Seed — eine Datenablage, keine Quelle.
+apps/cms/src/seed/content.json

@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "dev": "pnpm --parallel --filter @titz/cms --filter @titz/web dev",
     "dev:cms": "pnpm --filter @titz/cms dev",
     "dev:web": "pnpm --filter @titz/web dev",
@@ -10,9 +11,31 @@
     "deploy:cms": "pnpm --filter @titz/cms deploy",
     "deploy:web": "pnpm --filter @titz/web deploy",
     "seed": "pnpm --filter @titz/cms seed",
-    "generate:types": "pnpm --filter @titz/cms generate:types"
+    "generate:types": "pnpm --filter @titz/cms generate:types",
+    "migrate:status": "pnpm --filter @titz/cms migrate:status",
+    "migrate:status:prod": "pnpm --filter @titz/cms migrate:status:prod",
+    "check": "pnpm --filter @titz/cms exec tsc --noEmit && pnpm --filter @titz/web run check",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "pnpm security:scan && pnpm format:check && pnpm lint && pnpm check && pnpm build && pnpm test",
+    "security:scan": "scripts/secret-scan.sh"
   },
   "engines": {
-    "node": ">=20"
-  }
+    "node": ">=22"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver",
+      "workerd"
+    ]
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1"
+  },
+  "packageManager": "pnpm@10.32.1"
 }

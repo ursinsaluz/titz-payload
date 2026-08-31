@@ -1,0 +1,85 @@
+name: CI
+
+# Cloudflare Workers Builds deployt bei jedem Push auf `main` — ohne vorherige
+# Prüfung. Dieser Workflow läuft davor: Bei einem Pull Request blockiert er den
+# Merge, bei einem direkten Push auf `main` schlägt er zumindest laut Alarm.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Format, Lint, Typen, Build, Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Erst pnpm, dann Node — `cache: pnpm` in setup-node braucht pnpm bereits
+      # im PATH, sonst findet es den Store nicht. Die Version kommt aus
+      # `packageManager` in der Root-package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # --- Statische Analyse: läuft in Sekunden, bricht früh ab ---
+
+      # Das Repo ist öffentlich. GitHubs Push Protection greift beim Push, kennt
+      # aber nur Muster bekannter Anbieter — ein PAYLOAD_SECRET ist bloss 64
+      # Zeichen Hex. Dieser Schritt prüft zusätzlich die eigenen Muster.
+      - name: Zugangsdaten
+        run: pnpm security:scan
+
+      - name: Formatierung
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      # `tsc --noEmit` fürs CMS, `astro check` fürs Frontend. Beide lesen die
+      # Typen aus packages/types — greift das Frontend auf ein CMS-Feld zu, das
+      # umbenannt wurde, fällt es hier auf.
+      - name: Typen
+        run: pnpm check
+
+      # --- Build als Integrationstest ---
+
+      - name: CMS bauen
+        run: pnpm --filter @titz/cms build
+
+      # Astro holt beim Bauen den echten Content über REST, und Zod prüft ihn
+      # (apps/web/src/lib/schemas.ts). Passt die Datenstruktur nicht zum
+      # Frontend, bricht dieser Schritt ab — statt eine leere Seite zu deployen.
+      # PAYLOAD_URL ist optional: ohne Angabe greift der Prod-Standard aus
+      # src/lib/payload.ts.
+      - name: Frontend bauen
+        run: pnpm --filter @titz/web build
+        env:
+          PAYLOAD_URL: ${{ vars.PAYLOAD_URL }}
+
+      # --- Smoke-Tests gegen den fertigen Build ---
+
+      - name: Chromium installieren
+        run: pnpm --filter @titz/web exec playwright install --with-deps chromium
+
+      - name: Smoke-Tests
+        run: pnpm --filter @titz/web test
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7

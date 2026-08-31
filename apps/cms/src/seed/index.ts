@@ -10,61 +10,24 @@ import { fileURLToPath } from 'url'
 import { getPayload, type Payload } from 'payload'
 import config from '@payload-config'
 import { toLexical } from './lexical'
+import { MEDIEN, VEG_TOASTS, type MedienSchluessel } from './inhalte'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const inventory = JSON.parse(fs.readFileSync(path.join(dirname, 'content.json'), 'utf-8'))
-const LIVE = 'https://titz.cooking'
 
-const mediaCache = new Map<string, number>()
+// Der Seed schreibt dutzende Datensätze, und an jedem hängt der Rebuild-Hook.
+// Ohne diese Zeile stiesse ein Seed eine Serie von Frontend-Builds an. Der
+// Rebuild nach dem Seed passiert bewusst von Hand.
+process.env.WEB_DEPLOY_HOOK_URL = ''
 
 /** miniflare's Binding-Proxy akzeptiert keine Node-Buffer — in echte Uint8Array umwandeln. */
 const toUploadData = (buffer: Buffer): Buffer =>
-  new Uint8Array(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)) as unknown as Buffer
-
-async function uploadFromUrl(payload: Payload, src: string, alt: string): Promise<number | null> {
-  const url = src.startsWith('http') ? src : `${LIVE}${src}`
-  if (mediaCache.has(url)) return mediaCache.get(url)!
-  const res = await fetch(url)
-  if (!res.ok) {
-    payload.logger.warn(`Bild nicht ladbar (${res.status}): ${url}`)
-    return null
-  }
-  const buffer = Buffer.from(await res.arrayBuffer())
-  const name = path.basename(new URL(url).pathname)
-  const mimetype = res.headers.get('content-type') ?? 'image/webp'
-  const doc = await payload.create({
-    collection: 'media',
-    data: { alt },
-    file: { data: toUploadData(buffer), name, mimetype, size: buffer.length },
-  })
-  mediaCache.set(url, doc.id as number)
-  return doc.id as number
-}
+  new Uint8Array(
+    buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength),
+  ) as unknown as Buffer
 
 async function wipe(payload: Payload, collection: string) {
   await payload.delete({ collection: collection as never, where: { id: { exists: true } } })
-}
-
-/** Toast-Sprüche pro Gemüse-Icon (aus dem Verspielt-Design). */
-const vegToasts: Record<string, string[]> = {
-  zwiebel: ['Die Zwiebel — das einzige Mise en Place, das zurückweint.', 'Die Roter-Nebel-Zwiebel weint übrigens zurück. In Farben. ✦'],
-  knoblauch: ['Knoblauch: das Fundament jeder guten Küche. Und jedes freien Abends.', 'Anzati-Rotzknoblauch hat der Guide Michelin nie berücksichtigt. Zu Recht. ✦'],
-  tomate: ['Wissen: Die Tomate ist eine Frucht. Weisheit: Sie kommt trotzdem nicht ins Dessert.', 'In einer weit entfernten Galaxie heisst sie Topato. Ja, wirklich. ✦'],
-  kuerbis: ['Der Kürbis bleibt bis Mitternacht — danach fährt er als Kutsche heim.', 'Nicht zu verwechseln mit dem Blähkürbis. Der bläht. ✦'],
-  karotte: ['Karotten sind gut für die Augen. Oder hast du je ein Kaninchen mit Brille gesehen?', 'Die Raum-Karotte schmeckt exakt gleich. Nur weiter weg. ✦'],
-  radieschen: ['Das Radieschen: klein, scharf, ehrlich.'],
-  lauch: ['Der Lauch steht immer gerade. Haltung ist alles.'],
-  beeren: ['Beeren — der Grund, warum der Sommer kurz sein darf.'],
-  kraeuter: ['Kräuter über Fläsch: gepflückt, nicht bestellt.'],
-  spargel: ['Weisser Spargel: schläft unter der Erde und ist trotzdem der Star.'],
-  pilz: ['Pilze — der Wald schickt Vorräte.', 'Schwammgemüse ist KEIN Ersatz. Egal, was die Cantina sagt. ✦'],
-  quitte: ['Die Quitte: zu hart zum Reinbeissen, zu gut zum Weglassen.'],
-  randen: ['Randen färben alles. Vor allem die Meinung.'],
-  kohl: ['Kohl braucht Frost und Geduld. Wie gute Gäste.', 'See-Kohl gibt es nur auf Mon Cala. Wir bleiben beim Bündner. ✦'],
-  baumnuss: ['Baumnüsse: das Dessert wächst am Baum.'],
-  apfel: ['Lageräpfel — Geduld, die man schmeckt.'],
-  birne: ['Die Birne wartet, bis du wegschaust. Dann ist sie reif.'],
-  ananas: ['Die Ananas trägt als Einzige eine Krone. Exzellenz eben. (Ja — botanisch eine Frucht. Kronen kennen keine Schubladen.)'],
 }
 
 async function run() {
@@ -100,38 +63,52 @@ async function run() {
       data: {
         name,
         svg,
-        toasts: (vegToasts[name] ?? []).map((text) => ({ text })),
+        toasts: (VEG_TOASTS[name] ?? []).map((text) => ({ text })),
       },
-      file: { data: toUploadData(buffer), name: file, mimetype: 'image/svg+xml', size: buffer.length },
+      file: {
+        data: toUploadData(buffer),
+        name: file,
+        mimetype: 'image/svg+xml',
+        size: buffer.length,
+      },
     })
     iconIds.set(name, doc.id as number)
   }
-  payload.logger.info(`${iconIds.size} Icons angelegt (${Object.keys(vegToasts).length} mit Toasts)`)
+  payload.logger.info(
+    `${iconIds.size} Icons angelegt (${Object.keys(VEG_TOASTS).length} mit Toasts)`,
+  )
   const icon = (name: string) => iconIds.get(name) ?? null
 
   // --- Media (Bilder von der Live-Site + lokale Assets wie das Instagram-Icon) ---
   await wipe(payload, 'media')
   const mediaDir = path.join(dirname, 'assets/media')
-  const mediaAssets = new Map<string, number>()
-  for (const file of fs.readdirSync(mediaDir)) {
-    const buffer = fs.readFileSync(path.join(mediaDir, file))
-    const name = file.replace(/\.\w+$/, '')
+  const medien = new Map<MedienSchluessel, number>()
+  for (const [schluessel, { datei, alt }] of Object.entries(MEDIEN)) {
+    const buffer = fs.readFileSync(path.join(mediaDir, datei))
     const doc = await payload.create({
       collection: 'media',
-      data: { alt: name.charAt(0).toUpperCase() + name.slice(1) },
+      data: { alt },
       file: {
         data: toUploadData(buffer),
-        name: file,
-        mimetype: file.endsWith('.svg') ? 'image/svg+xml' : 'image/webp',
+        name: datei,
+        mimetype: datei.endsWith('.svg') ? 'image/svg+xml' : 'image/webp',
         size: buffer.length,
       },
     })
-    mediaAssets.set(name, doc.id as number)
+    medien.set(schluessel as MedienSchluessel, doc.id as number)
   }
-  const ogId = await uploadFromUrl(payload, inventory.seo.home.ogImage, 'Sebastian Titz')
-  const newsImage = async (href: string, alt: string) => {
-    const card = inventory.aktuelles.cards.find((c: { link?: { href?: string } }) => c.link?.href === href)
-    return card?.image ? uploadFromUrl(payload, card.image.src, alt) : null
+  payload.logger.info(`${medien.size} Bilder hochgeladen`)
+  const bild = (schluessel: MedienSchluessel) => medien.get(schluessel) ?? null
+  const ogId = bild('portrait')
+
+  /** Welches Bild zu welcher Meldung. Die Presselogos der Originalseite liegen
+      nicht im Repo; das sind eigene Aufnahmen, die redaktionell im Admin
+      ausgetauscht werden können. */
+  const newsBilder: Record<string, MedienSchluessel> = {
+    'https://www.falstaff.com/ch/restaurants/pinot-flaesch': 'pinotTisch',
+    'https://www.youtube.com/watch?v=8Kh9AnolQBA': 'kuecheFinish',
+    'https://www.salz-pfeffer.ch/artikel/mit-leidenschaft-kochen/': 'anrichten',
+    'https://guide.michelin.com/de/de/graubunden/flsch/restaurant/pinot': 'pinotTeller',
   }
 
   // --- News (4 kuratierte Einträge aus dem Verspielt-Design) ---
@@ -168,7 +145,7 @@ async function run() {
         title: item.title,
         date: new Date(item.date).toISOString(),
         excerpt: item.excerpt,
-        image: await newsImage(item.url, item.title),
+        image: newsBilder[item.url] ? bild(newsBilder[item.url]) : null,
         link: { label: 'Mehr lesen', url: item.url },
         _status: 'published',
       },
@@ -204,7 +181,9 @@ async function run() {
       data: {
         title: item.title,
         icon: item.icon,
-        description: toLexical(item.paragraphs.map((text) => ({ type: 'paragraph', text }))) as never,
+        description: toLexical(
+          item.paragraphs.map((text) => ({ type: 'paragraph', text })),
+        ) as never,
         cta: item.cta,
         order: order++,
       },
@@ -218,20 +197,23 @@ async function run() {
       name: 'Milcheis mit Spekulatius',
       tag: 'Signature',
       icon: icon('apfel'),
-      description: 'Winterliche Aromen, technische Finesse: geflämmte Meringue, Apfel und Spekulatius.',
+      description:
+        'Winterliche Aromen, technische Finesse: geflämmte Meringue, Apfel und Spekulatius.',
       videoUrl: 'https://www.youtube.com/watch?v=6t92tOv0Hvk',
     },
     {
       name: 'Heusuppe',
       tag: 'Signature',
       icon: icon('kraeuter'),
-      description: 'Hommage an Stefan Wiesner: der Geschmack von getrocknetem Heu, samtig eingefangen. Natur pur.',
+      description:
+        'Hommage an Stefan Wiesner: der Geschmack von getrocknetem Heu, samtig eingefangen. Natur pur.',
     },
     {
       name: 'Angus Beef Tartare',
       tag: 'Starter',
       icon: icon('randen'),
-      description: 'Eine Hommage an die Erde: das Rohe des Rindes trifft auf die Textur des Selleries.',
+      description:
+        'Eine Hommage an die Erde: das Rohe des Rindes trifft auf die Textur des Selleries.',
     },
     {
       name: 'Kalb mit Schwarzem Trüffel',
@@ -250,19 +232,62 @@ async function run() {
   payload.logger.info(`${dishes.length} Signature Dishes angelegt`)
 
   // --- Stationen (kompakter Lebenslauf aus dem Design) ---
-  const stationen: { group: string; period?: string; title: string; place?: string; description?: string }[] = [
-    { group: 'stationen', period: 'Seit 2025', title: 'Restaurant Pinot', place: 'Fläsch', description: 'Küchenchef & Gastgeber, Klinik Gut — Bib Gourmand, Falstaff Guide 2026' },
-    { group: 'stationen', period: '2019 – 2024', title: 'Restaurant Verve by Sven', place: 'Grand Resort Bad Ragaz', description: 'Küchenchef — 15 GaultMillau-Punkte, 1 Michelin-Stern; Manager of the Quarter 2022' },
-    { group: 'stationen', period: '2015 – 2018', title: 'Hotel Villa Honegg', place: 'Ennetbürgen', description: 'Küchenchef, 12-köpfige Brigade — 14 GaultMillau-Punkte' },
-    { group: 'stationen', period: '2008 – 2015', title: 'Gasthof Rössli', place: 'Escholzmatt', description: 'Mit Natur-Alchemist Stefan Wiesner; Co-Autor «Avantgardistische Naturküche» (2011) — 17 GaultMillau-Punkte, 1 Michelin-Stern' },
-    { group: 'stationen', period: 'Fundament', title: 'Frühe Stationen', description: 'Chef de Partie u.a. bei Jörg Müller (Sylt) und in Schweizer 5-Sterne-Häusern' },
+  const stationen: {
+    group: string
+    period?: string
+    title: string
+    place?: string
+    description?: string
+  }[] = [
+    {
+      group: 'stationen',
+      period: 'Seit 2025',
+      title: 'Restaurant Pinot',
+      place: 'Fläsch',
+      description: 'Küchenchef & Gastgeber, Klinik Gut — Bib Gourmand, Falstaff Guide 2026',
+    },
+    {
+      group: 'stationen',
+      period: '2019 – 2024',
+      title: 'Restaurant Verve by Sven',
+      place: 'Grand Resort Bad Ragaz',
+      description:
+        'Küchenchef — 15 GaultMillau-Punkte, 1 Michelin-Stern; Manager of the Quarter 2022',
+    },
+    {
+      group: 'stationen',
+      period: '2015 – 2018',
+      title: 'Hotel Villa Honegg',
+      place: 'Ennetbürgen',
+      description: 'Küchenchef, 12-köpfige Brigade — 14 GaultMillau-Punkte',
+    },
+    {
+      group: 'stationen',
+      period: '2008 – 2015',
+      title: 'Gasthof Rössli',
+      place: 'Escholzmatt',
+      description:
+        'Mit Natur-Alchemist Stefan Wiesner; Co-Autor «Avantgardistische Naturküche» (2011) — 17 GaultMillau-Punkte, 1 Michelin-Stern',
+    },
+    {
+      group: 'stationen',
+      period: 'Fundament',
+      title: 'Frühe Stationen',
+      description: 'Chef de Partie u.a. bei Jörg Müller (Sylt) und in Schweizer 5-Sterne-Häusern',
+    },
     { group: 'qualifikationen', title: 'Küchenplanung & Workflow' },
     { group: 'qualifikationen', title: 'Menükonzeption Health & Lifestyle' },
     { group: 'qualifikationen', title: 'Avantgardistische Naturküche' },
     { group: 'qualifikationen', title: 'Leadership & Coaching' },
     { group: 'qualifikationen', title: 'Kalkulation & Dienstplanung' },
     { group: 'qualifikationen', title: 'Event-Gastronomie' },
-    { group: 'ausbildung', title: 'Kochlehre', place: 'Restaurant Schneggen', description: 'Klassische französische Basisküche, verfeinert über Stationen in den besten Küchen Europas' },
+    {
+      group: 'ausbildung',
+      title: 'Kochlehre',
+      place: 'Restaurant Schneggen',
+      description:
+        'Klassische französische Basisküche, verfeinert über Stationen in den besten Küchen Europas',
+    },
     { group: 'hobbies', title: 'Familie & Freunde' },
     { group: 'hobbies', title: 'Trailrunning — am liebsten über Fläsch' },
     { group: 'hobbies', title: '…und manchmal eine Galaxie weit, weit entfernt' },
@@ -314,11 +339,17 @@ async function run() {
           type: 'paragraph',
           text: 'In der Klinik Gut im wunderschönen Fläsch leite ich das Restaurant Pinot. Hier konzentrieren wir uns auf das Wesentliche: herausragende Produkte, handwerkliche Perfektion und eine tiefe Verbundenheit mit der Region.',
         },
-        { type: 'paragraph', text: 'Kommen Sie vorbei und erleben Sie ehrliche Küche ohne Kompromisse.' },
+        {
+          type: 'paragraph',
+          text: 'Kommen Sie vorbei und erleben Sie ehrliche Küche ohne Kompromisse.',
+        },
       ]) as never,
       infos: [
         { label: 'Adresse', value: 'Restaurant PINOT\nSteigstrasse 14, 7306 Fläsch' },
-        { label: 'Öffnungszeiten', value: 'Täglich 09:00 – 18:00\nDonnerstags Abendessen ab 18:00' },
+        {
+          label: 'Öffnungszeiten',
+          value: 'Täglich 09:00 – 18:00\nDonnerstags Abendessen ab 18:00',
+        },
         { label: 'Ausgezeichnet', value: 'Bib Gourmand — «Simply brilliant»\nFalstaff Guide 2026' },
       ],
       cta: { label: 'Tisch reservieren', url: 'https://www.restaurant-pinot.ch/' },
@@ -351,7 +382,11 @@ async function run() {
       title: 'Home',
       slug: 'home',
       sections: homeSections as never,
-      seo: { title: inventory.seo.home.title, description: inventory.seo.home.description, image: ogId },
+      seo: {
+        title: inventory.seo.home.title,
+        description: inventory.seo.home.description,
+        image: ogId,
+      },
       _status: 'published',
     },
   })
@@ -436,7 +471,11 @@ async function run() {
         email: 'info@titz.cooking',
       },
       socials: [
-        { icon: mediaAssets.get('instagram') ?? null, label: '@titzsebastian', url: 'https://www.instagram.com/titzsebastian/' },
+        {
+          icon: bild('instagram'),
+          label: '@titzsebastian',
+          url: 'https://www.instagram.com/titzsebastian/',
+        },
       ],
       legalLinks: [
         { label: 'Impressum', linkType: 'page', page: impressumPage.id },

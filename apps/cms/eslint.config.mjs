@@ -1,24 +1,24 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-import { FlatCompat } from '@eslint/eslintrc'
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
+import nextTypescript from 'eslint-config-next/typescript'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  resolvePluginsRelativeTo: __dirname,
-})
-
+/**
+ * Flache Konfiguration ohne `FlatCompat`.
+ *
+ * `eslint-config-next` liefert seit Version 16 selbst flache Configs; der
+ * Umweg über `FlatCompat` warf damit einen Zirkularitätsfehler beim
+ * Serialisieren. `next lint` gibt es in Next 16 ausserdem nicht mehr — das
+ * `lint`-Skript ruft jetzt direkt `eslint` auf.
+ */
 const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  ...nextCoreWebVitals,
+  ...nextTypescript,
   {
     rules: {
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         {
           vars: 'all',
           args: 'after-used',
@@ -32,7 +32,16 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    // Erzeugtes und Gebautes prüft niemand von Hand nach.
+    ignores: [
+      '.next/',
+      '.open-next/',
+      '.wrangler/',
+      'cloudflare-env.d.ts',
+      'src/payload-types.ts',
+      'src/migrations/',
+      'src/app/(payload)/admin/importMap.js',
+    ],
   },
 ]
 

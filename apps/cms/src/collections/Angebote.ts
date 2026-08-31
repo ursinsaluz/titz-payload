@@ -22,10 +22,7 @@ export const Angebote: CollectionConfig = {
       name: 'features',
       type: 'array',
       label: 'Leistungen / Merkmale',
-      fields: [
-        iconSelect(),
-        { name: 'text', type: 'text', label: 'Text', required: true },
-      ],
+      fields: [iconSelect(), { name: 'text', type: 'text', label: 'Text', required: true }],
     },
     { name: 'image', type: 'upload', relationTo: 'media', label: 'Bild' },
     {

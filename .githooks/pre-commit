@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# Wird über `core.hooksPath` gefunden — das setzt das `prepare`-Skript beim
+# `pnpm install`. Absichtlich ohne husky: ein Hook, der nur ein Shell-Skript
+# aufruft, braucht keine Abhängigkeit.
+exec scripts/secret-scan.sh --staged

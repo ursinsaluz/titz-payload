@@ -29,7 +29,12 @@ function convertNode(node: ContentNode): Record<string, unknown> | null {
       return { ...base, type: 'paragraph', children: [textNode(node.text ?? '')] }
     case 'heading': {
       const level = Number(node.level ?? 2)
-      return { ...base, type: 'heading', tag: `h${Math.min(Math.max(level, 1), 6)}`, children: [textNode(node.text ?? '')] }
+      return {
+        ...base,
+        type: 'heading',
+        tag: `h${Math.min(Math.max(level, 1), 6)}`,
+        children: [textNode(node.text ?? '')],
+      }
     }
     case 'list':
       return {

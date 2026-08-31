@@ -1,4 +1,5 @@
 ---
+import type { Page } from '@titz/types'
 import Philosophie from './sections/Philosophie.astro'
 import Angebote from './sections/Angebote.astro'
 import News from './sections/News.astro'
@@ -8,25 +9,41 @@ import Visit from './sections/Visit.astro'
 import RichTextSection from './sections/RichTextSection.astro'
 
 interface Props {
-  sections: ({ blockType: string } & Record<string, unknown>)[] | null | undefined
+  sections: Page['sections']
 }
 
 const { sections } = Astro.props
-
-const components: Record<string, unknown> = {
-  philosophie: Philosophie,
-  angeboteSection: Angebote,
-  newsSection: News,
-  signatureDishesSection: SignatureDishes,
-  stationenSection: Stationen,
-  visitSection: Visit,
-  richTextSection: RichTextSection,
-}
 ---
 
 {
+  /*
+  Bewusst ein `switch` und keine Zuordnungstabelle: Die Blöcke sind über
+  `blockType` unterschieden, und nur so bekommt jede Komponente ihren eigenen
+  Block-Typ. Die Tabelle vorher brauchte ein `as never` an der Indizierung —
+  damit war jede Sektion untypisiert, und ein umbenanntes Feld fiel erst im
+  Browser auf. Ein neuer Block im CMS bricht hier jetzt den Typcheck, bis er
+  einen Fall bekommt.
+*/
+}
+{
   sections?.map((section) => {
-    const Component = components[section.blockType] as never
-    return Component ? <Component block={section} /> : null
+    switch (section.blockType) {
+      case 'philosophie':
+        return <Philosophie block={section} />
+      case 'angeboteSection':
+        return <Angebote block={section} />
+      case 'newsSection':
+        return <News block={section} />
+      case 'signatureDishesSection':
+        return <SignatureDishes block={section} />
+      case 'stationenSection':
+        return <Stationen block={section} />
+      case 'visitSection':
+        return <Visit block={section} />
+      case 'richTextSection':
+        return <RichTextSection block={section} />
+      default:
+        return null
+    }
   })
 }

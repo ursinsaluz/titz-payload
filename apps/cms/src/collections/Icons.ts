@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { uploadCacheHeaders } from '../uploads/cacheHeaders'
+
 /**
  * SVG-Icon-Bibliothek. Jedes Icon ist ein Asset (SVG-Upload) und wird von
  * anderen Elementen per Relationship-Dropdown referenziert.
@@ -48,5 +50,6 @@ export const Icons: CollectionConfig = {
     mimeTypes: ['image/svg+xml'],
     crop: false,
     focalPoint: false,
+    modifyResponseHeaders: uploadCacheHeaders,
   },
 }

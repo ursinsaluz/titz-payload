@@ -1,27 +1,14 @@
 ---
-import { getCollection, mediaUrl, type Media } from '../../lib/payload'
+import { getCollection, mediaUrl } from '../../lib/payload'
 import Egg from '../Egg.astro'
-
-interface NewsItem {
-  id: number
-  title: string
-  date: string
-  excerpt: string
-  image?: Media | number | null
-  link?: { label?: string; url?: string }
-}
+import type { Block } from '../../lib/blocks'
 
 interface Props {
-  block: {
-    anchor?: string
-    eyebrow?: string
-    heading: string
-    limit?: number
-  }
+  block: Block<'newsSection'>
 }
 
 const { block } = Astro.props
-const items = await getCollection<NewsItem>('news', `&sort=-date&where[_status][equals]=published`)
+const items = await getCollection('news', `&sort=-date&where[_status][equals]=published`)
 const visible = items.slice(0, block.limit ?? 4)
 
 const formatDate = (iso: string) => {
@@ -33,7 +20,13 @@ const tilts = ['-0.3deg', '0.3deg']
 ---
 
 <section class="news" id={block.anchor ?? 'aktuelles'}>
-  <Egg name="birne" size={56} bg="var(--cream)" pos="left:8%;top:45%" anim="tzWobble 6.8s ease-in-out infinite 0.8s" />
+  <Egg
+    name="birne"
+    size={56}
+    bg="var(--cream)"
+    pos="left:8%;top:45%"
+    anim="tzWobble 6.8s ease-in-out infinite 0.8s"
+  />
   <div class="news__inner">
     <div class="section-head" style="margin-bottom:42px">
       {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
@@ -45,7 +38,13 @@ const tilts = ['-0.3deg', '0.3deg']
           const image = mediaUrl(item.image)
           return (
             <article class="news__card" style={`--card-tilt:${tilts[index % 2]}`}>
-              {image && <img src={image} alt={typeof item.image === 'object' ? (item.image?.alt ?? '') : ''} loading="lazy" />}
+              {image && (
+                <img
+                  src={image}
+                  alt={typeof item.image === 'object' ? (item.image?.alt ?? '') : ''}
+                  loading="lazy"
+                />
+              )}
               <div class="news__body">
                 <div class="news__date">{formatDate(item.date)}</div>
                 {item.link?.url ? (

@@ -2,17 +2,7 @@
 import { getEggData, getGlobal } from '../lib/payload'
 import Egg from './Egg.astro'
 
-interface StageData {
-  stage?: {
-    eyebrow?: string
-    headline?: string
-    subline?: string
-    badges?: { label: string }[]
-    scrollHint?: string
-  }
-}
-
-const { stage } = await getGlobal<StageData>('header')
+const { stage } = await getGlobal('header')
 const { total: eggTotal } = await getEggData()
 
 const chipColors = ['var(--mint)', 'var(--cream)', 'var(--rosa)']
@@ -27,16 +17,55 @@ const words = (stage?.headline ?? '')
 <section class="stage" id="top">
   <div class="stage__spiral" aria-hidden="true">
     <div>
-      <svg viewBox="-500 -500 1000 1000"><path data-spiralpath d="" fill="none" stroke="var(--spirale)" stroke-width="1.2"></path></svg>
+      <svg viewBox="-500 -500 1000 1000"
+        ><path data-spiralpath d="" fill="none" stroke="var(--spirale)" stroke-width="1.2"
+        ></path></svg
+      >
     </div>
   </div>
 
-  <Egg name="karotte" size={82} bg="var(--pfirsich)" pos="left:4%;top:13%;--tilt:-8deg" anim="tzBob 5.2s ease-in-out infinite" />
-  <Egg name="kuerbis" size={88} bg="var(--cream)" pos="right:5%;top:15%" anim="tzSway 6s ease-in-out infinite 0.3s" />
-  <Egg name="beeren" size={60} bg="var(--flieder)" pos="left:19%;top:79%" anim="tzDriftX 7s ease-in-out infinite 0.5s" />
-  <Egg name="spargel" size={62} bg="var(--blau)" pos="left:3.5%;top:56%" anim="tzFloatSpin 6.5s ease-in-out infinite 0.9s" />
-  <Egg name="pilz" size={70} bg="var(--sand)" pos="right:5%;top:56%" anim="tzPulse 4.6s ease-in-out infinite 1.8s" />
-  <Egg name="knoblauch" size={54} bg="var(--kraut)" pos="right:20%;top:82%" anim="tzBreath 5.4s ease-in-out infinite 1.6s" />
+  <Egg
+    name="karotte"
+    size={82}
+    bg="var(--pfirsich)"
+    pos="left:4%;top:13%;--tilt:-8deg"
+    anim="tzBob 5.2s ease-in-out infinite"
+  />
+  <Egg
+    name="kuerbis"
+    size={88}
+    bg="var(--cream)"
+    pos="right:5%;top:15%"
+    anim="tzSway 6s ease-in-out infinite 0.3s"
+  />
+  <Egg
+    name="beeren"
+    size={60}
+    bg="var(--flieder)"
+    pos="left:19%;top:79%"
+    anim="tzDriftX 7s ease-in-out infinite 0.5s"
+  />
+  <Egg
+    name="spargel"
+    size={62}
+    bg="var(--blau)"
+    pos="left:3.5%;top:56%"
+    anim="tzFloatSpin 6.5s ease-in-out infinite 0.9s"
+  />
+  <Egg
+    name="pilz"
+    size={70}
+    bg="var(--sand)"
+    pos="right:5%;top:56%"
+    anim="tzPulse 4.6s ease-in-out infinite 1.8s"
+  />
+  <Egg
+    name="knoblauch"
+    size={54}
+    bg="var(--kraut)"
+    pos="right:20%;top:82%"
+    anim="tzBreath 5.4s ease-in-out infinite 1.6s"
+  />
 
   <div class="stage__content">
     {stage?.eyebrow && <div class="stage__eyebrow">{stage.eyebrow}</div>}
@@ -44,7 +73,11 @@ const words = (stage?.headline ?? '')
       {
         words.map((word, index) => (
           <>
-            <span style={`background:${chipColors[index % 3]};transform:rotate(${chipTilts[index % 3]})${index ? ';margin-top:8px' : ''}`}>{word}</span>
+            <span
+              style={`background:${chipColors[index % 3]};transform:rotate(${chipTilts[index % 3]})${index ? ';margin-top:8px' : ''}`}
+            >
+              {word}
+            </span>
             <br />
           </>
         ))

@@ -15,6 +15,36 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS",
   },
+
+  // Ohne das behält Cloudflare nichts. Die Konfiguration schreibt einen eigenen
+  // Logger (`cloudflareLogger` in src/payload.config.ts), der in Produktion
+  // strukturiertes JSON ausgibt — und `rebuildWeb.ts` meldet dort, wenn der
+  // Deploy-Hook fehlschlägt. Mit abgeschalteten Logs wäre genau diese Meldung
+  // unsichtbar, und eine Änderung würde einfach nicht live gehen.
+  //
+  // Gehört in diese Datei und nicht bloss ins Dashboard: `wrangler deploy`
+  // schreibt die Worker-Einstellungen von hier, ein dort gesetzter Schalter
+  // wäre beim nächsten Deploy wieder weg.
+  //
+  // Der äussere Schalter steht auf `false`, die einzelnen darunter auf `true` —
+  // dieselbe Form wie in `alvier-payload`, wo sie sich bewährt hat: Die
+  // spezifischen Angaben für Logs und Traces haben Vorrang.
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true,
+    },
+    "traces": {
+      "enabled": true,
+      "persist": true,
+      "head_sampling_rate": 1,
+    },
+  },
+
   "d1_databases": [
     {
       "binding": "D1",
@@ -33,9 +63,10 @@
   "r2_buckets": [
     {
       "binding": "R2",
-      "bucket_name": "titz-payload-media","preview_bucket_name": "titz-payload-media",
+      "bucket_name": "titz-payload-media",
+      "preview_bucket_name": "titz-payload-media",
     },
-  
+
     // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
     // {
     //   "binding": "NEXT_INC_CACHE_R2_BUCKET",

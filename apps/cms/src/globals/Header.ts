@@ -47,10 +47,7 @@ export const Header: GlobalConfig = {
           name: 'badges',
           type: 'array',
           label: 'Badges (z.B. Michelin-Stern, GaultMillau)',
-          fields: [
-            iconSelect(),
-            { name: 'label', type: 'text', label: 'Text', required: true },
-          ],
+          fields: [iconSelect(), { name: 'label', type: 'text', label: 'Text', required: true }],
         },
         { name: 'image', type: 'upload', relationTo: 'media', label: 'Hintergrundbild / Poster' },
         { name: 'videoUrl', type: 'text', label: 'Hintergrund-Video-URL (optional)' },

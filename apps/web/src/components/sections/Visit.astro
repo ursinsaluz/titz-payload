@@ -1,24 +1,23 @@
 ---
 import { lexicalToHtml } from '../../lib/lexical'
 import Egg from '../Egg.astro'
+import type { Block } from '../../lib/blocks'
 
 interface Props {
-  block: {
-    anchor?: string
-    eyebrow?: string
-    heading: string
-    body?: unknown
-    infos?: { label: string; value: string; url?: string }[]
-    cta?: { label?: string; url?: string }
-    secondaryCta?: { label?: string; url?: string }
-  }
+  block: Block<'visitSection'>
 }
 
 const { block } = Astro.props
 ---
 
 <section class="pinot" id={block.anchor ?? 'pinot'}>
-  <Egg name="lauch" size={56} bg="var(--mint)" pos="left:3.5%;bottom:64px;transform-origin:50% 100%" anim="tzStretch 5.8s ease-in-out infinite 0.4s" />
+  <Egg
+    name="lauch"
+    size={56}
+    bg="var(--mint)"
+    pos="left:3.5%;bottom:64px;transform-origin:50% 100%"
+    anim="tzStretch 5.8s ease-in-out infinite 0.4s"
+  />
   <div class="container pinot__panel">
     <Egg name="quitte" size={44} bg="transparent" pos="right:30px;top:28px" />
     <div class="pinot__grid">
@@ -29,7 +28,12 @@ const { block } = Astro.props
         <div class="pinot__ctas">
           {
             block.cta?.label && (
-              <a class="pill pill--green" href={block.cta.url ?? '#'} target={block.cta.url?.startsWith('http') ? '_blank' : undefined} rel="noopener">
+              <a
+                class="pill pill--green"
+                href={block.cta.url ?? '#'}
+                target={block.cta.url?.startsWith('http') ? '_blank' : undefined}
+                rel="noopener"
+              >
                 {block.cta.label}
               </a>
             )
@@ -49,7 +53,9 @@ const { block } = Astro.props
             {block.infos.map((info) => (
               <div>
                 <div class="pinot__info-label">{info.label}</div>
-                <div class="pinot__info-value">{info.url ? <a href={info.url}>{info.value}</a> : info.value}</div>
+                <div class="pinot__info-value">
+                  {info.url ? <a href={info.url}>{info.value}</a> : info.value}
+                </div>
               </div>
             ))}
           </div>
