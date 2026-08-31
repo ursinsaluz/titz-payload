@@ -1,32 +1,14 @@
-# titz-payload — Project Context
+# GEMINI.md
 
-titz.cooking Variante mit Payload CMS 3.0 und Next.js. Deployed auf Cloudflare.
-Experimentelles Projekt parallel zu `titz-emdash`.
+Die verbindlichen Anweisungen für dieses Repo stehen in
+**[AGENTS.md](AGENTS.md)**: Sprache, die sieben Fallen des Projekts, Typen als
+Absicherung, Tests, Stil, Deployen.
 
-## Tech Stack
-- **Framework:** Next.js (App Router)
-- **CMS:** Payload CMS 3.0
-- **Hosting:** Cloudflare
-- **DB:** Cloudflare D1 (via Payload Cloudflare adapter)
+Ergänzend: [README.md](README.md) für Aufbau und Befehle,
+[ARCHITECTURE.md](ARCHITECTURE.md) für die Entscheidungen,
+[DESIGN.md](DESIGN.md) für die Designsprache.
 
-## Struktur
-- `src/app/` — Next.js App Router pages
-- `src/collections/` — Payload Collection definitions
-- `src/migrations/` — DB Migrations
-- `payload.config.ts` — Payload Konfiguration
-- `payload-types.ts` — Generierte Typen (nicht manuell editieren)
-
-## Commands
-```bash
-npm run dev       # Dev server
-npm run generate:types  # Payload Typen regenerieren
-npm run payload migrate  # Migrationen ausführen
-```
-
-## Hinweis
-Dieses Projekt ist ein Experiment / Vergleich zu `titz-emdash` (EmDash Stack).
-Payload CMS vs. EmDash CMS — beide auf Cloudflare.
-
-## Entwicklungsphasen (Referenz)
-Für neue Features: `/vision` → `/solution-design` → `/mvp-plan` → `/go-live`
-Detailliertes Framework in `~/.gemini/GEMINI.md`.
+Diese Datei enthielt früher eine eigene, kürzere Projektbeschreibung. Sie war
+seit dem Umbau zum Monorepo falsch — sie sprach von einer einzelnen Next.js-App
+mit `src/app/` im Wurzelverzeichnis und von `npm run dev`. Statt sie parallel zu
+pflegen, verweist sie jetzt auf die eine Quelle.

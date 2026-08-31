@@ -2,33 +2,26 @@
 import { getCollection } from '../../lib/payload'
 import IconCircle from '../IconCircle.astro'
 import Egg from '../Egg.astro'
-
-interface Dish {
-  id: number
-  name: string
-  tag?: string
-  icon?: unknown
-  description?: string
-  videoUrl?: string
-}
+import type { Block } from '../../lib/blocks'
 
 interface Props {
-  block: {
-    anchor?: string
-    eyebrow?: string
-    heading: string
-    intro?: string
-  }
+  block: Block<'signatureDishesSection'>
 }
 
 const { block } = Astro.props
-const dishes = await getCollection<Dish>('signature-dishes', '&sort=order')
+const dishes = await getCollection('signature-dishes', '&sort=order')
 const cardColors = ['var(--cream)', 'var(--kraut)', 'var(--rosa)', 'var(--sand)']
 const cardTilts = ['-0.6deg', '0.6deg', '-0.6deg', '0.6deg']
 ---
 
 <section class="dishes" id={block.anchor ?? 'dishes'}>
-  <Egg name="radieschen" size={58} bg="var(--rosa)" pos="left:5%;top:96px" anim="tzHop 5s ease-in-out infinite" />
+  <Egg
+    name="radieschen"
+    size={58}
+    bg="var(--rosa)"
+    pos="left:5%;top:96px"
+    anim="tzHop 5s ease-in-out infinite"
+  />
   <div class="container">
     <div class="section-head">
       {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
@@ -43,9 +36,17 @@ const cardTilts = ['-0.6deg', '0.6deg', '-0.6deg', '0.6deg']
             class="dishes__card"
             style={`background:${cardColors[index % 4]};--card-tilt:${cardTilts[index % 4]}`}
           >
-            {dish.icon ? <IconCircle icon={dish.icon as never} size={55} /> : null}
+            {dish.icon ? <IconCircle icon={dish.icon} size={55} /> : null}
             {dish.tag && <div class="dishes__tag">{dish.tag}</div>}
-            <h3>{dish.videoUrl ? <a href={dish.videoUrl} target="_blank" rel="noopener">{dish.name}</a> : dish.name}</h3>
+            <h3>
+              {dish.videoUrl ? (
+                <a href={dish.videoUrl} target="_blank" rel="noopener">
+                  {dish.name}
+                </a>
+              ) : (
+                dish.name
+              )}
+            </h3>
             {dish.description && <p>{dish.description}</p>}
           </article>
         ))

@@ -1,38 +1,23 @@
 ---
+import type { Angebote } from '@titz/types'
 import { getCollection } from '../../lib/payload'
 import { lexicalToHtml } from '../../lib/lexical'
 import IconCircle from '../IconCircle.astro'
 import Egg from '../Egg.astro'
-
-interface Angebot {
-  id: number
-  title: string
-  eyebrow?: string
-  icon?: unknown
-  description?: unknown
-  image?: unknown
-  cta?: { label?: string; url?: string }
-  order?: number
-}
+import type { Block } from '../../lib/blocks'
 
 interface Props {
-  block: {
-    anchor?: string
-    eyebrow?: string
-    heading: string
-    intro?: string
-    angebote?: (Angebot | number)[] | null
-  }
+  block: Block<'angeboteSection'>
 }
 
 const { block } = Astro.props
 
-let angebote: Angebot[]
-const selected = (block.angebote ?? []).filter((a): a is Angebot => typeof a === 'object')
+let angebote: Angebote[]
+const selected = (block.angebote ?? []).filter((a): a is Angebote => typeof a === 'object')
 if (selected.length) {
   angebote = selected
 } else {
-  angebote = await getCollection<Angebot>('angebote', '&sort=order')
+  angebote = await getCollection('angebote', '&sort=order')
 }
 
 const cardColors = ['var(--blau)', 'var(--pfirsich)', 'var(--kraut)', 'var(--flieder)']
@@ -40,14 +25,23 @@ const cardTilts = ['-0.4deg', '0.4deg', '-0.4deg', '0.4deg']
 ---
 
 <section class="angebote" id={block.anchor ?? 'angebote'}>
-  <Egg name="apfel" size={60} bg="var(--kraut)" pos="right:4.5%;top:80px;transform-origin:50% -30%" anim="tzSwing 4.4s ease-in-out infinite" />
+  <Egg
+    name="apfel"
+    size={60}
+    bg="var(--kraut)"
+    pos="right:4.5%;top:80px;transform-origin:50% -30%"
+    anim="tzSwing 4.4s ease-in-out infinite"
+  />
   <div class="container">
     <div class="section-head">
       {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
       <h2>{block.heading}</h2>
       {block.intro && <p class="angebote__intro">{block.intro}</p>}
     </div>
-    <div class="angebote__grid" style={`grid-template-columns:repeat(${Math.min(angebote.length, 2)},1fr)`}>
+    <div
+      class="angebote__grid"
+      style={`grid-template-columns:repeat(${Math.min(angebote.length, 2)},1fr)`}
+    >
       {
         angebote.map((angebot, index) => (
           <article
@@ -55,16 +49,16 @@ const cardTilts = ['-0.4deg', '0.4deg', '-0.4deg', '0.4deg']
             class="angebote__card"
             style={`background:${cardColors[index % 4]};--card-tilt:${cardTilts[index % 4]}`}
           >
-            {angebot.icon ? <IconCircle icon={angebot.icon as never} size={60} /> : null}
+            {angebot.icon ? <IconCircle icon={angebot.icon} size={60} /> : null}
             <h3>{angebot.title}</h3>
-            {angebot.description ? <div class="angebote__body" set:html={lexicalToHtml(angebot.description)} /> : null}
-            {
-              angebot.cta?.label && (
-                <a class="pill pill--dark" href={angebot.cta.url ?? '#'}>
-                  {angebot.cta.label}
-                </a>
-              )
-            }
+            {angebot.description ? (
+              <div class="angebote__body" set:html={lexicalToHtml(angebot.description)} />
+            ) : null}
+            {angebot.cta?.label && (
+              <a class="pill pill--dark" href={angebot.cta.url ?? '#'}>
+                {angebot.cta.label}
+              </a>
+            )}
           </article>
         ))
       }

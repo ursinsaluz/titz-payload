@@ -1,119 +1,83 @@
-# Payload Cloudflare Template
+# CMS
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1)
+Payload 3 auf Next.js 16, über OpenNext als Cloudflare Worker
+`titz-payload-admin` auf `admin.titz.cooking`. Inhalt in D1
+`titz-payload-site`, Dateien in R2 `titz-payload-media`.
 
-**This can only be deployed on Paid Workers right now due to size limits.** This template comes configured with the bare minimum to get started on anything you need.
+Die verbindlichen Anweisungen stehen eine Ebene höher:
+[AGENTS.md](../../AGENTS.md). Warum es so gebaut ist:
+[ARCHITECTURE.md](../../ARCHITECTURE.md).
 
-## Quick start
-
-This template can be deployed directly to Cloudflare Workers by clicking the button to take you to the setup screen.
-
-From there you can connect your code to a git provider such Github or Gitlab, name your Workers, D1 Database and R2 Bucket as well as attach any additional environment variables or services you need.
-
-## Quick Start - local setup
-
-To spin up this template locally, follow these steps:
-
-### Clone
-
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. Cloudflare will connect your app to a git provider such as Github and you can access your code from there.
-
-### Local Development
-
-## How it works
-
-Out of the box, using [`Wrangler`](https://developers.cloudflare.com/workers/wrangler/) will automatically create local bindings for you to connect to the remote services and it can even create a local mock of the services you're using with Cloudflare.
-
-We've pre-configured Payload for you with the following:
-
-### Collections
-
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
-
-- #### Users (Authentication)
-
-  Users are auth-enabled collections that have access to the admin panel.
-
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
-
-- #### Media
-
-  This is the uploads enabled collection.
-
-### Image Storage (R2)
-
-Images will be served from an R2 bucket which you can then further configure to use a CDN to serve for your frontend directly.
-
-### D1 Database
-
-The Worker will have direct access to a D1 SQLite database which Wrangler can connect locally to, just note that you won't have a connection string as you would typically with other providers.
-
-You can enable read replicas by adding `readReplicas: 'first-primary'` in the DB adapter and then enabling it on your D1 Cloudflare dashboard. Read more about this feature on [our docs](https://payloadcms.com/docs/database/sqlite#d1-read-replicas).
-
-## Working with Cloudflare
-
-Firstly, after installing dependencies locally you need to authenticate with Wrangler by running:
+## Loslegen
 
 ```bash
-pnpm wrangler login
+pnpm install         # im Wurzelverzeichnis
+npx wrangler login   # ohne Login gibt es keinen Zugriff auf D1 und R2
+pnpm dev:cms         # http://localhost:3000/admin
 ```
 
-This will take you to Cloudflare to login and then you can use the Wrangler CLI locally for anything, use `pnpm wrangler help` to see all available options.
+Miniflare legt die lokale Datenbank beim ersten Start selbst an. `pnpm seed`
+füllt sie.
 
-Wrangler is pretty smart so it will automatically bind your services for local development just by running `pnpm dev`.
+## Was hier drin liegt
 
-## Deployments
+```
+src/
+  collections/   users, media, icons, pages, news, angebote,
+                 signature-dishes, stationen
+  globals/       Header (Navigation + Stage), Footer, SiteSettings
+  fields/        wiederverwendete Felder: link, seo, iconSelect
+  hooks/         rebuildWeb — stösst den Frontend-Build an
+  uploads/       Cache-Kopfzeile für ausgelieferte Dateien
+  migrations/    nur für Produktion, lokal wird das Schema geschoben
+  seed/          Inhalt von titz.cooking, Assets im Repo
+  app/(payload)/ Admin-UI und REST-API von Payload
+scripts/
+  repairProd.ts        repariert Dateien in Produktion, ohne Inhalt anzufassen
+  syncSharedTypes.mjs  kopiert die Typen nach packages/types
+tests/unit/      Vitest, reine Logik ohne Datenbank
+```
 
-When you're ready to deploy, first make sure you have created your migrations:
+`/` leitet über `next.config.ts` auf `/admin` um. GraphQL ist abgeschaltet.
+
+## Drei Dinge, die man wissen muss
+
+**Lokal gibt es keine Migrationen.** Der D1-Adapter schreibt das Schema im
+Entwicklungsmodus direkt aus der Konfiguration; `payload_migrations` enthält
+lokal nur den Eintrag `dev`. Eine Migration läuft das erste Mal überhaupt gegen
+Produktion — vorher `pnpm migrate:status:prod` und die SQL lesen.
+
+**Ein Push auf `main` migriert nicht.** Workers Builds führt nur
+`build:cloudflare` aus. Nach einer Schemaänderung `pnpm deploy:cms`.
+
+**`pnpm seed` niemals gegen Produktion.** Er räumt Collections ab. Für
+Reparaturen `scripts/repairProd.ts` — der fasst nur Dateien an und schreibt
+erst mit `--apply`.
+
+## Befehle
 
 ```bash
-pnpm payload migrate:create
+pnpm dev:cms                             # Dev-Server
+pnpm --filter @titz/cms build            # next build
+pnpm --filter @titz/cms test             # Unit-Tests
+pnpm --filter @titz/cms lint             # ESLint
+pnpm generate:types                      # Cloudflare-, Payload- und geteilte Typen
+pnpm migrate:status / :prod              # Migrationsstand
+pnpm --filter @titz/cms exec payload migrate:create name
+pnpm deploy:cms                          # Migrationen und Worker
 ```
 
-Then run the following command:
+Die `pnpm …`-Namen mit Präfix gibt es nur im Wurzelverzeichnis. Aus `apps/cms`
+heraus heisst das Deployen `pnpm deploy` — `deploy:cms` findet pnpm dort nicht.
+
+## Secrets
+
+Zur Laufzeit als Worker-Secret, nicht in `vars`:
 
 ```bash
-pnpm run deploy
+wrangler secret put PAYLOAD_SECRET        # openssl rand -hex 32
+wrangler secret put WEB_DEPLOY_HOOK_URL   # Deploy-Hook des Web-Workers
 ```
 
-This will spin up Wrangler in `production` mode, run any created migrations, build the app and then deploy the bundle up to Cloudflare.
-
-That's it! You can if you wish move these steps into your CI pipeline as well.
-
-## Enabling logs
-
-By default logs are not enabled for your API, we've made this decision because it does run against your quota so we've left it opt-in. But you can easily enable logs in one click in the Cloudflare panel, [see docs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs).
-
-### Logger Configuration
-
-This template includes a custom console-based logger compatible with Cloudflare Workers. Payload's default logger uses `pino-pretty`, which relies on Node.js APIs not available in Workers and would cause `fs.write is not implemented` errors.
-
-The custom logger in `payload.config.ts`:
-
-- Routes logs through `console.*` methods which Workers handles correctly
-- Outputs JSON-formatted logs for Cloudflare observability
-- Only active in production (development uses the default `pino-pretty` for better DX)
-
-You can control the log level via the `PAYLOAD_LOG_LEVEL` environment variable (e.g., `debug`, `info`, `warn`, `error`).
-
-### Diagnostic Channel Errors
-
-If you see "Failed to publish diagnostic channel message" errors in your observability logs, these typically come from the `undici` HTTP client library. The template includes `skipSafeFetch: true` in the Media collection to use native fetch instead of undici for file uploads, which helps reduce these errors.
-
-Cloudflare Workers runs in an [isolated environment that cannot access private IP ranges](https://developers.cloudflare.com/workers-vpc/examples/route-across-private-services/) by default, providing built-in SSRF protection. This makes `skipSafeFetch` safe to use.
-
-## Known issues
-
-### GraphQL
-
-We are currently waiting on some issues with GraphQL to be [fixed upstream in Workers](https://github.com/cloudflare/workerd/issues/5175) so full support for GraphQL is not currently guaranteed when deployed.
-
-### Worker size limits
-
-We currently recommend deploying this template to the Paid Workers plan due to bundle [size limits](https://developers.cloudflare.com/workers/platform/limits/#worker-size) of 3mb. We're actively trying to reduce our bundle footprint over time to better meet this metric.
-
-This also applies to your own code, in the case of importing a lot of libraries you may find yourself limited by the bundle.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+Lokal in `.env` — siehe `.env.example`. Die Datei ist ignoriert; das Repo ist
+öffentlich.

@@ -26,10 +26,22 @@ next-env.d.ts
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
 # env
 .env
 .env*.local
+# Lokale Secrets für `wrangler dev` — dieselbe Rolle wie .env, anderer Name.
+# Ohne diese Zeile landet ein PAYLOAD_SECRET beim ersten `wrangler dev` im Repo,
+# und das Repo ist öffentlich.
+.dev.vars
+.dev.vars.*
+
+# Schlüssel und Zertifikate
+*.key
+*.p12
+*.pfx
+id_rsa*
 
 # payload local media (uploads landen in R2; lokal nur Fallback)
 apps/cms/media/
@@ -38,4 +50,7 @@ apps/cms/media/
 .open-next/
 .wrangler/
 
+# Werkzeuge, die pro Maschine schreiben
 .idea/
+.claude/settings.local.json
+skills-lock.json

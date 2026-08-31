@@ -2,15 +2,10 @@
 import { lexicalToHtml } from '../../lib/lexical'
 import IconCircle from '../IconCircle.astro'
 import Egg from '../Egg.astro'
+import type { Block } from '../../lib/blocks'
 
 interface Props {
-  block: {
-    anchor?: string
-    eyebrow?: string
-    heading: string
-    body?: unknown
-    values?: { icon?: unknown; title: string; text?: string }[]
-  }
+  block: Block<'philosophie'>
 }
 
 const { block } = Astro.props
@@ -19,8 +14,20 @@ const cardTilts = ['-0.5deg', '0.5deg', '-0.5deg', '0.5deg']
 ---
 
 <section class="philo" id={block.anchor ?? 'philosophie'}>
-  <Egg name="tomate" size={62} bg="var(--rosa)" pos="right:4%;top:110px" anim="tzOrbit 9s ease-in-out infinite" />
-  <Egg name="kraeuter" size={56} bg="var(--kraut)" pos="left:4%;bottom:76px;transform-origin:50% 100%" anim="tzTip 6s ease-in-out infinite 1s" />
+  <Egg
+    name="tomate"
+    size={62}
+    bg="var(--rosa)"
+    pos="right:4%;top:110px"
+    anim="tzOrbit 9s ease-in-out infinite"
+  />
+  <Egg
+    name="kraeuter"
+    size={56}
+    bg="var(--kraut)"
+    pos="left:4%;bottom:76px;transform-origin:50% 100%"
+    anim="tzTip 6s ease-in-out infinite 1s"
+  />
   <div class="container">
     <div class="section-head">
       {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
@@ -29,7 +36,10 @@ const cardTilts = ['-0.5deg', '0.5deg', '-0.5deg', '0.5deg']
     </div>
     {
       block.values?.length ? (
-        <div class="philo__grid" style={`grid-template-columns:repeat(${Math.min(block.values.length, 3)},1fr)`}>
+        <div
+          class="philo__grid"
+          style={`grid-template-columns:repeat(${Math.min(block.values.length, 3)},1fr)`}
+        >
           {block.values.map((value, index) => (
             <article
               data-rev={index * 120}

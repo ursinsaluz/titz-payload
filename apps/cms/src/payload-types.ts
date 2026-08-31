@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'payload-mcp-api-keys': PayloadMcpApiKeyAuthOperations;
   };
   blocks: {};
   collections: {
@@ -75,6 +76,7 @@ export interface Config {
     angebote: Angebote;
     'signature-dishes': SignatureDish;
     stationen: Stationen;
+    'payload-mcp-api-keys': PayloadMcpApiKey;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +92,7 @@ export interface Config {
     angebote: AngeboteSelect<false> | AngeboteSelect<true>;
     'signature-dishes': SignatureDishesSelect<false> | SignatureDishesSelect<true>;
     stationen: StationenSelect<false> | StationenSelect<true>;
+    'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -113,13 +116,31 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | PayloadMcpApiKey;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface PayloadMcpApiKeyAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -168,7 +189,49 @@ export interface User {
  */
 export interface Media {
   id: number;
+  /**
+   * Beschreibt das Bild für Screenreader und Suchmaschinen.
+   */
   alt: string;
+  kategorie?:
+    | (
+        | 'portraet'
+        | 'gerichte'
+        | 'kueche'
+        | 'team'
+        | 'stationen'
+        | 'location'
+        | 'event'
+        | 'publikation'
+        | 'hobby'
+        | 'privat'
+      )
+    | null;
+  /**
+   * Nur für Bilder der Kategorie «Hobby».
+   */
+  hobby?:
+    | (
+        | 'biken'
+        | 'garten'
+        | 'pfadfinder'
+        | 'outdoor-kochen'
+        | 'backen'
+        | 'skitouren'
+        | 'trailrunning'
+        | 'yoga'
+        | 'reisen'
+      )
+    | null;
+  /**
+   * Sichtbarer Text unter dem Bild, sofern die Seite eine Legende zeigt.
+   */
+  caption?: string | null;
+  /**
+   * Aufnahmejahr, sofern bekannt.
+   */
+  jahr?: number | null;
+  verwendung?: ('web' | 'intern' | 'archiv') | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -496,6 +559,189 @@ export interface Stationen {
   createdAt: string;
 }
 /**
+ * API keys control which collections, resources, tools, and prompts MCP clients can access
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys".
+ */
+export interface PayloadMcpApiKey {
+  id: number;
+  /**
+   * The user that the API key is associated with.
+   */
+  user: number | User;
+  /**
+   * A useful label for the API key.
+   */
+  label?: string | null;
+  /**
+   * The purpose of the API key.
+   */
+  description?: string | null;
+  pages?: {
+    /**
+     * Allow clients to find pages.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create pages.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update pages.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete pages.
+     */
+    delete?: boolean | null;
+  };
+  news?: {
+    /**
+     * Allow clients to find news.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create news.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update news.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete news.
+     */
+    delete?: boolean | null;
+  };
+  angebote?: {
+    /**
+     * Allow clients to find angebote.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create angebote.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update angebote.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete angebote.
+     */
+    delete?: boolean | null;
+  };
+  signatureDishes?: {
+    /**
+     * Allow clients to find signature-dishes.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create signature-dishes.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update signature-dishes.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete signature-dishes.
+     */
+    delete?: boolean | null;
+  };
+  stationen?: {
+    /**
+     * Allow clients to find stationen.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create stationen.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update stationen.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete stationen.
+     */
+    delete?: boolean | null;
+  };
+  icons?: {
+    /**
+     * Allow clients to find icons.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create icons.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update icons.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete icons.
+     */
+    delete?: boolean | null;
+  };
+  media?: {
+    /**
+     * Allow clients to find media.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create media.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update media.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete media.
+     */
+    delete?: boolean | null;
+  };
+  header?: {
+    /**
+     * Allow clients to find header global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update header global.
+     */
+    update?: boolean | null;
+  };
+  footer?: {
+    /**
+     * Allow clients to find footer global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update footer global.
+     */
+    update?: boolean | null;
+  };
+  siteSettings?: {
+    /**
+     * Allow clients to find site-settings global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update site-settings global.
+     */
+    update?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  collection: 'payload-mcp-api-keys';
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -550,12 +796,21 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'stationen';
         value: number | Stationen;
+      } | null)
+    | ({
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -565,10 +820,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
+      };
   key?: string | null;
   value?:
     | {
@@ -621,6 +881,11 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  kategorie?: T;
+  hobby?: T;
+  caption?: T;
+  jahr?: T;
+  verwendung?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -866,6 +1131,94 @@ export interface StationenSelect<T extends boolean = true> {
   order?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys_select".
+ */
+export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
+  user?: T;
+  label?: T;
+  description?: T;
+  pages?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  news?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  angebote?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  signatureDishes?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  stationen?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  icons?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  media?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  header?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  footer?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  siteSettings?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

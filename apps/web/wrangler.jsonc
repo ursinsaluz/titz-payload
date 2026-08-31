@@ -6,14 +6,11 @@
   "routes": [
     {
       "pattern": "titz.cooking",
-      "custom_domain": true
-    }
+      "custom_domain": true,
+    },
   ],
-  "vars": {
-    "PAYLOAD_URL": "https://admin.titz.cooking"
-  },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
+    "not_found_handling": "404-page",
+  },
 }

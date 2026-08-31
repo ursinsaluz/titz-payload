@@ -1,33 +1,29 @@
 ---
 import { getCollection } from '../../lib/payload'
-
-interface Station {
-  id: number
-  group: string
-  period?: string
-  title: string
-  place?: string
-  description?: string
-}
+import type { Block } from '../../lib/blocks'
 
 interface Props {
-  block: {
-    anchor?: string
-    eyebrow?: string
-    heading: string
-    intro?: string
-  }
+  block: Block<'stationenSection'>
   full?: boolean
 }
 
 const { block, full = false } = Astro.props
-const stationen = await getCollection<Station>('stationen', '&sort=order')
+const stationen = await getCollection('stationen', '&sort=order')
 
 const timeline = stationen.filter((s) => s.group === 'stationen')
 const ausbildung = stationen.filter((s) => s.group === 'ausbildung')
 const skills = stationen.filter((s) => s.group === 'qualifikationen')
 const hobbies = stationen.filter((s) => s.group === 'hobbies')
-const dotColors = ['var(--mint)', 'var(--cream)', 'var(--rosa)', 'var(--blau)', 'var(--flieder)', 'var(--kraut)', 'var(--pfirsich)', 'var(--sand)']
+const dotColors = [
+  'var(--mint)',
+  'var(--cream)',
+  'var(--rosa)',
+  'var(--blau)',
+  'var(--flieder)',
+  'var(--kraut)',
+  'var(--pfirsich)',
+  'var(--sand)',
+]
 ---
 
 <section class="cv" id={block.anchor ?? 'lebenslauf'}>
@@ -45,12 +41,18 @@ const dotColors = ['var(--mint)', 'var(--cream)', 'var(--rosa)', 'var(--blau)', 
             timeline.map((station, index) => (
               <div class="cv__row">
                 <div class="cv__rail">
-                  <span class="cv__dot" style={`background:${dotColors[index % dotColors.length]}`} />
+                  <span
+                    class="cv__dot"
+                    style={`background:${dotColors[index % dotColors.length]}`}
+                  />
                   {index < timeline.length - 1 && <span class="cv__line" />}
                 </div>
                 <div class="cv__entry">
                   {station.period && <div class="cv__period">{station.period}</div>}
-                  <div class="cv__title">{station.title}{station.place ? `, ${station.place}` : ''}</div>
+                  <div class="cv__title">
+                    {station.title}
+                    {station.place ? `, ${station.place}` : ''}
+                  </div>
                   {station.description && <div class="cv__text">{station.description}</div>}
                 </div>
               </div>

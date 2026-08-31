@@ -1,14 +1,8 @@
 ---
 import { getGlobal } from '../lib/payload'
-import { hrefFor, type NavLink } from '../lib/links'
+import { hrefFor } from '../lib/links'
 
-interface HeaderGlobal {
-  logo?: { text?: string }
-  nav?: NavLink[]
-  cta?: { label?: string; url?: string }
-}
-
-const header = await getGlobal<HeaderGlobal>('header')
+const header = await getGlobal('header')
 ---
 
 <header class="site-header">
@@ -20,7 +14,12 @@ const header = await getGlobal<HeaderGlobal>('header')
     {header.nav?.map((link) => <a href={hrefFor(link)}>{link.label}</a>)}
     {
       header.cta?.label && (
-        <a href={header.cta.url ?? '#'} class="pill pill--mint" target={header.cta.url?.startsWith('http') ? '_blank' : undefined} rel="noopener">
+        <a
+          href={header.cta.url ?? '#'}
+          class="pill pill--mint"
+          target={header.cta.url?.startsWith('http') ? '_blank' : undefined}
+          rel="noopener"
+        >
           {header.cta.label}
         </a>
       )

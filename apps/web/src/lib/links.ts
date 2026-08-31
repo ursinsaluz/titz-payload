@@ -1,11 +1,11 @@
-interface NavLink {
-  label: string
-  linkType?: 'anchor' | 'page' | 'url'
-  anchor?: string | null
-  page?: { slug?: string } | number | null
-  url?: string | null
-  newTab?: boolean
-}
+import type { Footer, Header } from '@titz/types'
+
+/** Ein Navigationseintrag, wie ihn `fields/link.ts` im CMS erzeugt. Aus dem
+    generierten Modell abgeleitet statt nachgebaut — die Handdeklaration hatte
+    `linkType` und `newTab` ohne `| null`, was mit den echten Daten aus Payload
+    nicht zusammenpasste. `footer.legalLinks` und `footer.columns[].links`
+    haben dieselbe Form und passen darum ebenfalls. */
+type NavLink = NonNullable<Header['nav']>[number] | NonNullable<Footer['legalLinks']>[number]
 
 export function hrefFor(link: NavLink): string {
   switch (link.linkType) {

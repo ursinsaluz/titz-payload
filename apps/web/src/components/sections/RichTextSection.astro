@@ -1,12 +1,9 @@
 ---
 import { lexicalToHtml } from '../../lib/lexical'
+import type { Block } from '../../lib/blocks'
 
 interface Props {
-  block: {
-    anchor?: string
-    heading?: string
-    body: unknown
-  }
+  block: Block<'richTextSection'>
 }
 
 const { block } = Astro.props

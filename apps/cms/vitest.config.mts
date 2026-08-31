@@ -1,12 +1,14 @@
 import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
+/**
+ * Nur Unit-Tests für reine Logik. Vorher lief hier jsdom samt React-Plugin für
+ * einen einzigen Test, der eine ganze Payload-Instanz startete, um
+ * `expect(users).toBeDefined()` zu prüfen — Datenbank nötig, Aussage null.
+ * End-to-End gehört zu `apps/web`, wo die Seite entsteht.
+ */
 export default defineConfig({
-  plugins: [tsconfigPaths(), react()],
   test: {
-    environment: 'jsdom',
-    setupFiles: ['./vitest.setup.ts'],
-    include: ['tests/int/**/*.int.spec.ts'],
+    environment: 'node',
+    include: ['tests/unit/**/*.test.ts'],
   },
 })

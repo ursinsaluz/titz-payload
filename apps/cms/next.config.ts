@@ -2,6 +2,15 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // `/` gehört dem Admin. Das war vorher eine React-Seite in einer
+  // `(frontend)`-Route-Gruppe, die nichts anderes tat als `redirect('/admin')` —
+  // samt eigenem Root-Layout und 164 Zeilen Template-CSS aus dem Payload-Starter.
+  // Als Redirect in der Konfiguration erledigt das die Routing-Schicht, ohne
+  // React zu rendern; die Gruppe ist damit weg.
+  async redirects() {
+    return [{ source: '/', destination: '/admin', permanent: false }]
+  },
+
   images: {
     localPatterns: [
       {

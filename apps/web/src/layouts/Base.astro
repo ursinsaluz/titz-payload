@@ -1,35 +1,22 @@
 ---
-import { getEggData, getGlobal, mediaUrl, type Media } from '../lib/payload'
+import { getEggData, getGlobal, mediaUrl, type Page } from '../lib/payload'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 import '../styles/global.css'
 
 interface Props {
-  seo?: {
-    title?: string | null
-    description?: string | null
-    image?: Media | number | null
-    noIndex?: boolean | null
-  }
+  /** Die SEO-Gruppe der Seite, direkt aus dem Content-Modell — vorher hier
+      nachgebaut und mit `as never` übergeben. */
+  seo?: Page['seo']
   pageTitle?: string
 }
 
-interface SiteSettings {
-  siteName?: string
-  domain?: string
-  defaultSeo?: {
-    title?: string
-    titleTemplate?: string
-    description?: string
-    image?: Media | number | null
-  }
-}
-
 const { seo, pageTitle } = Astro.props
-const settings = await getGlobal<SiteSettings>('site-settings')
+const settings = await getGlobal('site-settings')
 const eggData = await getEggData()
 
-const template = settings.defaultSeo?.titleTemplate ?? `%s | ${settings.siteName ?? 'Sebastian Titz'}`
+const template =
+  settings.defaultSeo?.titleTemplate ?? `%s | ${settings.siteName ?? 'Sebastian Titz'}`
 const title = seo?.title
   ? seo.title
   : pageTitle
@@ -37,7 +24,10 @@ const title = seo?.title
     : (settings.defaultSeo?.title ?? settings.siteName ?? 'Sebastian Titz')
 const description = seo?.description ?? settings.defaultSeo?.description ?? ''
 const ogImage = mediaUrl(seo?.image) ?? mediaUrl(settings.defaultSeo?.image)
-const canonical = new URL(Astro.url.pathname, settings.domain ?? Astro.site ?? 'https://titz.cooking')
+const canonical = new URL(
+  Astro.url.pathname,
+  settings.domain ?? Astro.site ?? 'https://titz.cooking',
+)
 ---
 
 <!doctype html>
@@ -69,7 +59,7 @@ const canonical = new URL(Astro.url.pathname, settings.domain ?? Astro.site ?? '
       <slot />
     </main>
     <Footer />
-    <script type="application/json" id="egg-data" set:html={JSON.stringify(eggData)} />
+    <script is:inline type="application/json" id="egg-data" set:html={JSON.stringify(eggData)} />
     <script src="../scripts/playful.ts"></script>
   </body>
 </html>

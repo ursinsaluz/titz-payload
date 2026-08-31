@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import { GetPlatformProxyOptions } from 'wrangler'
 import { r2Storage } from '@payloadcms/storage-r2'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -19,6 +20,7 @@ import { Stationen } from './collections/Stationen'
 import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 import { SiteSettings } from './globals/SiteSettings'
+import { mitRebuild } from './hooks/rebuildWeb'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -48,12 +50,11 @@ const cloudflareLogger = {
   silent: () => {},
 } as any // Use PayloadLogger type when it's exported
 
-const cloudflare =
-  isBuild
-    ? ({ env: {} } as any)
-    : isCLI || !isProduction
-      ? await getCloudflareContextFromWrangler()
-      : await getCloudflareContext({ async: true })
+const cloudflare = isBuild
+  ? ({ env: {} } as any)
+  : isCLI || !isProduction
+    ? await getCloudflareContextFromWrangler()
+    : await getCloudflareContext({ async: true })
 
 export default buildConfig({
   admin: {
@@ -61,11 +62,33 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    // Payload rendert `<html>` selbst. Browsererweiterungen hängen dort
+    // Attribute an, bevor React hydriert — LanguageTool etwa
+    // `data-lt-installed="true"` —, und React meldet das als
+    // Hydration-Mismatch. Der Fehler liegt nicht im Code und lässt sich von
+    // hier aus nicht abstellen; die Option ist Payloads Ausweg dafür und in
+    // `alvier-payload` aus demselben Grund gesetzt.
+    suppressHydrationWarning: true,
   },
-  collections: [Users, Media, Icons, Pages, News, Angebote, SignatureDishes, Stationen],
-  globals: [Header, Footer, SiteSettings],
+  // `mitRebuild` hängt an allem, was auf titz.cooking sichtbar ist, einen Hook,
+  // der den Frontend-Build anstösst — siehe hooks/rebuildWeb.ts.
+  collections: [Users, Media, Icons, Pages, News, Angebote, SignatureDishes, Stationen].map(
+    mitRebuild,
+  ),
+  globals: [Header, Footer, SiteSettings].map(mitRebuild),
   editor: lexicalEditor(),
-  secret: (globalThis as any).PAYLOAD_SECRET || cloudflare.env.PAYLOAD_SECRET || process.env.PAYLOAD_SECRET || 'ignore-secret-during-build',
+  // Das Frontend holt seinen Content ausschliesslich über REST. GraphQL war
+  // damit toter Code im Worker-Bundle — inklusive Playground-Route. Abschalten
+  // entfernt Schema-Aufbau und Routen; die Handler unter
+  // `app/(payload)/api/graphql*` sind mitgelöscht.
+  graphQL: {
+    disable: true,
+  },
+  secret:
+    (globalThis as any).PAYLOAD_SECRET ||
+    cloudflare.env.PAYLOAD_SECRET ||
+    process.env.PAYLOAD_SECRET ||
+    'ignore-secret-during-build',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
@@ -75,6 +98,33 @@ export default buildConfig({
     r2Storage({
       bucket: cloudflare.env.R2,
       collections: { media: true, icons: true },
+    }),
+    // Macht den Inhalt für MCP-Clients lesbar und schreibbar. Der Endpunkt liegt
+    // auf `/api/mcp` und authentisiert über einen Schlüssel aus der Collection
+    // `payload-mcp-api-keys` — anlegen im Admin unter «System».
+    //
+    // `users` ist bewusst nicht freigegeben: Über die MCP-Tools liessen sich
+    // sonst Konten anlegen und Passwörter setzen.
+    mcpPlugin({
+      collections: {
+        pages: { enabled: true, description: 'Seiten mit Sektionen (Startseite, Impressum, …)' },
+        news: { enabled: true, description: 'Aktuelles — Presse, Auszeichnungen, Beiträge' },
+        angebote: { enabled: true, description: 'Angebote (Beratung, Catering)' },
+        'signature-dishes': { enabled: true, description: 'Signature Dishes und Starter' },
+        stationen: { enabled: true, description: 'Lebenslauf — Stationen, Skills, Ausbildung' },
+        icons: { enabled: true, description: 'SVG-Icon-Bibliothek samt Toast-Sprüchen' },
+        media: { enabled: true, description: 'Bilder' },
+      },
+      globals: {
+        header: { enabled: true, description: 'Navigation, Logo und Stage/Hero' },
+        footer: { enabled: true, description: 'Fusszeile, Kontakt, Social-Links' },
+        'site-settings': { enabled: true, description: 'SEO-Defaults und Easter-Egg-Texte' },
+      },
+      overrideApiKeyCollection: (collection) => ({
+        ...collection,
+        labels: { singular: 'MCP-Schlüssel', plural: 'MCP-Schlüssel' },
+        admin: { ...collection.admin, group: 'System' },
+      }),
     }),
   ],
 })
