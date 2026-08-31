@@ -97,9 +97,29 @@ pnpm deploy:cms              # migriert und deployt
 
 ## MCP
 
-Das CMS stellt seinen Inhalt unter `/api/mcp` bereit. Schlüssel im Admin unter
-**System → MCP-Schlüssel** anlegen und als `PAYLOAD_MCP_TOKEN` in
-`apps/cms/.env` ablegen; `.mcp.json` im Wurzelverzeichnis liest ihn von dort.
+Das CMS stellt seinen Inhalt unter `/api/mcp` bereit. `.mcp.json` im
+Wurzelverzeichnis registriert zwei Server: `payload` gegen den lokalen
+Dev-Server, `payload-prod` gegen admin.titz.cooking.
+
+Schlüssel im Admin unter **System → MCP-Schlüssel** anlegen — je Umgebung einen
+eigenen. Die Werte gehören in die **Umgebung**, nicht ins Repo und nicht in eine
+`.env`: `.mcp.json` expandiert `${…}` aus den Umgebungsvariablen der Sitzung.
+
+```bash
+# ~/.zshrc
+export PAYLOAD_MCP_TOKEN=…        # lokaler Dev-Server
+export PAYLOAD_MCP_TOKEN_PROD=…   # admin.titz.cooking
+```
+
+Alternativ projektbezogen in `.claude/settings.local.json` (ist ignoriert):
+
+```json
+{ "env": { "PAYLOAD_MCP_TOKEN": "…", "PAYLOAD_MCP_TOKEN_PROD": "…" } }
+```
+
+> `payload-prod` schreibt in den **Live-Inhalt**. Jede Änderung darüber löst den
+> Rebuild-Hook aus und geht auf titz.cooking. Wer nur lesen will, nimmt den
+> lokalen Server.
 
 ## Weiterlesen
 

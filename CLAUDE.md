@@ -12,16 +12,21 @@ greift. Das Repo ist öffentlich.
 
 ## Der MCP-Server
 
-`.mcp.json` registriert das CMS unter `http://localhost:3000/api/mcp`. Damit
-liest und schreibt Claude Code den Inhalt direkt, ohne den Umweg über die
-REST-API von Hand. Zwei Voraussetzungen:
+`.mcp.json` registriert zwei Server: `payload` gegen den lokalen Dev-Server und
+`payload-prod` gegen admin.titz.cooking. Damit liest und schreibt Claude Code
+den Inhalt direkt, ohne den Umweg über die REST-API von Hand.
 
-1. `pnpm dev:cms` läuft.
-2. `PAYLOAD_MCP_TOKEN` steht in `apps/cms/.env` — ein Schlüssel aus dem Admin
-   unter **System → MCP-Schlüssel**.
+Die Tokens kommen aus der **Umgebung** — `.mcp.json` expandiert `${…}` aus den
+Umgebungsvariablen der Sitzung, nicht aus `apps/cms/.env`. Siehe
+[README.md](README.md#mcp).
 
-Fehlt eines von beiden, ist der Server schlicht nicht verbunden. Das ist kein
-Fehler, nur eine fehlende Fähigkeit.
+Für `payload` muss zusätzlich `pnpm dev:cms` laufen. Fehlt Token oder Server,
+ist der Eintrag schlicht nicht verbunden — kein Fehler, nur eine fehlende
+Fähigkeit.
+
+**`payload-prod` schreibt in den Live-Inhalt.** Eine Änderung darüber löst den
+Rebuild-Hook aus und landet auf titz.cooking. Zum Nachsehen den lokalen Server
+nehmen; `payload-prod` nur, wenn genau das gewollt ist.
 
 ## Was beim Prüfen wirklich hilft
 
