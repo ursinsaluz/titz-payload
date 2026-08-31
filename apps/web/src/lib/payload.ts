@@ -4,8 +4,11 @@
     den Build-Variablen von Workers Builds kommen. Fällt sie im Produktivbuild
     aus, zeigt die Seite sonst still auf localhost — darum dort ein Standard,
     der stimmt. */
+// `||` und nicht `??`: Eine nicht gesetzte GitHub-Variable kommt als leerer
+// String an, nicht als undefined. Mit `??` hat der Build daraus eine relative
+// Adresse gemacht und mit «Failed to parse URL» abgebrochen.
 const PAYLOAD_URL =
-  import.meta.env.PAYLOAD_URL ??
+  import.meta.env.PAYLOAD_URL ||
   (import.meta.env.PROD ? 'https://admin.titz.cooking' : 'http://localhost:3000')
 
 import type { Config, Icon, Media, Page } from '@titz/types'

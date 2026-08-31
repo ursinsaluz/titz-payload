@@ -14,7 +14,7 @@ auf Deutsch, mit Umlauten. Schweizer Rechtschreibung: «ss» statt «ß».
 Kommentare erklären **warum**, nicht was. Ein Kommentar, der die Zeile unter
 ihm nachspricht, wird gelöscht.
 
-## Sieben Dinge, die überraschen
+## Acht Dinge, die überraschen
 
 **1. Das Frontend ist statisch.** `apps/web` ist `output: 'static'`. Der Content
 wird einmal beim Build über REST geholt; danach läuft für titz.cooking kein Code
@@ -43,11 +43,16 @@ Es fasst nur Dateien an, kein Inhaltsfeld, und schreibt erst mit `--apply`.
 kein `sharp`, also keine Bildvarianten und kein nachträgliches Verkleinern. Was
 hochgeladen wird, wird ausgeliefert.
 
-**6. Das Frontend nutzt ausschliesslich REST.** GraphQL ist in
+**6. Der CMS-Build läuft mit `--webpack`.** Next 16 baut standardmässig mit
+Turbopack, und OpenNext kann dessen Chunks nicht bündeln. Das Flag nicht
+entfernen — sonst schlägt `build:cloudflare` mit
+`Could not resolve "typescript-<hash>"` fehl.
+
+**7. Das Frontend nutzt ausschliesslich REST.** GraphQL ist in
 `payload.config.ts` abgeschaltet und die Routen sind gelöscht. Nichts wieder
 einführen, ohne dass es einen Abnehmer gibt.
 
-**7. Das Repo ist öffentlich.** Zugangsdaten gehören in
+**8. Das Repo ist öffentlich.** Zugangsdaten gehören in
 `wrangler secret put` oder in eine ignorierte `.env`. `.env.example` und
 `.mcp.json` sind eingecheckt und enthalten nur Namen und `${PLATZHALTER}`. Der
 pre-commit-Hook (`scripts/secret-scan.sh`) prüft das; er ist über

@@ -40,7 +40,14 @@ tests/unit/      Vitest, reine Logik ohne Datenbank
 
 `/` leitet über `next.config.ts` auf `/admin` um. GraphQL ist abgeschaltet.
 
-## Drei Dinge, die man wissen muss
+## Vier Dinge, die man wissen muss
+
+**Der Build läuft mit webpack, nicht mit Turbopack.** Next 16 baut standardmässig
+mit Turbopack; OpenNext kann dessen Chunks nicht bündeln — im Output steht ein
+`require("typescript-<hash>")`, das esbuild nicht auflöst, und
+`opennextjs-cloudflare build` bricht ab. Darum `next build --webpack` im
+`build`-Skript. Der `webpack`-Block in `next.config.ts` (extensionAlias) wird
+von Turbopack ohnehin nicht gelesen.
 
 **Lokal gibt es keine Migrationen.** Der D1-Adapter schreibt das Schema im
 Entwicklungsmodus direkt aus der Konfiguration; `payload_migrations` enthält
