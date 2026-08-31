@@ -117,6 +117,12 @@ Alternativ projektbezogen in `.claude/settings.local.json` (ist ignoriert):
 { "env": { "PAYLOAD_MCP_TOKEN": "…", "PAYLOAD_MCP_TOKEN_PROD": "…" } }
 ```
 
+Nachprüfen, ob der Wert wirklich ankommt — eine `.env` reicht **nicht**:
+
+```bash
+printenv PAYLOAD_MCP_TOKEN_PROD    # leer = der MCP-Server kann sich nicht anmelden
+```
+
 > `payload-prod` schreibt in den **Live-Inhalt**. Jede Änderung darüber löst den
 > Rebuild-Hook aus und geht auf titz.cooking. Wer nur lesen will, nimmt den
 > lokalen Server.
