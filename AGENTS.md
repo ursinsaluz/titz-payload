@@ -14,7 +14,7 @@ auf Deutsch, mit Umlauten. Schweizer Rechtschreibung: «ss» statt «ß».
 Kommentare erklären **warum**, nicht was. Ein Kommentar, der die Zeile unter
 ihm nachspricht, wird gelöscht.
 
-## Acht Dinge, die überraschen
+## Neun Dinge, die überraschen
 
 **1. Das Frontend ist statisch.** `apps/web` ist `output: 'static'`. Der Content
 wird einmal beim Build über REST geholt; danach läuft für titz.cooking kein Code
@@ -52,7 +52,13 @@ entfernen — sonst schlägt `build:cloudflare` mit
 `payload.config.ts` abgeschaltet und die Routen sind gelöscht. Nichts wieder
 einführen, ohne dass es einen Abnehmer gibt.
 
-**8. Das Repo ist öffentlich.** Zugangsdaten gehören in
+**8. Skripte im Wurzelverzeichnis rufen `pnpm … run <name>`, nicht
+`pnpm … <name>`.** `deploy` ist ein pnpm-Builtin (`pnpm deploy <ziel>`) und
+verdeckt ein gleichnamiges Skript — `pnpm --filter @titz/cms deploy` scheiterte
+mit `ERR_PNPM_INVALID_DEPLOY_TARGET`, ohne das Skript je aufzurufen. Das
+explizite `run` schliesst die Falle für alle Skriptnamen.
+
+**9. Das Repo ist öffentlich.** Zugangsdaten gehören in
 `wrangler secret put` oder in eine ignorierte `.env`. `.env.example` und
 `.mcp.json` sind eingecheckt und enthalten nur Namen und `${PLATZHALTER}`. Der
 pre-commit-Hook (`scripts/secret-scan.sh`) prüft das; er ist über
