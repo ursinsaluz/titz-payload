@@ -12,21 +12,21 @@ greift. Das Repo ist öffentlich.
 
 ## Der MCP-Server
 
-`.mcp.json` registriert zwei Server: `payload` gegen den lokalen Dev-Server und
-`payload-prod` gegen admin.titz.cooking. Damit liest und schreibt Claude Code
-den Inhalt direkt, ohne den Umweg über die REST-API von Hand.
+`.mcp.json` registriert das CMS unter `http://localhost:3000/api/mcp`. Damit
+liest und schreibt Claude Code den Inhalt direkt, ohne den Umweg über die
+REST-API von Hand. Zwei Voraussetzungen:
 
-Die Tokens kommen aus der **Umgebung** — `.mcp.json` expandiert `${…}` aus den
-Umgebungsvariablen der Sitzung, nicht aus `apps/cms/.env`. Siehe
-[README.md](README.md#mcp).
+1. `pnpm dev:cms` läuft.
+2. `PAYLOAD_MCP_TOKEN` liegt in der **Umgebung** — `.mcp.json` expandiert
+   `${…}` aus den Umgebungsvariablen der Sitzung, nicht aus einer `.env`.
+   Prüfen mit `printenv PAYLOAD_MCP_TOKEN`.
 
-Für `payload` muss zusätzlich `pnpm dev:cms` laufen. Fehlt Token oder Server,
-ist der Eintrag schlicht nicht verbunden — kein Fehler, nur eine fehlende
-Fähigkeit.
+Fehlt eines von beiden, ist der Server nicht verbunden — kein Fehler, nur eine
+fehlende Fähigkeit.
 
-**`payload-prod` schreibt in den Live-Inhalt.** Eine Änderung darüber löst den
-Rebuild-Hook aus und landet auf titz.cooking. Zum Nachsehen den lokalen Server
-nehmen; `payload-prod` nur, wenn genau das gewollt ist.
+**Gegen admin.titz.cooking gibt es keinen Eintrag, weil es dort nicht
+funktioniert** — der Handler läuft im Worker in einen Deadlock. Begründung und
+Messwerte in [README.md](README.md#gegen-produktion-geht-mcp-nicht).
 
 ## Was beim Prüfen wirklich hilft
 

@@ -6,13 +6,6 @@
       "headers": {
         "Authorization": "Bearer ${PAYLOAD_MCP_TOKEN}"
       }
-    },
-    "payload-prod": {
-      "type": "http",
-      "url": "https://admin.titz.cooking/api/mcp",
-      "headers": {
-        "Authorization": "Bearer ${PAYLOAD_MCP_TOKEN_PROD}"
-      }
     }
   }
 }

@@ -98,34 +98,53 @@ pnpm deploy:cms              # migriert und deployt
 ## MCP
 
 Das CMS stellt seinen Inhalt unter `/api/mcp` bereit. `.mcp.json` im
-Wurzelverzeichnis registriert zwei Server: `payload` gegen den lokalen
-Dev-Server, `payload-prod` gegen admin.titz.cooking.
+Wurzelverzeichnis registriert **einen** Server: `payload` gegen den lokalen
+Dev-Server.
 
-Schlüssel im Admin unter **System → MCP-Schlüssel** anlegen — je Umgebung einen
-eigenen. Die Werte gehören in die **Umgebung**, nicht ins Repo und nicht in eine
-`.env`: `.mcp.json` expandiert `${…}` aus den Umgebungsvariablen der Sitzung.
+Schlüssel im Admin unter **System → MCP-Schlüssel** anlegen. Der Wert gehört in
+die **Umgebung**, nicht ins Repo und nicht in eine `.env`: `.mcp.json`
+expandiert `${…}` aus den Umgebungsvariablen der Sitzung.
 
 ```bash
-# ~/.zshrc
-export PAYLOAD_MCP_TOKEN=…        # lokaler Dev-Server
-export PAYLOAD_MCP_TOKEN_PROD=…   # admin.titz.cooking
+# ~/.zshrc, danach neues Terminal und Claude Code von dort starten
+export PAYLOAD_MCP_TOKEN=…
 ```
 
 Alternativ projektbezogen in `.claude/settings.local.json` (ist ignoriert):
 
 ```json
-{ "env": { "PAYLOAD_MCP_TOKEN": "…", "PAYLOAD_MCP_TOKEN_PROD": "…" } }
+{ "env": { "PAYLOAD_MCP_TOKEN": "…" } }
 ```
 
-Nachprüfen, ob der Wert wirklich ankommt — eine `.env` reicht **nicht**:
+Nachprüfen, ob der Wert ankommt — eine `.env` reicht **nicht**:
 
 ```bash
-printenv PAYLOAD_MCP_TOKEN_PROD    # leer = der MCP-Server kann sich nicht anmelden
+printenv PAYLOAD_MCP_TOKEN    # leer = der MCP-Server kann sich nicht anmelden
 ```
 
-> `payload-prod` schreibt in den **Live-Inhalt**. Jede Änderung darüber löst den
-> Rebuild-Hook aus und geht auf titz.cooking. Wer nur lesen will, nimmt den
-> lokalen Server.
+### Gegen Produktion geht MCP nicht
+
+Kein Eintrag für admin.titz.cooking, und zwar nicht aus Vorsicht: Es
+funktioniert dort nicht. Gemessen am 31.08.2026 mit gültigem Schlüssel:
+
+| Umgebung                    | Antwort                                        |
+| --------------------------- | ---------------------------------------------- |
+| lokal, Node                 | `HTTP 200` samt korrekter `initialize`-Antwort |
+| admin.titz.cooking, Workers | `HTTP 500`                                     |
+
+Im Worker-Log steht dazu _«The Workers runtime canceled this request because it
+detected that your Worker's code had hung and would never generate a
+response»_ — bei 67 ms Wall-Time, also kein Timeout, sondern ein Deadlock.
+Ursache ist `mcp-handler` unter `@payloadcms/plugin-mcp`: Es ist für
+Vercel-Functions gebaut, hält die Streamable-HTTP-Antwort bis `maxDuration`
+offen und wartet auf Node-Stream-Ereignisse, die im Worker nicht kommen.
+
+Wer es erneut versuchen will, wenn das Paket nachzieht: `mcpPlugin` gibt
+`mcpHandlerOptions` durch (`disableSse`, `maxDuration`, `redisUrl`).
+
+**Prod-Inhalt bearbeitet man stattdessen** über die REST-API oder über ein
+Skript mit `payload run` und `NODE_ENV=production` — dann greifen die echten
+Bindings. `apps/cms/scripts/repairProd.ts` ist das Muster dafür.
 
 ## Weiterlesen
 

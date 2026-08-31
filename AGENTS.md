@@ -14,7 +14,7 @@ auf Deutsch, mit Umlauten. Schweizer Rechtschreibung: «ss» statt «ß».
 Kommentare erklären **warum**, nicht was. Ein Kommentar, der die Zeile unter
 ihm nachspricht, wird gelöscht.
 
-## Neun Dinge, die überraschen
+## Zehn Dinge, die überraschen
 
 **1. Das Frontend ist statisch.** `apps/web` ist `output: 'static'`. Der Content
 wird einmal beim Build über REST geholt; danach läuft für titz.cooking kein Code
@@ -58,7 +58,15 @@ verdeckt ein gleichnamiges Skript — `pnpm --filter @titz/cms deploy` scheitert
 mit `ERR_PNPM_INVALID_DEPLOY_TARGET`, ohne das Skript je aufzurufen. Das
 explizite `run` schliesst die Falle für alle Skriptnamen.
 
-**9. Das Repo ist öffentlich.** Zugangsdaten gehören in
+**9. MCP läuft nur lokal.** `@payloadcms/plugin-mcp` benutzt `mcp-handler`, das
+für Vercel-Functions gebaut ist: Es hält die Antwort offen und wartet auf
+Node-Stream-Ereignisse. Im Worker endet das im Deadlock — gemessen `HTTP 500`
+und _«your Worker's code had hung»_ bei 67 ms Wall-Time, während dieselbe
+Anfrage lokal `HTTP 200` liefert. Keinen `payload-prod`-Eintrag in `.mcp.json`
+anlegen; Prod-Inhalt über die REST-API oder `payload run` mit
+`NODE_ENV=production`.
+
+**10. Das Repo ist öffentlich.** Zugangsdaten gehören in
 `wrangler secret put` oder in eine ignorierte `.env`. `.env.example` und
 `.mcp.json` sind eingecheckt und enthalten nur Namen und `${PLATZHALTER}`. Der
 pre-commit-Hook (`scripts/secret-scan.sh`) prüft das; er ist über
@@ -93,8 +101,16 @@ pnpm verify
 ```
 
 Das ist dieselbe Kette wie in der CI: Secret-Scan, Prettier, ESLint, Typen,
-beide Builds, Smoke-Tests. Der Web-Build braucht erreichbaren Content — entweder
-läuft `pnpm dev:cms`, oder `PAYLOAD_URL=https://admin.titz.cooking` davorsetzen.
+beide Builds, Smoke-Tests.
+
+Der Web-Build braucht Content, und ein laufendes CMS allein genügt nicht — die
+Datenbank muss auch befüllt sein (`pnpm seed`). Sonst baut Astro eine leere
+Seite, und die Smoke-Tests melden fehlende Sektionen. Der kürzere Weg gegen
+echten Inhalt: `PAYLOAD_URL=https://admin.titz.cooking pnpm verify`.
+
+Die Smoke-Tests brauchen Port 4321 frei. Bleibt aus einem abgebrochenen Lauf ein
+Preview-Server übrig, bricht `tests/globalSetup.ts` mit dem Aufräumbefehl ab —
+früher liefen die Tests in diesem Fall still gegen den alten Build.
 
 Nicht umgehen. Wer `--no-verify` braucht, hat einen Fund zu erklären.
 
