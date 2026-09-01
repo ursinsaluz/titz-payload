@@ -260,8 +260,9 @@ Funktion.
 - **Cloudflare Access vor `/admin`.** Das Admin-Panel ist öffentlich erreichbar,
   davor steht nur E-Mail und Passwort. Bewusst aufgeschoben.
 
-  Wenn es kommt, ist es ein Port und kein Neubau: `alvier-payload` hat
-  `apps/cms/src/auth/cloudflareAccess.ts` samt Unit-Test. Zwei Fallen sind dort
+  Wenn es kommt, ist es ein Port und kein Neubau: Im Schwesterprojekt
+  `alvier-payload` liegt der fertige Code unter `apps/cms/src/auth/` samt
+  Unit-Test — in diesem Repo gibt es das Verzeichnis nicht. Zwei Fallen sind dort
   dokumentiert — die Strategie muss **beides** lesen, den Header
   `Cf-Access-Jwt-Assertion` und den Cookie `CF_Authorization`, weil Access den
   Header nur auf den Pfaden seiner Application setzt und die Admin-UI ihre
