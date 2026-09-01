@@ -142,9 +142,34 @@ offen und wartet auf Node-Stream-Ereignisse, die im Worker nicht kommen.
 Wer es erneut versuchen will, wenn das Paket nachzieht: `mcpPlugin` gibt
 `mcpHandlerOptions` durch (`disableSse`, `maxDuration`, `redisUrl`).
 
-**Prod-Inhalt bearbeitet man stattdessen** über die REST-API oder über ein
-Skript mit `payload run` und `NODE_ENV=production` — dann greifen die echten
-Bindings. `apps/cms/scripts/repairProd.ts` ist das Muster dafür.
+### Prod-Inhalt über MCP: der lokale Server an den echten Bindings
+
+Der MCP-Endpunkt funktioniert im Node-Prozess. Also läuft der Prozess lokal und
+die Daten kommen von remote:
+
+```bash
+pnpm dev:cms:remote
+```
+
+Das hängt den lokalen Dev-Server an das echte D1 und R2. Der MCP-Server
+`payload` in `.mcp.json` zeigt weiterhin auf `localhost:3000` — arbeitet damit
+aber auf Produktionsdaten.
+
+> **Damit schreibt die Entwicklung in die Produktionsdatenbank.** Kein
+> Sicherheitsnetz, kein Undo. `PAYLOAD_MCP_TOKEN` muss dann der Schlüssel aus
+> dem **Prod**-Admin sein — die Schlüssel liegen in der Datenbank, an der der
+> Server hängt.
+
+Ein Rebuild wird dabei nicht ausgelöst, weil `WEB_DEPLOY_HOOK_URL` lokal leer
+ist. Wer will, dass Änderungen sofort live gehen:
+
+```bash
+WEB_DEPLOY_HOOK_URL=<hook> pnpm dev:cms:remote
+```
+
+Ohne MCP geht es auch: über die REST-API, oder mit einem Skript per
+`payload run` und `NODE_ENV=production`. `apps/cms/scripts/repairProd.ts` ist
+das Muster dafür.
 
 ## Weiterlesen
 

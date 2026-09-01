@@ -7,6 +7,7 @@
     "dev": "pnpm --parallel --filter @titz/cms --filter @titz/web run dev",
     "dev:cms": "pnpm --filter @titz/cms run dev",
     "dev:web": "pnpm --filter @titz/web run dev",
+    "dev:cms:remote": "pnpm --filter @titz/cms run dev:remote",
     "build": "pnpm --filter @titz/cms run build && pnpm --filter @titz/web run build",
     "deploy:cms": "pnpm --filter @titz/cms run deploy",
     "deploy:web": "pnpm --filter @titz/web run deploy",

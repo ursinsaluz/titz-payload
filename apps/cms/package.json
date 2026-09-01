@@ -25,7 +25,8 @@
     "generate:types:shared": "node scripts/syncSharedTypes.mjs",
     "test:unit": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",
-    "migrate:status:prod": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore NODE_OPTIONS=--no-deprecation payload migrate:status"
+    "migrate:status:prod": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore NODE_OPTIONS=--no-deprecation payload migrate:status",
+    "dev:remote": "cross-env REMOTE_BINDINGS=true NODE_OPTIONS=--no-deprecation next dev"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.4",

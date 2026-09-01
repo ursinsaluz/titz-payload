@@ -15,10 +15,15 @@
  * unberührt. Die IDs bleiben erhalten, also auch alle Verknüpfungen aus News,
  * Seiten und Globals.
  *
- * Standardmässig wird nur berichtet. Schreiben erst mit `--apply`:
+ * Standardmässig wird nur berichtet. Geschrieben wird erst mit `REPAIR_APPLY=1`:
  *
- *   pnpm --filter @titz/cms exec cross-env NODE_ENV=production PAYLOAD_SECRET=ignore \
- *     payload run scripts/repairProd.ts -- --apply
+ *   cd apps/cms
+ *   NODE_ENV=production PAYLOAD_SECRET=ignore REPAIR_APPLY=1 \
+ *     npx payload run scripts/repairProd.ts
+ *
+ * Eine Umgebungsvariable und kein Flag, weil `payload run` Argumente hinter dem
+ * Skriptnamen nicht an dessen `process.argv` durchreicht: Ein `--apply` kam nie
+ * an, das Skript berichtete bloss, und die Ausgabe sah nach Erfolg aus.
  *
  * NODE_ENV=production ist wichtig: nur dann verbindet die Konfiguration auf die
  * echten Bindings statt auf die lokale Kopie.
@@ -35,7 +40,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 const iconsDir = path.resolve(dirname, '../src/seed/assets/icons')
 const mediaDir = path.resolve(dirname, '../src/seed/assets/media')
 
-const APPLY = process.argv.includes('--apply')
+const APPLY = process.env.REPAIR_APPLY === '1' || process.argv.includes('--apply')
 
 /** miniflare's Binding-Proxy akzeptiert keine Node-Buffer — in echte Uint8Array umwandeln. */
 const toUploadData = (buffer: Buffer): Buffer =>
@@ -63,7 +68,7 @@ async function main() {
   const payload = await getPayload({ config })
   const log = payload.logger
 
-  log.info(APPLY ? '=== SCHREIBMODUS ===' : '=== Nur Bericht (--apply zum Schreiben) ===')
+  log.info(APPLY ? '=== SCHREIBMODUS ===' : '=== Nur Bericht (REPAIR_APPLY=1 zum Schreiben) ===')
 
   // ---------------------------------------------------------------- Icons ---
   const iconDateien = fs.readdirSync(iconsDir).filter((f) => f.endsWith('.svg'))
@@ -108,12 +113,19 @@ async function main() {
   log.info(`Icons: ${neu} neu, ${erneuert} Datei erneuert (von ${iconDateien.length})`)
 
   // ---------------------------------------------------------------- Medien ---
-  const medien = await payload.find({ collection: 'media', limit: 500, pagination: false })
+  const medien = await payload.find({ collection: 'media', limit: 1000, pagination: false })
   let ersetzt = 0
+  /**
+   * Die Medienbibliothek ist inzwischen auf über 160 Bilder gewachsen, von denen
+   * fast alle im Admin hochgeladen wurden und völlig in Ordnung sind. Eine
+   * Warnzeile pro Stück machte die Ausgabe unlesbar und verdeckte genau die
+   * Zeilen, auf die es ankommt — darum nur noch gezählt.
+   */
+  const ohneQuelle: number[] = []
   for (const doc of medien.docs) {
     const schluessel = MEDIA_ZUORDNUNG[doc.alt]
     if (!schluessel) {
-      log.warn(`  ? Bild id=${doc.id} «${doc.alt}» — keine Quelle im Repo, bleibt wie es ist`)
+      ohneQuelle.push(doc.id as number)
       continue
     }
     const { datei } = MEDIEN[schluessel]
@@ -134,9 +146,12 @@ async function main() {
       })
     }
   }
-  log.info(`Bilder: ${ersetzt} von ${medien.docs.length} ersetzt`)
+  log.info(
+    `Bilder: ${ersetzt} ersetzt, ${ohneQuelle.length} ohne Quelle im Repo unangetastet ` +
+      `(von ${medien.docs.length})`,
+  )
 
-  if (!APPLY) log.info('Nichts geschrieben. Mit --apply erneut ausführen.')
+  if (!APPLY) log.info('Nichts geschrieben. Mit REPAIR_APPLY=1 erneut ausführen.')
   process.exit(0)
 }
 
