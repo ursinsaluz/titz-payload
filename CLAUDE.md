@@ -28,6 +28,14 @@ fehlende Fähigkeit.
 funktioniert** — der Handler läuft im Worker in einen Deadlock. Begründung und
 Messwerte in [README.md](README.md#gegen-produktion-geht-mcp-nicht).
 
+## Die Payload-Skill liegt zweimal im Baum
+
+`.agents/skills/payload/` enthält die Dateien, `.claude/skills/payload` ist ein
+Symlink darauf — die eine Ablage ist die verbreitete, die andere die, in der
+Claude Code sucht. `skills-lock.json` hält Quelle (`payloadcms/skills`) und Hash
+fest, damit ein frischer Klon dieselbe Fassung bekommt. Alle drei sind
+eingecheckt; der Inhalt ist fremd und darum in `.prettierignore`.
+
 ## Was beim Prüfen wirklich hilft
 
 `pnpm verify` ist die ganze Kette und dauert etwa zwei Minuten. Für schnelle
