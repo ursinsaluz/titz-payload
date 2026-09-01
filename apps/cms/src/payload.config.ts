@@ -21,6 +21,7 @@ import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 import { SiteSettings } from './globals/SiteSettings'
 import { mitRebuild } from './hooks/rebuildWeb'
+import { cloudflareEmail } from './email/cloudflareEmail'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -107,6 +108,11 @@ export default buildConfig({
   ),
   globals: [Header, Footer, SiteSettings].map(mitRebuild),
   editor: lexicalEditor(),
+  // Ohne Adapter verschickt Payload nichts und schreibt nur eine Warnung ins
+  // Log — «Passwort vergessen» führte damit zu einer Bestätigung im Admin und
+  // zu keiner Mail. Begründung für das Binding statt SMTP in
+  // `src/email/cloudflareEmail.ts`.
+  email: cloudflareEmail,
   // Das Frontend holt seinen Content ausschliesslich über REST. GraphQL war
   // damit toter Code im Worker-Bundle — inklusive Playground-Route. Abschalten
   // entfernt Schema-Aufbau und Routen; die Handler unter
