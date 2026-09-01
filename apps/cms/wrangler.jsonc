@@ -65,6 +65,17 @@
       "binding": "R2",
       "bucket_name": "titz-payload-media",
       "preview_bucket_name": "titz-payload-media",
+      // Wrangler schaltet Remote-Bindings **pro Binding** frei. Beim D1 stand
+      // das Flag, beim R2 nicht — deshalb schrieb jeder Lauf gegen Produktion
+      // die Datenbankzeilen nach remote und die Dateien ins lokale Bucket unter
+      // `.wrangler/`. Genau so entstand am 06.07.2026 der Zustand, in dem alle
+      // Bilder auf titz.cooking mit 404 antworteten, obwohl die Datensätze
+      // vollständig aussahen.
+      //
+      // Wirkt nur, wenn `remoteBindings` gesetzt ist (siehe payload.config.ts):
+      // im deployten Worker sind die Bindings ohnehin echt, und ein einfaches
+      // `pnpm dev:cms` bleibt komplett lokal.
+      "remote": true,
     },
 
     // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"

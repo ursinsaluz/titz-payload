@@ -34,9 +34,29 @@ const createLog =
   (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
     if (typeof objOrMsg === 'string') {
       fn(JSON.stringify({ level, msg: objOrMsg }))
-    } else {
-      fn(JSON.stringify({ level, ...objOrMsg, msg: msg ?? (objOrMsg as { msg?: string }).msg }))
+      return
     }
+
+    // Ein Error spreadet zu einem leeren Objekt: `name`, `message` und `stack`
+    // sind nicht enumerierbar. Ohne diesen Zweig protokollierte der Logger
+    // buchstäblich `{"level":"error"}` und warf damit die einzige Spur weg, die
+    // es zu einem Fehlschlag gab — Payload verpackt Upload-Fehler in einen
+    // generischen `FileUploadError` und legt die Ursache ausschliesslich hier
+    // ab. Betrifft auch die Worker-Logs in Produktion.
+    if (objOrMsg instanceof Error) {
+      fn(
+        JSON.stringify({
+          level,
+          msg: msg ?? objOrMsg.message,
+          name: objOrMsg.name,
+          stack: objOrMsg.stack,
+          cause: objOrMsg.cause instanceof Error ? objOrMsg.cause.message : objOrMsg.cause,
+        }),
+      )
+      return
+    }
+
+    fn(JSON.stringify({ level, ...objOrMsg, msg: msg ?? (objOrMsg as { msg?: string }).msg }))
   }
 
 const cloudflareLogger = {
