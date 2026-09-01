@@ -21,7 +21,7 @@ wird einmal beim Build über REST geholt; danach läuft für titz.cooking kein C
 mehr. Eine Änderung im Admin erscheint erst nach einem Rebuild. Den stösst
 `apps/cms/src/hooks/rebuildWeb.ts` über den Deploy-Hook an — wer eine neue
 Collection anlegt, muss sie dort einordnen, sonst bleibt sie stumm veraltet.
-`tests/unit/rebuildWeb.test.ts` bricht, bis das passiert.
+`apps/cms/tests/unit/rebuildWeb.test.ts` bricht, bis das passiert.
 
 **2. Ein Push auf `main` führt keine Migrationen aus.** Workers Builds baut und
 deployt, migriert aber nicht. Nach einer Schemaänderung gilt `pnpm deploy:cms`
@@ -130,7 +130,7 @@ CMS deployt `pnpm deploy:web` still lokalen Inhalt nach Produktion. Das
 `deploy`-Skript setzt die Prod-Adresse darum selbst.
 
 Die Smoke-Tests brauchen Port 4321 frei. Bleibt aus einem abgebrochenen Lauf ein
-Preview-Server übrig, bricht `tests/globalSetup.ts` mit dem Aufräumbefehl ab —
+Preview-Server übrig, bricht `apps/web/tests/globalSetup.ts` mit dem Aufräumbefehl ab —
 früher liefen die Tests in diesem Fall still gegen den alten Build.
 
 Nicht umgehen. Wer `--no-verify` braucht, hat einen Fund zu erklären.

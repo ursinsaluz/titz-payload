@@ -40,6 +40,19 @@ tests/unit/      Vitest, reine Logik ohne Datenbank
 
 `/` leitet über `next.config.ts` auf `/admin` um. GraphQL ist abgeschaltet.
 
+Vier verfolgte Dateien werden **erzeugt** und nicht von Hand geschrieben — alle
+vier entstehen neu bei `pnpm generate:types` bzw. `pnpm generate:importmap`:
+
+| Datei                                  | erzeugt von                   |
+| -------------------------------------- | ----------------------------- |
+| `src/payload-types.ts`                 | `payload generate:types`      |
+| `../../packages/types/src/payload.ts`  | `scripts/syncSharedTypes.mjs` |
+| `cloudflare-env.d.ts`                  | `wrangler types`              |
+| `src/app/(payload)/admin/importMap.js` | `payload generate:importmap`  |
+
+Sie sind eingecheckt, weil Build und Typprüfung sie brauchen, ohne dass vorher
+etwas laufen muss.
+
 ## Vier Dinge, die man wissen muss
 
 **Der Build läuft mit webpack, nicht mit Turbopack.** Next 16 baut standardmässig
