@@ -9,7 +9,7 @@ const locationLine = footer.contact?.address?.split('\n').pop()
 ---
 
 <footer class="site-footer" id="kontakt">
-  <img src="/titz-mark.svg" alt="" width="64" height="42" />
+  <img src="/titz-mark.svg" alt="" width="42" height="42" />
   <div class="site-footer__brand">{header.logo?.text ?? 'Titz'}</div>
   <div class="site-footer__links">
     {footer.contact?.email && <a href={`mailto:${footer.contact.email}`}>{footer.contact.email}</a>}
