@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "astro build && wrangler deploy",
+    "deploy": "cross-env PAYLOAD_URL=https://admin.titz.cooking astro build && wrangler deploy",
     "check": "astro check",
     "test": "playwright test",
     "lint": "eslint ."
@@ -21,6 +21,7 @@
     "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
+    "cross-env": "^7.0.3",
     "eslint": "^9.39.4",
     "eslint-plugin-astro": "^3.1.0",
     "typescript": "5.7.3",
