@@ -135,7 +135,15 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
     ({ getPlatformProxy }) =>
       getPlatformProxy({
         environment: process.env.CLOUDFLARE_ENV,
-        remoteBindings: isProduction,
+        // `REMOTE_BINDINGS=true` hängt den lokalen Dev-Server an das echte D1
+        // und R2 statt an die Kopie unter `.wrangler/`. Der Weg, um Prod-Inhalt
+        // über MCP zu lesen und zu schreiben: Der MCP-Endpunkt des Plugins
+        // funktioniert nur im Node-Prozess, nicht im Worker — also läuft der
+        // Prozess lokal und die Daten kommen von remote.
+        //
+        // Damit schreibt die Entwicklung in die Produktionsdatenbank. Darum
+        // ausschliesslich über `pnpm dev:cms:remote`, nie als Standard.
+        remoteBindings: isProduction || process.env.REMOTE_BINDINGS === 'true',
       } satisfies GetPlatformProxyOptions),
   )
 }

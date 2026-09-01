@@ -59,7 +59,11 @@ Produktion — vorher `pnpm migrate:status:prod` und die SQL lesen.
 
 **`pnpm seed` niemals gegen Produktion.** Er räumt Collections ab. Für
 Reparaturen `scripts/repairProd.ts` — der fasst nur Dateien an und schreibt
-erst mit `--apply`.
+erst mit `REPAIR_APPLY=1`.
+
+**`pnpm dev:remote` hängt an der Produktionsdatenbank.** Gedacht für Prod-Inhalt
+über MCP, weil der MCP-Endpunkt nur im Node-Prozess läuft. Jede Änderung ist
+eine echte Änderung.
 
 ## Befehle
 

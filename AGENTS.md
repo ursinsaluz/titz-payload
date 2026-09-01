@@ -37,7 +37,10 @@ aufmerksam lesen, bevor sie deployt werden.
 schreibt `content.json` hinein. In Produktion steht Redaktionelles, das dort
 nicht drin ist — das Stage-Badge etwa auf «15 GaultMillau», `content.json` sagt
 «16». Für Reparaturen an Produktion gibt es `apps/cms/scripts/repairProd.ts`:
-Es fasst nur Dateien an, kein Inhaltsfeld, und schreibt erst mit `--apply`.
+Es fasst nur Dateien an, kein Inhaltsfeld, und schreibt erst mit
+`REPAIR_APPLY=1`. Eine Umgebungsvariable, weil `payload run` Argumente hinter
+dem Skriptnamen nicht durchreicht — ein `--apply` kam nie an und die Ausgabe
+sah trotzdem nach Erfolg aus.
 
 **5. Bilder brauchen die richtige Grösse _vor_ dem Upload.** Auf Workers gibt es
 kein `sharp`, also keine Bildvarianten und kein nachträgliches Verkleinern. Was
@@ -63,8 +66,10 @@ für Vercel-Functions gebaut ist: Es hält die Antwort offen und wartet auf
 Node-Stream-Ereignisse. Im Worker endet das im Deadlock — gemessen `HTTP 500`
 und _«your Worker's code had hung»_ bei 67 ms Wall-Time, während dieselbe
 Anfrage lokal `HTTP 200` liefert. Keinen `payload-prod`-Eintrag in `.mcp.json`
-anlegen; Prod-Inhalt über die REST-API oder `payload run` mit
-`NODE_ENV=production`.
+anlegen. Für Prod-Inhalt über MCP gibt es `pnpm dev:cms:remote`: lokaler
+Node-Prozess, echte Bindings — und damit schreibt die Entwicklung in die
+Produktionsdatenbank, also nur bewusst. Ohne MCP: REST-API oder `payload run`
+mit `NODE_ENV=production`.
 
 **10. Das Repo ist öffentlich.** Zugangsdaten gehören in
 `wrangler secret put` oder in eine ignorierte `.env`. `.env.example` und
