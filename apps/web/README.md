@@ -19,10 +19,17 @@ Ohne laufendes CMS gegen Produktion arbeiten:
 PAYLOAD_URL=https://admin.titz.cooking pnpm --filter @titz/web build
 ```
 
-`PAYLOAD_URL` wird beim Build eingebacken. Fehlt sie, greift im Produktivbuild
-`https://admin.titz.cooking`, im Entwicklungsbuild `http://localhost:3000`.
-Laufzeit-`vars` in `wrangler.jsonc` haben hier keine Wirkung — bei einem
-Worker, der nur statische Assets ausliefert, gibt es keine Laufzeit.
+`PAYLOAD_URL` wird beim Build eingebacken und ist **optional**: Ohne Angabe
+entscheidet der Modus — `astro dev` nimmt `http://localhost:3000`, `astro build`
+nimmt `https://admin.titz.cooking`. Laufzeit-`vars` in `wrangler.jsonc` haben
+hier keine Wirkung; bei einem Worker, der nur statische Assets ausliefert, gibt
+es keine Laufzeit.
+
+Die Variable **nicht** dauerhaft in `.env` setzen. Eine Zeile
+`PAYLOAD_URL=http://localhost:3000` dort lässt jeden Build gegen das lokale CMS
+laufen: Ohne CMS bricht er mit «fetch failed» ab, mit CMS deployt
+`pnpm deploy:web` still lokalen Inhalt nach Produktion. Das `deploy`-Skript
+setzt die Prod-Adresse deshalb selbst.
 
 ## Was hier drin liegt
 

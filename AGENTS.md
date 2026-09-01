@@ -108,10 +108,17 @@ pnpm verify
 Das ist dieselbe Kette wie in der CI: Secret-Scan, Prettier, ESLint, Typen,
 beide Builds, Smoke-Tests.
 
-Der Web-Build braucht Content, und ein laufendes CMS allein genügt nicht — die
-Datenbank muss auch befüllt sein (`pnpm seed`). Sonst baut Astro eine leere
-Seite, und die Smoke-Tests melden fehlende Sektionen. Der kürzere Weg gegen
-echten Inhalt: `PAYLOAD_URL=https://admin.titz.cooking pnpm verify`.
+Der Web-Build holt seinen Content standardmässig von admin.titz.cooking — ohne
+`PAYLOAD_URL` entscheidet der Modus (`astro dev` lokal, `astro build`
+Produktion). Wer ihn absichtlich gegen ein lokales CMS baut, braucht dort auch
+Inhalt (`pnpm seed`); sonst entsteht eine leere Seite und die Smoke-Tests melden
+fehlende Sektionen.
+
+`PAYLOAD_URL` gehört **nicht** dauerhaft in `apps/web/.env`. Eine Zeile
+`PAYLOAD_URL=http://localhost:3000` dort lässt jeden Build gegen das lokale CMS
+laufen — ohne laufendes CMS bricht er mit «fetch failed» ab, und mit laufendem
+CMS deployt `pnpm deploy:web` still lokalen Inhalt nach Produktion. Das
+`deploy`-Skript setzt die Prod-Adresse darum selbst.
 
 Die Smoke-Tests brauchen Port 4321 frei. Bleibt aus einem abgebrochenen Lauf ein
 Preview-Server übrig, bricht `tests/globalSetup.ts` mit dem Aufräumbefehl ab —
