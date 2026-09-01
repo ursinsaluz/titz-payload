@@ -30,6 +30,16 @@ const isBuild = process.env.NEXT_PHASE === 'phase-production-build'
 const isCLI = process.argv.some((value) => realpath(value).endsWith(path.join('payload', 'bin.js')))
 const isProduction = process.env.NODE_ENV === 'production'
 
+/**
+ * `REMOTE_BINDINGS=true` hängt den lokalen Dev-Server an das echte D1 und R2
+ * statt an die Kopie unter `.wrangler/` — der Weg, um Prod-Inhalt über MCP zu
+ * bearbeiten, weil der MCP-Endpunkt nur im Node-Prozess läuft.
+ *
+ * Nur über `pnpm dev:remote` setzen. Damit schreibt die Entwicklung in die
+ * Produktionsdatenbank.
+ */
+const useRemoteBindings = isProduction || process.env.REMOTE_BINDINGS === 'true'
+
 const createLog =
   (level: string, fn: typeof console.log) => (objOrMsg: object | string, msg?: string) => {
     if (typeof objOrMsg === 'string') {
@@ -112,7 +122,21 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: sqliteD1Adapter({ binding: cloudflare.env.D1 }),
+  db: sqliteD1Adapter({
+    binding: cloudflare.env.D1,
+    /**
+     * Im Entwicklungsmodus schreibt der Adapter das Schema direkt aus der
+     * Konfiguration in die Datenbank. Gegen die lokale Kopie ist das bequem;
+     * gegen Produktion ist es falsch und gefährlich: Dort kommt das Schema aus
+     * `src/migrations/`, der Push kollidiert damit — `index
+     * payload_preferences_rels_order_idx already exists` — und im schlechteren
+     * Fall verändert er das Prod-Schema hinter dem Rücken der Migrationen.
+     *
+     * Darum im Remote-Modus aus. Schemaänderungen für Produktion laufen weiter
+     * ausschliesslich über `payload migrate:create` und `pnpm deploy:cms`.
+     */
+    push: !useRemoteBindings,
+  }),
   logger: isProduction ? cloudflareLogger : undefined,
   plugins: [
     r2Storage({
@@ -163,7 +187,7 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
         //
         // Damit schreibt die Entwicklung in die Produktionsdatenbank. Darum
         // ausschliesslich über `pnpm dev:cms:remote`, nie als Standard.
-        remoteBindings: isProduction || process.env.REMOTE_BINDINGS === 'true',
+        remoteBindings: useRemoteBindings,
       } satisfies GetPlatformProxyOptions),
   )
 }
