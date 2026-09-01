@@ -1,8 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1.5 -1.5 27 27">
-  <circle cx="12" cy="12" r="13.5" fill="#f9e3d4"></circle>
-  <path d="M9,9 C7,11 4.5,17.5 3,21 C6.5,19.5 13,17 15,15 C16.5,13.5 16,10.5 14,9.5 C12.5,8.8 10.5,8.5 9,9 Z" fill="#c5a059"></path>
-  <g fill="none" stroke="#2a4d38" stroke-width="2.2" stroke-linecap="round">
-    <path d="M14,9 C14,6.5 15,5 17,4"></path>
-    <path d="M14.5,9.5 C16.5,8.5 18.5,8.5 20,9"></path>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="2.50 3.55 19.00 19.00" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <style>
+    /* Auf einem dunklen Tab würde das Grün verschwinden. SVG-Favicons dürfen
+       Media Queries tragen; Gold bleibt in beiden Fällen Gold. */
+    @media (prefers-color-scheme: dark) { .zweig { stroke: #dff0e3; } }
+  </style>
+  <g class="zweig" stroke="#2a4d38">
+    <path d="M12,21.5 C12,15 12,11.8 12,8.9"></path>
+    <path d="M11.70,17.80 C11.43,15.13 9.19,13.59 6.60,14.30 C6.87,16.97 9.11,18.51 11.70,17.80 Z"></path>
+    <path d="M12.30,15.40 C14.89,16.11 17.13,14.57 17.40,11.90 C14.81,11.19 12.57,12.73 12.30,15.40 Z"></path>
+    <path d="M11.80,12.30 C11.67,10.00 9.82,8.68 7.60,9.30 C7.73,11.60 9.58,12.92 11.80,12.30 Z"></path>
   </g>
+  <path d="M12.00,8.90 C13.75,7.70 13.75,5.80 12.00,4.60 C10.25,5.80 10.25,7.70 12.00,8.90 Z" stroke="#c5a059"></path>
 </svg>

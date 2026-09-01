@@ -52,6 +52,38 @@ Karten einer Sektion nehmen `cardColors[index % 4]`. Eine fünfte Karte wiederho
 darum die erste Farbe — beabsichtigt, es soll nach Vielfalt aussehen, nicht nach
 System.
 
+## Die Marke
+
+Ein Lorbeerzweig: Stiel, drei grüne Blätter, an der Spitze ein viertes in Gold.
+Lorbeer, weil er eine echte Zutat ist und keine abstrakte Form — er bleibt
+erkennbar, auch wenn er nur 26 px hoch ist. Das goldene Blatt ist der einzige
+Akzent; es trägt dieselbe Kontur wie die anderen drei und unterscheidet sich
+allein in der Farbe. Wer zusätzlich die Form ändert, macht daraus ein zweites
+Motiv statt einer Betonung.
+
+`apps/web/public/titz-mark.svg` ist die Marke, `favicon.svg` dieselbe Zeichnung
+mit einem `prefers-color-scheme`-Block, der den Zweig auf einem dunklen Tab auf
+`--mint` hebt; das Gold bleibt in beiden Fällen Gold. Beide sind
+Outline-Zeichnungen ohne Füllung — Strichbreite 1.5 wie im Icon-Set, runde Enden.
+
+| Ort     | Grösse  |
+| ------- | ------- |
+| Kopf    | 26 × 26 |
+| Fuss    | 42 × 42 |
+| Favicon | frei    |
+
+Die Box ist quadratisch (`viewBox="2.50 3.55 19.00 19.00"`); der Zweig füllt sie
+in der Höhe zu 97 % und in der Breite zu 65 %, ist also bewusst schmal und hoch.
+Wer die Blätter ändert, rechnet die Box neu — sonst sitzt die Zeichnung nicht
+mehr in der Mitte.
+
+**Die Blätter dürfen nicht schmaler werden.** Ihre Mitte bleibt nur offen,
+solange zwei Strichkanten plus Zwischenraum je drei Pixel breit sind. Eine
+frühere Fassung war 1.2 Einheiten breit: ab 26 px berührten sich die Kanten und
+das goldene Blatt wurde zur Fläche. Jetzt sind es 1.75 bis 2.05. Bei 16 px
+schliesst sich die Mitte trotzdem — das ist die Auflösungsgrenze, keine
+Nachlässigkeit, und dort liest die Marke als kleine Pflanze mit hellem Kopf.
+
 ## Typografie
 
 Eine Schrift für alles: **Space Grotesk** (400/500/700), über Google Fonts mit
