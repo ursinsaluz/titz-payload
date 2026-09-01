@@ -17,3 +17,8 @@ packages/types/src/payload.ts
 
 # Inhalts-Inventar für den Seed — eine Datenablage, keine Quelle.
 apps/cms/src/seed/content.json
+
+# Fremder Inhalt: die Payload-Skill kommt aus payloadcms/skills und wird von
+# `skills-lock.json` verwaltet. Formatieren würde sie beim nächsten Abgleich
+# wieder auseinanderlaufen lassen.
+.agents/
