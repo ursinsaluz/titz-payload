@@ -119,11 +119,10 @@ Bildern wirkt darum **im Browser**, nicht am Rand. Ein wiederkehrender Besucher
 holt kein Bild mehr; der erste Aufruf jedes neuen Besuchers geht weiterhin durch
 Worker, D1 und R2.
 
-Der saubere Weg zu einem Rand-Cache für Bilder wäre eine eigene R2-Custom-Domain
-(etwa `media.titz.cooking`): Dateien direkt aus dem Bucket, kein Worker im Pfad,
-Caching am Rand von selbst. Dafür müsste Payload diese Adressen ausgeben —
-`@payloadcms/storage-r2` bietet dafür keine Option, es bräuchte ein eigenes
-`generateFileURL`. Siehe offene Punkte.
+Ein Rand-Cache für Bilder wäre über eine eigene R2-Custom-Domain zu haben —
+Dateien direkt aus dem Bucket, kein Worker im Pfad. Das ist verworfen, weil es
+die Zugriffsprüfung unten umgehen würde; die Begründung steht bei den
+verworfenen Wegen.
 
 ## Daten und Dateien
 
@@ -135,6 +134,39 @@ der Entwicklung, der echte Kontext im Worker
 Auf Workers gibt es kein `sharp`. Also keine Bildvarianten, kein Zuschneiden,
 kein Fokuspunkt (`crop: false`, `focalPoint: false`). Bilder müssen in der
 richtigen Grösse hochgeladen werden.
+
+### Wer welche Bilder sehen darf
+
+`media` stand auf `read: () => true`. Am 01.09.2026 war damit messbar:
+
+```
+GET /api/media?where[kategorie][equals]=privat  → 200, totalDocs: 23
+GET /api/media/file/privat-nacht-01.jpg         → 200
+```
+
+Ohne Anmeldung, und nicht nur abrufbar sondern **auflistbar** — man holt sich die
+Namen aller privaten Aufnahmen und lädt sie einzeln herunter. Die Bibliothek
+enthält 36 Bilder mit `verwendung: intern`, eines mit `archiv` und 23 in der
+Kategorie `privat`: Familien- und Reiseaufnahmen. Das Feld `verwendung` war von
+Anfang an dafür gedacht, Bildmaterial für die Seite von privaten Aufnahmen zu
+trennen — nur hat es niemand ausgewertet.
+
+`collections/mediaZugriff.ts` wertet es jetzt aus. Payload nimmt aus einer
+Access-Funktion auch ein `where`-Objekt an und hängt es als Bedingung an die
+Abfrage; `checkFileAccess` tut dasselbe für die Datei-Route. Eine Regel deckt
+also Liste und Datei ab:
+
+|                                     | vorher | nachher |
+| ----------------------------------- | ------ | ------- |
+| `?where[kategorie][equals]=privat`  | 23     | 0       |
+| `?where[verwendung][equals]=intern` | 36     | 0       |
+| alle Bilder                         | 162    | 125     |
+| `privat-nacht-01.jpg`               | 200    | 403     |
+| `portrait-titz.webp`                | 200    | 200     |
+
+Ausgeschlossen wird, was ausdrücklich nicht öffentlich ist (`not_in`), nicht
+umgekehrt nur `web` zugelassen: Ein Datensatz ohne gesetztes Feld würde sonst
+stillschweigend aus der Seite verschwinden.
 
 ### Schema: lokal geschoben, in Produktion migriert
 
@@ -197,34 +229,59 @@ Nicht dabei, mit Absicht: visuelle Regressionstests und Unit-Tests für
 Komponenten. Beide brechen bei jeder Designänderung und sagen nichts über die
 Funktion.
 
+## Verworfene Wege
+
+- **Bilder über eine R2-Custom-Domain** (etwa `media.titz.cooking`). Hätte den
+  Worker aus dem Bildpfad genommen und echtes Rand-Caching gebracht. Verworfen,
+  weil sie die Zugriffsprüfung aus «Wer welche Bilder sehen darf» **umgehen**
+  würde: Sie liefert direkt aus dem Bucket, ohne Payload. Damit wäre sie nicht
+  bloss unnötig, sondern schädlich.
+
+  Der Cache-Gewinn wäre ausserdem klein — `immutable` greift schon im Browser,
+  ein wiederkehrender Besucher holt kein Bild mehr. Nur der erste Aufruf jedes
+  neuen Besuchers geht durch Worker, D1 und R2, bei vier Bildern auf der
+  Startseite.
+
+  Wird Rand-Caching später doch gebraucht, wäre der Weg ein Proxy auf dem
+  Web-Worker (`run_worker_first` für `/media/*`): Bucket bleibt privat, die
+  Prüfung bleibt möglich, und dort darf `cache.enabled` an, weil keine Cookies
+  im Spiel sind.
+
+- **TypeScript 7.** Gemessen am 01.09.2026: `tsc --noEmit` aus TS 7 bricht am
+  CMS mit `error TS5102: Option 'baseUrl' has been removed` ab, `@astrojs/check`
+  nennt als Peer `^5.0.0 || ^6.0.0` und `typescript-eslint` `>=4.8.4 <6.1.0`.
+  Beide Typ-Tore des Frontends tragen TS 7 also nicht. Dazu die Feststellung aus
+  `alvier-payload`: `astro check` treibt TypeScript über die programmatische API,
+  die der Go-Port nicht anbietet — das Frontend verlöre seine Typprüfung. Bleibt
+  bei 5.9.
+
 ## Offene Punkte
 
-- **Cloudflare Access vor `/admin`.** Das Admin-Panel ist öffentlich
-  erreichbar, davor steht nur E-Mail und Passwort. `alvier-payload` hat Access;
-  hier ist es bewusst aufgeschoben.
-- **`users` hat kein Rollenfeld.** Jeder angemeldete Benutzer darf alles.
-  Solange es einen Benutzer gibt, ist das kein Problem.
-- **Bilder über eine R2-Custom-Domain** (etwa `media.titz.cooking`). Würde den
-  Worker aus dem Bildpfad nehmen und echtes Rand-Caching bringen (siehe oben).
-  Nichts davon existiert bisher — es bräuchte zwei Dinge: eine Custom Domain am
-  Bucket im Dashboard und ein eigenes `generateFileURL` in der
-  Upload-Konfiguration, weil `@payloadcms/storage-r2` dafür keine Option
-  bietet.
+- **Cloudflare Access vor `/admin`.** Das Admin-Panel ist öffentlich erreichbar,
+  davor steht nur E-Mail und Passwort. Bewusst aufgeschoben.
 
-  Vorher zu klären: **Eine R2-Custom-Domain macht das ganze Bucket öffentlich
-  lesbar.** In der Bibliothek liegen 36 Bilder mit `verwendung: intern`, eines
-  mit `archiv` und 23 in der Kategorie `privat` — Familien- und Reiseaufnahmen.
-  Heute schützt sie nichts als die Unauffälligkeit ihrer Adresse, aber eine
-  öffentliche Domain macht sie ohne Umweg abrufbar. Der Ausweg wäre, nur
-  `verwendung: web` in ein zweites, öffentliches Bucket zu spiegeln — deutlich
-  mehr Arbeit als der Cache-Gewinn wert ist, solange die Bilder nach dem ersten
-  Aufruf im Browser liegen.
+  Wenn es kommt, ist es ein Port und kein Neubau: `alvier-payload` hat
+  `apps/cms/src/auth/cloudflareAccess.ts` samt Unit-Test. Zwei Fallen sind dort
+  dokumentiert — die Strategie muss **beides** lesen, den Header
+  `Cf-Access-Jwt-Assertion` und den Cookie `CF_Authorization`, weil Access den
+  Header nur auf den Pfaden seiner Application setzt und die Admin-UI ihre
+  Identität über `/api/users/me` prüft, das aussenherum liegt; und fehlende
+  `CF_ACCESS_TEAM_DOMAIN`/`CF_ACCESS_AUD` gaben still `null` zurück.
 
-- **Smart Placement für den Admin-Worker.** D1 antwortet aus EEUR (Mailand); das
-  Admin macht viele aufeinanderfolgende Abfragen pro Seitenaufruf. Placement
-  steht auf `Default`. Ein Versuch mit `smart` kostet nichts und ist
-  reversibel.
+  Wichtig für die Einrichtung: Die Application darf **nur** `/admin` abdecken,
+  nicht `/api/*` — sonst kommt der Astro-Build nicht mehr an den Content. Die
+  Content-API bleibt damit offen, und genau deshalb war die Zugriffsprüfung auf
+  `media` die Voraussetzung und nicht die Alternative.
+
+- **`users` hat kein Rollenfeld.** Jeder angemeldete Benutzer darf alles. Wird
+  fällig, wenn jemand aus dem Restaurant Inhalte pflegt und nicht an `users`
+  soll — dann in einem Zug mit `users.access`.
+
 - **Astro Content Layer.** Ein eigener Loader würde Abfragen, Zwischenspeicher
   und Validierung an einer Stelle bündeln und `getCollection()` typsicher
-  bereitstellen. Ersetzt `lib/payload.ts` samt `lib/schemas.ts` — grösserer
-  Umbau, lohnt sich erst, wenn mehr Collections dazukommen.
+  bereitstellen. Ersetzt `lib/payload.ts` samt `lib/schemas.ts` und alle
+  Aufrufstellen — für beides gibt es hier schon eine Entsprechung.
+
+  Der Auslöser, ab dem es sich lohnt: wenn eine Collection so gross wird, dass
+  ein Build sie nicht mehr in einem Rutsch holen soll, oder wenn Bilder durch
+  Astros Asset-Pipeline sollen.

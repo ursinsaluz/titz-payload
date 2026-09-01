@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { uploadCacheHeaders } from '../uploads/cacheHeaders'
+import { mediaLesen } from './mediaZugriff'
 
 /**
  * Kategorien der Bildablage. Sie bilden ab, wofür ein Bild auf titz.cooking
@@ -42,7 +43,7 @@ export const Media: CollectionConfig = {
     defaultColumns: ['filename', 'alt', 'kategorie', 'hobby', 'verwendung'],
   },
   access: {
-    read: () => true,
+    read: mediaLesen,
   },
   fields: [
     {

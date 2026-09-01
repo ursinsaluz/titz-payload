@@ -99,6 +99,15 @@ Handgeschriebene Interfaces für CMS-Daten sind nicht erlaubt. Sie hatten
 durchgehend `string | undefined`, wo Payload `string | null | undefined` liefert —
 die Abweichung fiel niemandem auf, weil nichts sie prüfte.
 
+## TypeScript bleibt bei 5.9
+
+Nicht auf 7 gehen. `tsc --noEmit` aus TS 7 bricht am CMS mit
+`Option 'baseUrl' has been removed` ab, `@astrojs/check` und `typescript-eslint`
+nennen TS 7 nicht in ihren Peers, und `astro check` treibt TypeScript über die
+programmatische API, die der Go-Port nicht anbietet — das Frontend verlöre seine
+Typprüfung. Begründung mit Messwerten in
+[ARCHITECTURE.md](ARCHITECTURE.md#verworfene-wege).
+
 ## Vor dem Commit
 
 ```bash

@@ -2,6 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "titz-payload-admin",
+  // D1 antwortet aus EEUR (Mailand), und das Admin macht viele
+  // aufeinanderfolgende Abfragen je Seitenaufruf. Smart Placement rückt den
+  // Worker näher an die Datenbank. Es braucht anhaltenden Verkehr, um zu lernen
+  // — bei diesem Admin kann es also auch nichts tun. Kostet nichts, ist mit
+  // einer Zeile zurückgedreht, und der Vergleich läuft über die TTFB von
+  // `/admin`.
+  "placement": { "mode": "smart" },
+
   "compatibility_date": "2025-08-15",
   "compatibility_flags": [
     // Enable Node.js API
