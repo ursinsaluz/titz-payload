@@ -42,11 +42,17 @@ const mediaDir = path.resolve(dirname, '../src/seed/assets/media')
 
 const APPLY = process.env.REPAIR_APPLY === '1' || process.argv.includes('--apply')
 
-/** miniflare's Binding-Proxy akzeptiert keine Node-Buffer — in echte Uint8Array umwandeln. */
-const toUploadData = (buffer: Buffer): Buffer =>
-  new Uint8Array(
-    buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength),
-  ) as unknown as Buffer
+/**
+ * Hier bleibt es ein echter Buffer — anders als im Seed.
+ *
+ * Der Seed wandelt in ein blankes `Uint8Array` um, weil der Binding-Proxy von
+ * miniflare keine Node-Buffer annimmt. Dieses Skript läuft aber gegen die
+ * echten Bindings, und dort ist die Umwandlung nicht nur unnötig, sondern
+ * schädlich: Payload vermisst jede hochgeladene Datei mit `probeImageSize`, und
+ * das ruft `data.readUInt32BE()` auf. Ein `Uint8Array` hat diese Methode nicht,
+ * also scheiterte jeder Upload mit einem generischen `FileUploadError`.
+ */
+const toUploadData = (buffer: Buffer): Buffer => buffer
 
 /**
  * Welches Bild zu welchem Datensatz.

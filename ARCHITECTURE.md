@@ -204,9 +204,22 @@ Funktion.
   hier ist es bewusst aufgeschoben.
 - **`users` hat kein Rollenfeld.** Jeder angemeldete Benutzer darf alles.
   Solange es einen Benutzer gibt, ist das kein Problem.
-- **Bilder über eine R2-Custom-Domain.** Würde den Worker aus dem Bildpfad
-  nehmen und echtes Rand-Caching bringen (siehe oben). Braucht ein eigenes
-  `generateFileURL` in der Upload-Konfiguration.
+- **Bilder über eine R2-Custom-Domain** (etwa `media.titz.cooking`). Würde den
+  Worker aus dem Bildpfad nehmen und echtes Rand-Caching bringen (siehe oben).
+  Nichts davon existiert bisher — es bräuchte zwei Dinge: eine Custom Domain am
+  Bucket im Dashboard und ein eigenes `generateFileURL` in der
+  Upload-Konfiguration, weil `@payloadcms/storage-r2` dafür keine Option
+  bietet.
+
+  Vorher zu klären: **Eine R2-Custom-Domain macht das ganze Bucket öffentlich
+  lesbar.** In der Bibliothek liegen 36 Bilder mit `verwendung: intern`, eines
+  mit `archiv` und 23 in der Kategorie `privat` — Familien- und Reiseaufnahmen.
+  Heute schützt sie nichts als die Unauffälligkeit ihrer Adresse, aber eine
+  öffentliche Domain macht sie ohne Umweg abrufbar. Der Ausweg wäre, nur
+  `verwendung: web` in ein zweites, öffentliches Bucket zu spiegeln — deutlich
+  mehr Arbeit als der Cache-Gewinn wert ist, solange die Bilder nach dem ersten
+  Aufruf im Browser liegen.
+
 - **Smart Placement für den Admin-Worker.** D1 antwortet aus EEUR (Mailand); das
   Admin macht viele aufeinanderfolgende Abfragen pro Seitenaufruf. Placement
   steht auf `Default`. Ein Versuch mit `smart` kostet nichts und ist
