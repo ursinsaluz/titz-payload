@@ -167,8 +167,32 @@ export function mediaUrl(
   if (media == null || typeof media === 'number') return null
   if (!media.url) return null
 
-  const voll = media.url.startsWith('http') ? media.url : `${PAYLOAD_URL}${media.url}`
+  // Der Trenner wird hier normalisiert, nicht angenommen: In der gebauten
+  // Fassung stand `…/fit=scale-down//api/media/…` mit doppeltem Schrägstrich,
+  // weil `PAYLOAD_URL` aus den Build-Variablen von Workers Builds mit einem
+  // endet. Cloudflare verzeiht das, ein anderer Dienst muss es nicht.
+  const basis = PAYLOAD_URL.replace(/\/+$/, '')
+  const pfad = media.url.startsWith('/') ? media.url : `/${media.url}`
+  const voll = media.url.startsWith('http') ? media.url : `${basis}${pfad}`
   if (!TRANSFORM || !optionen?.breite) return voll
+
+  /**
+   * AVIF kann Cloudflare nicht **lesen**.
+   *
+   * Gemessen am 02.09.2026, kurz nachdem die Transformation für die Zone
+   * freigeschaltet war: `/cdn-cgi/image/…` antwortet auf eine AVIF-Quelle mit
+   * `HTTP 415`, `cf-resized: err=9520` und dem Text «Original image has
+   * unsupported format». Drei Bilder auf der Startseite waren damit sofort
+   * kaputt — sie zeigten nur noch ihren Alt-Text.
+   *
+   * AVIF ist als Ausgabe das Ziel, als Eingabe nicht unterstützt. Solche
+   * Dateien gehen darum unverändert durch. Das kostet wenig: AVIF ist bereits
+   * das sparsamste Format, die drei Dateien liegen bei 20 bis 84 KB.
+   *
+   * Für neue Uploads heisst das: **JPEG oder WebP, nicht AVIF.** Nur die lassen
+   * sich am Rand verkleinern.
+   */
+  if (media.mimeType === 'image/avif') return voll
 
   // `format=auto` gibt AVIF, wo der Browser es annimmt, sonst WebP.
   // `fit=scale-down` vergrössert nie — ein kleines Original bleibt klein.
@@ -180,5 +204,7 @@ export function mediaUrl(
   ].join(',')
 
   const u = new URL(voll)
+  // `u.pathname` beginnt mit einem Schrägstrich — ohne dieses Detail entstand
+  // `…/fit=scale-down//api/media/…` mit doppeltem Trenner.
   return `${u.origin}/cdn-cgi/image/${optionenPfad}${u.pathname}${u.search}`
 }
