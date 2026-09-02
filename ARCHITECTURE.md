@@ -84,6 +84,33 @@ sich driften. Die Bindung ans generierte Modell macht der Typ
 `ModelleErfuellenSchemata` — verlangt ein Schema ein Feld, das es im CMS nicht
 mehr gibt, bricht der Typcheck.
 
+### E-Mail über das Binding, nicht über SMTP
+
+Payload hatte bis zum 02.09.2026 gar keinen E-Mail-Adapter. Das ist kein
+stiller Ausfall mit Fehlermeldung: Payload nimmt «Passwort vergessen» an, zeigt
+im Admin eine Bestätigung und schreibt eine Warnung ins Log. Der Link zum
+Zurücksetzen entstand nie.
+
+Cloudflare bietet seit Juni 2026 einen SMTP-Endpunkt an, und Payload hat einen
+Nodemailer-Adapter — zusammen liegt der Weg nahe. Er funktioniert von diesem
+Worker aus trotzdem nicht. `smtp.mx.cloudflare.net` löst auf 162.159.205.26 bis
+.28 auf, und die Workers-Runtime sagt: «outbound TCP sockets to Cloudflare IP
+ranges are blocked». Nodemailer braucht genau so einen Socket. Der Worker darf
+gerade zu Cloudflares eigenem Mailserver nicht verbinden.
+
+Also das `send_email`-Binding. Zweiter Grund, der auch ohne die Sperre gälte:
+Das SMTP-Passwort wäre ein Cloudflare-API-Token mit «Email Sending: Edit» — mit
+dem sich von **jeder** Domain des Kontos Mail verschicken lässt. Das Binding ist
+an diesen Worker gebunden und endet mit ihm; es braucht kein Geheimnis.
+
+Der SMTP-Endpunkt bleibt richtig für alles ausserhalb von Workers — ein Skript
+auf dem Notebook, ein Docker-Dienst, ein Cron auf einem Server.
+
+Das Binding steht bewusst **ohne** `remote: true`. Sonst verschickte jedes
+`next dev` echte Nachrichten an echte Adressen. Lokal fehlt es damit, und
+`src/email/cloudflareEmail.ts` protokolliert die Nachricht statt sie zu senden —
+beim Zurücksetzen eines Passworts steht der Link dann im Terminal.
+
 ## Caching
 
 Vier Ebenen, jede mit einem anderen Grund.
@@ -247,6 +274,26 @@ Funktion.
   Prüfung bleibt möglich, und dort darf `cache.enabled` an, weil keine Cookies
   im Spiel sind.
 
+- **`defaultValue` als Funktion für das Sortierfeld.** In den drei
+  Karten-Sammlungen stand `order` auf `defaultValue: 0`; jeder neue Eintrag
+  bekam damit dieselbe Zahl wie ein vorhandener und landete an
+  unvorhersehbarer Stelle. Naheliegend wäre, die 0 durch eine Funktion zu
+  ersetzen, die `max(order) + 1` liest.
+
+  Verworfen, weil der D1-Adapter ein **literales** `defaultValue` in einen
+  Spalten-Default übersetzt. Ohne die 0 verschwindet das `DEFAULT 0` aus dem
+  Schema, und weil SQLite den Default einer Spalte nicht ändern kann, erzeugt
+  Drizzle dafür einen vollständigen Tabellenneubau: `CREATE TABLE __new_…`,
+  `INSERT … SELECT`, `DROP`, `RENAME`, mit `PRAGMA foreign_keys=OFF`. Gemessen
+  am 02.09.2026 mit `payload migrate:create` — für alle drei Sammlungen auf
+  einmal. Diese Migration liefe nach «Schema: lokal geschoben, in Produktion
+  migriert» das erste Mal überhaupt gegen Produktion.
+
+  Ein Tabellenneubau auf drei Inhaltstabellen für eine Sortier-Annehmlichkeit
+  ist ein schlechter Tausch. Die 0 bleibt darum stehen, und ein Feld-Hook in
+  `src/fields/reihenfolge.ts` setzt den Wert in der Anwendungsschicht.
+  `migrate:create` meldet danach «No schema changes detected».
+
 - **TypeScript 7.** Gemessen am 01.09.2026: `tsc --noEmit` aus TS 7 bricht am
   CMS mit `error TS5102: Option 'baseUrl' has been removed` ab, `@astrojs/check`
   nennt als Peer `^5.0.0 || ^6.0.0` und `typescript-eslint` `>=4.8.4 <6.1.0`.
@@ -273,6 +320,23 @@ Funktion.
   nicht `/api/*` — sonst kommt der Astro-Build nicht mehr an den Content. Die
   Content-API bleibt damit offen, und genau deshalb war die Zugriffsprüfung auf
   `media` die Voraussetzung und nicht die Alternative.
+
+- **Zwei Angaben warten auf Sebastians Bestätigung.** Beide kamen beim
+  Fact-Check am 02.09.2026 auf und lassen sich von aussen nicht klären.
+
+  «Co-Autor «Avantgardistische Naturküche»» steht so in der Rössli-Station. Die
+  Katalogdaten zu ISBN 978-3-03800-532-2 nennen Stefan Wiesner, Andrin C. Willi,
+  Michael Wissing und Anton Studer; Titz ist dort nicht geführt, und die
+  Rechercheliste selbst schreibt an einer Stelle nur «Rezeptentwickler». Eine
+  Nennung im Buch selbst steht in keinem Katalog — wer das Buch in der Hand hat,
+  sieht es in einer Minute. `apps/cms/scripts/korrigiereBuchrolle.ts` liegt
+  bereit und läuft erst mit `BUCHROLLE_APPLY=1`.
+
+  Der Falstaff-Profi-Award **«Bester Arbeitgeber 2026»** wird auf
+  restaurant-pinot.ch für das Pinot beansprucht, in einer Kategorie
+  «Hospitality Employee». Falstaff nennt als Gewinner Gastronomie aber Bindella
+  Terre Vite Vita SA, Zürich. Solange der Widerspruch offen ist, steht die
+  Auszeichnung **nicht** auf titz.cooking. Braucht das Belegdokument.
 
 - **`users` hat kein Rollenfeld.** Jeder angemeldete Benutzer darf alles. Wird
   fällig, wenn jemand aus dem Restaurant Inhalte pflegt und nicht an `users`

@@ -208,4 +208,7 @@ for (const korrektur of KORREKTUREN) {
 console.log(`\n${angelegt} angelegt, ${vorhanden} schon vorhanden.`)
 if (!APPLY) console.log('Nichts geschrieben.')
 
-process.exit(0)
+// Kein process.exit(): Der afterChange-Hook aus `hooks/rebuildWeb.ts` setzt
+// seinen Fetch an den Deploy-Hook im Hintergrund ab. Ein sofortiges Beenden
+// bricht ihn ab — beim ersten Lauf dieses Skripts blieb der Frontend-Build
+// deshalb aus, obwohl in Produktion alles geschrieben war.

@@ -63,4 +63,7 @@ for (const seite of seiten.docs) {
 console.log(`\n${gefunden} Stelle(n) betroffen.`)
 if (!APPLY) console.log('Nichts geschrieben (ADRESSE_APPLY=1 zum Schreiben).')
 
-process.exit(0)
+// Kein process.exit(): Der afterChange-Hook aus `hooks/rebuildWeb.ts` setzt
+// seinen Fetch an den Deploy-Hook im Hintergrund ab. Ein sofortiges Beenden
+// bricht ihn ab — beim ersten Lauf dieses Skripts blieb der Frontend-Build
+// deshalb aus, obwohl in Produktion alles geschrieben war.
