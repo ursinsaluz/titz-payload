@@ -68,8 +68,23 @@ const words = (stage?.headline ?? '')
   />
 
   <div class="stage__content">
-    {stage?.eyebrow && <div class="stage__eyebrow">{stage.eyebrow}</div>}
+    {
+      /*
+      Die Eyebrow steht **im** h1 und nicht darüber.
+
+      Optisch ändert das nichts — sie sass ohnehin unmittelbar über den drei
+      Wörtern und behält ihre Klasse. Semantisch ist es der Unterschied
+      zwischen einem h1 «Authentisch. Regional. Exzellent.» — drei Adjektive
+      ohne Namen, Beruf oder Ort — und einem, das die Seite benennt. Das h1 ist
+      das stärkste inhaltliche Signal einer Seite; für eine Suche nach «Koch
+      Fläsch» war es vorher wertlos.
+
+      Bewusst kein versteckter Zusatztext: Was hier steht, ist sichtbar. Alles
+      andere wäre Verschleierung und wird als solche behandelt.
+    */
+    }
     <h1>
+      {stage?.eyebrow && <span class="stage__eyebrow">{stage.eyebrow}</span>}
       {
         words.map((word, index) => (
           <>
@@ -165,6 +180,20 @@ const words = (stage?.headline ?? '')
     display: inline-block;
     border-radius: 12px;
     padding: 0 14px;
+  }
+
+  /* Die Eyebrow steht jetzt im h1 und wäre sonst ein Wortchip: `.stage h1 span`
+     hat die höhere Spezifität und würde ihr Polster und Radius geben. Darum
+     hier über denselben Weg zurückgesetzt, und Grösse und Gewicht des h1
+     ausdrücklich überschrieben. */
+  .stage h1 .stage__eyebrow {
+    display: block;
+    padding: 0;
+    border-radius: 0;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.32em;
   }
 
   .stage__subline {

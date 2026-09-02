@@ -2,12 +2,37 @@
 import Base from '../layouts/Base.astro'
 import Stage from '../components/Stage.astro'
 import SectionRenderer from '../components/SectionRenderer.astro'
-import { getPageBySlug } from '../lib/payload'
+import { getCollection, getGlobal, getPageBySlug, mediaUrl } from '../lib/payload'
+import { startseitenSchema } from '../lib/schema'
 
 const page = await getPageBySlug('home')
+
+/* Die strukturierten Daten werden aus demselben Content gebaut, den die Seite
+   zeigt. Damit kann das Schema nicht veralten: Eine neue Auszeichnung im Admin
+   erscheint ohne Zutun auch dort. */
+const [header, footer, settings, stationen, news, angebote, events] = await Promise.all([
+  getGlobal('header'),
+  getGlobal('footer'),
+  getGlobal('site-settings'),
+  getCollection('stationen'),
+  getCollection('news', '&sort=-date&where[_status][equals]=published'),
+  getCollection('angebote'),
+  getCollection('events', '&where[_status][equals]=published'),
+])
+
+const jsonLd = startseitenSchema({
+  header,
+  footer,
+  settings,
+  stationen,
+  news,
+  angebote,
+  events,
+  portrait: mediaUrl(settings.defaultSeo?.image) ?? undefined,
+})
 ---
 
-<Base seo={page?.seo}>
+<Base seo={page?.seo} jsonLd={jsonLd}>
   <Stage />
   <SectionRenderer sections={page?.sections} />
 </Base>

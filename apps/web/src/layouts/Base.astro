@@ -3,15 +3,19 @@ import { getEggData, getGlobal, mediaUrl, type Page } from '../lib/payload'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 import '../styles/global.css'
+import { PAYLOAD_ORIGIN } from '../lib/payload'
 
 interface Props {
   /** Die SEO-Gruppe der Seite, direkt aus dem Content-Modell — vorher hier
       nachgebaut und mit `as never` übergeben. */
   seo?: Page['seo']
   pageTitle?: string
+  /** Strukturierte Daten. Nur die Startseite hat welche; Impressum und
+      Datenschutz brauchen keine und bekommen darum keine leere Angabe. */
+  jsonLd?: unknown
 }
 
-const { seo, pageTitle } = Astro.props
+const { seo, pageTitle, jsonLd } = Astro.props
 const settings = await getGlobal('site-settings')
 const eggData = await getEggData()
 
@@ -31,7 +35,7 @@ const canonical = new URL(
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang="de-CH">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -40,18 +44,39 @@ const canonical = new URL(
     <link rel="canonical" href={canonical} />
     {seo?.noIndex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={settings.siteName ?? 'Sebastian Titz'} />
+    <meta property="og:locale" content="de_CH" />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {
+      /* Die Bilder liegen auf dem CMS-Worker, also einer anderen Herkunft.
+         Ohne diesen Hinweis beginnt der Browser DNS, TLS und Verbindung erst,
+         wenn er das erste <img> im Dokument erreicht. */
+    }
+    <link rel="preconnect" href={new URL(PAYLOAD_ORIGIN).origin} crossorigin />
+    <link rel="dns-prefetch" href={new URL(PAYLOAD_ORIGIN).origin} />
+    {
+      /* Die Schrift liegt seit dem 02.09.2026 bei uns, nicht bei Google —
+         Begründung in `styles/global.css`. Der Preload zieht sie parallel zum
+         CSS, statt zu warten, bis der Parser die @font-face-Regel erreicht:
+         Das LCP-Element dieser Seite ist die Überschrift, der Font liegt also
+         auf dem kritischen Pfad. */
+    }
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="preload"
+      href="/fonts/space-grotesk-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
     <Header />

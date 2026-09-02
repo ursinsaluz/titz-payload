@@ -1,0 +1,7 @@
+# titz.cooking — alles darf indexiert werden.
+User-agent: *
+Allow: /
+
+# Die Bilder liegen auf dem CMS-Worker und werden über die Startseite
+# eingebunden; sie sollen in der Bildsuche auftauchen.
+Sitemap: https://titz.cooking/sitemap-index.xml

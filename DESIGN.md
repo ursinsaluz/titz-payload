@@ -86,8 +86,16 @@ Nachlässigkeit, und dort liest die Marke als kleine Pflanze mit hellem Kopf.
 
 ## Typografie
 
-Eine Schrift für alles: **Space Grotesk** (400/500/700), über Google Fonts mit
-`preconnect` geladen. Geometrische Grotesk mit leichten Eigenheiten — passt zum
+Eine Schrift für alles: **Space Grotesk**, als Variable Font von 300 bis 700 aus
+`apps/web/public/fonts/` — nicht mehr von Google Fonts.
+
+Der Grund ist Messung, nicht Prinzip: Die Stage hat kein Bild, das LCP-Element
+ist die Überschrift. Der Font lag damit auf dem kritischen Pfad, und der Weg
+dorthin führte über eine rendersperrende CSS-Datei auf `fonts.googleapis.com`,
+in der erst die Adresse der Schriftdatei auf `fonts.gstatic.com` stand — zwei
+DNS-Auflösungen und zwei TLS-Handshakes vor dem ersten Zeichen. Jetzt sind es
+21 KB von derselben Herkunft wie das HTML, mit `immutable`-Cache und `preload`.
+Eine Datei deckt alle Schnitte ab. Geometrische Grotesk mit leichten Eigenheiten — passt zum
 Ton, ohne dekorativ zu werden.
 
 - **H1** in der Stage: jedes Wort in einem eigenen Pastell-Chip, jeder Chip

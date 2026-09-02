@@ -14,6 +14,7 @@ import { Media } from '../../src/collections/Media'
 import { Icons } from '../../src/collections/Icons'
 import { Pages } from '../../src/collections/Pages'
 import { News } from '../../src/collections/News'
+import { Events } from '../../src/collections/Events'
 import { Angebote } from '../../src/collections/Angebote'
 import { SignatureDishes } from '../../src/collections/SignatureDishes'
 import { Stationen } from '../../src/collections/Stationen'
@@ -27,7 +28,17 @@ import { SiteSettings } from '../../src/globals/SiteSettings'
  * eine ganze Payload-Instanz, um `expect(users).toBeDefined()` zu prüfen.
  */
 
-const ALLE_SAMMLUNGEN = [Users, Media, Icons, Pages, News, Angebote, SignatureDishes, Stationen]
+const ALLE_SAMMLUNGEN = [
+  Users,
+  Media,
+  Icons,
+  Pages,
+  News,
+  Events,
+  Angebote,
+  SignatureDishes,
+  Stationen,
+]
 const ALLE_GLOBALS = [Header, Footer, SiteSettings]
 
 const logger = () => ({ info: vi.fn(), error: vi.fn(), warn: vi.fn() })

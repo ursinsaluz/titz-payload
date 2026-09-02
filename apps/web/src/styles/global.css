@@ -1,3 +1,49 @@
+/**
+ * Space Grotesk aus dem eigenen Haus statt von Google Fonts.
+ *
+ * Vorher lag im <head> ein `<link rel="stylesheet">` auf fonts.googleapis.com.
+ * Das ist eine rendersperrende Anfrage an eine fremde Herkunft, die erst eine
+ * CSS-Datei holt, in der dann die Adresse der Schriftdatei auf einer *zweiten*
+ * Herkunft steht — zwei DNS-Auflösungen und zwei TLS-Handshakes, bevor das
+ * erste Zeichen gezeichnet werden kann.
+ *
+ * Auf dieser Seite ist das besonders teuer: Die Stage hat kein Bild, das
+ * LCP-Element ist die Überschrift. Der Font liegt damit direkt auf dem
+ * kritischen Pfad. Jetzt kommt er aus `public/fonts/` von derselben Herkunft
+ * wie das HTML, mit `immutable`-Cache aus `_headers`.
+ *
+ * Eine Datei für alle Schnitte: Space Grotesk ist ein Variable Font von 300 bis
+ * 700, die 22 KB ersetzen die drei getrennten Schnitte von vorher.
+ *
+ * `font-display: swap` bleibt — lieber ein Umbruch in der Ersatzschrift als
+ * eine leere Fläche. Die Ersatzschrift ist bewusst benannt und nicht nur
+ * `sans-serif`.
+ */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Nur für osteuropäische Zeichen. Deutsch braucht sie nicht — durch die
+   unicode-range lädt der Browser diese Datei auf titz.cooking nie. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
 /* titz.cooking — Design «Verspielt» */
 :root {
   --bg: #ffffff;

@@ -44,6 +44,18 @@ const AngeboteBlock: Block = {
   ],
 }
 
+const EventsBlock: Block = {
+  slug: 'eventsSection',
+  labels: { singular: 'Anlässe', plural: 'Anlässe' },
+  fields: [
+    { name: 'anchor', type: 'text', label: 'Anker', defaultValue: 'anlaesse' },
+    { name: 'eyebrow', type: 'text', label: 'Eyebrow / Überzeile' },
+    { name: 'heading', type: 'text', label: 'Überschrift', required: true },
+    { name: 'intro', type: 'textarea', label: 'Einleitung' },
+    { name: 'limit', type: 'number', label: 'Max. Anlässe', defaultValue: 4 },
+  ],
+}
+
 const NewsBlock: Block = {
   slug: 'newsSection',
   labels: { singular: 'Aktuelles', plural: 'Aktuelles' },
@@ -159,6 +171,7 @@ export const Pages: CollectionConfig = {
       blocks: [
         PhilosophieBlock,
         AngeboteBlock,
+        EventsBlock,
         NewsBlock,
         SignatureDishesBlock,
         StationenBlock,

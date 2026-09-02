@@ -11,6 +11,10 @@ const PAYLOAD_URL =
   import.meta.env.PAYLOAD_URL ||
   (import.meta.env.PROD ? 'https://admin.titz.cooking' : 'http://localhost:3000')
 
+/** Die Herkunft, von der die Bilder kommen — Base.astro baut daraus den
+    Preconnect. Exportiert, damit die Adresse nur an einer Stelle steht. */
+export const PAYLOAD_ORIGIN = PAYLOAD_URL
+
 import type { Config, Icon, Media, Page } from '@titz/types'
 
 import { collectionSchemas, globalSchemas, pageSchema, pruefe } from './schemas'
@@ -128,8 +132,53 @@ export async function resolveIcon(ref: IconRef): Promise<Icon | null> {
   return icons.get(ref) ?? null
 }
 
-export function mediaUrl(media: Media | number | null | undefined): string | null {
+/**
+ * Cloudflares Bildtransformation, hinter einem Schalter.
+ *
+ * Auf Workers gibt es kein `sharp`, Payload kann also keine Bildvarianten
+ * erzeugen: Was hochgeladen wurde, wird ausgeliefert. In der Mediathek liegen
+ * rund 130 Aufnahmen mit 2560 px und 0,4 bis 2,2 MB — ein Archiv, und als
+ * Archiv richtig. Nur darf davon nichts unverkleinert auf die Seite.
+ *
+ * Cloudflare kann das am Rand lösen: `/cdn-cgi/image/<optionen>/<url>` liefert
+ * dieselbe Datei verkleinert und in AVIF oder WebP, je nachdem, was der
+ * Browser kann. Das Original bleibt unangetastet.
+ *
+ * **Der Schalter ist aus, bis die Funktion in der Zone aktiviert ist.** Ist sie
+ * es nicht, antwortet der Pfad mit einem Fehler — und dann wäre nicht ein Bild
+ * kaputt, sondern jedes. Aktivieren: Cloudflare-Dashboard → Zone
+ * `titz.cooking` → Images → Transformations → «Enable for zone». Danach
+ * `IMAGE_TRANSFORM=1` in die Build-Variablen von Workers Builds, und die
+ * Grössenangaben unten greifen.
+ */
+const TRANSFORM = import.meta.env.IMAGE_TRANSFORM === '1'
+
+/**
+ * Die Adresse eines Bildes, optional auf eine Darstellungsbreite gebracht.
+ *
+ * `breite` ist die Breite in CSS-Pixeln, in der das Bild erscheint — die
+ * Funktion verdoppelt selbst für Displays mit hoher Dichte. Ohne Angabe bleibt
+ * es beim Original, das ist der Standard für alles, was ungeprüft durchläuft.
+ */
+export function mediaUrl(
+  media: Media | number | null | undefined,
+  optionen?: { breite?: number },
+): string | null {
   if (media == null || typeof media === 'number') return null
   if (!media.url) return null
-  return media.url.startsWith('http') ? media.url : `${PAYLOAD_URL}${media.url}`
+
+  const voll = media.url.startsWith('http') ? media.url : `${PAYLOAD_URL}${media.url}`
+  if (!TRANSFORM || !optionen?.breite) return voll
+
+  // `format=auto` gibt AVIF, wo der Browser es annimmt, sonst WebP.
+  // `fit=scale-down` vergrössert nie — ein kleines Original bleibt klein.
+  const optionenPfad = [
+    `width=${Math.round(optionen.breite * 2)}`,
+    'format=auto',
+    'quality=82',
+    'fit=scale-down',
+  ].join(',')
+
+  const u = new URL(voll)
+  return `${u.origin}/cdn-cgi/image/${optionenPfad}${u.pathname}${u.search}`
 }

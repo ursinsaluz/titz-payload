@@ -21,3 +21,9 @@
 # fragt mit ETag nach, was auf ein 304 hinausläuft. Ein `s-maxage` würde nach
 # einem Rebuild den alten Stand weiterliefern, und ohne Purge-Token gibt es
 # nichts, was den Rand vorher leeren könnte.
+
+# Die Schrift liegt seit dem 02.09.2026 hier statt bei Google. Der Dateiname
+# ist nicht gehasht — er ändert sich nur, wenn wir die Schrift austauschen, und
+# dann bewusst mit neuem Namen. Bis dahin darf sie ein Jahr im Cache liegen.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

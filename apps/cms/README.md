@@ -23,7 +23,7 @@ füllt sie.
 
 ```
 src/
-  collections/   users, media, icons, pages, news, angebote,
+  collections/   users, media, icons, pages, news, events, angebote,
                  signature-dishes, stationen
   globals/       Header (Navigation + Stage), Footer, SiteSettings
   fields/        wiederverwendete Felder: link, seo, iconSelect, reihenfolge
@@ -38,6 +38,8 @@ scripts/
   importNews.ts        trägt recherchierte Medienberichte als Aktuelles nach
   korrigiereAdresse.ts Hausnummer des Restaurants auf der Startseite
   ergaenzeBelegtes.ts  Rössli-Rolle, Falstaff-Award, Buch-Titelbild
+  seoInhalt.ts         Zielregionen, Titel/Beschreibung, Gourmetabend
+  bildErsetzen.ts      tauscht eine zu grosse Bilddatei am Datensatz
   setzeNewsLimit.ts    Anzahl sichtbarer Aktuelles-Einträge auf der Startseite
   syncSharedTypes.mjs  kopiert die Typen nach packages/types
 tests/unit/      Vitest, reine Logik ohne Datenbank
