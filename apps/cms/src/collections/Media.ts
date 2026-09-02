@@ -41,6 +41,7 @@ export const Media: CollectionConfig = {
   admin: {
     useAsTitle: 'alt',
     defaultColumns: ['filename', 'alt', 'kategorie', 'hobby', 'verwendung'],
+    group: 'Dateien',
   },
   access: {
     read: mediaLesen,

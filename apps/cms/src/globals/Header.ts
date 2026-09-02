@@ -5,7 +5,7 @@ import { linkFields } from '../fields/link'
 export const Header: GlobalConfig = {
   slug: 'header',
   label: 'Header & Stage',
-  admin: { group: 'Struktur' },
+  admin: { group: 'Einstellungen' },
   access: {
     read: () => true,
   },

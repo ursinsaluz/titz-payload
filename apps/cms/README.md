@@ -26,19 +26,37 @@ src/
   collections/   users, media, icons, pages, news, angebote,
                  signature-dishes, stationen
   globals/       Header (Navigation + Stage), Footer, SiteSettings
-  fields/        wiederverwendete Felder: link, seo, iconSelect
+  fields/        wiederverwendete Felder: link, seo, iconSelect, reihenfolge
   hooks/         rebuildWeb — stösst den Frontend-Build an
+  email/         cloudflareEmail — Versand über das send_email-Binding
   uploads/       Cache-Kopfzeile für ausgelieferte Dateien
   migrations/    nur für Produktion, lokal wird das Schema geschoben
   seed/          Inhalt von titz.cooking, Assets im Repo
   app/(payload)/ Admin-UI und REST-API von Payload
 scripts/
   repairProd.ts        repariert Dateien in Produktion, ohne Inhalt anzufassen
+  importNews.ts        trägt recherchierte Medienberichte als Aktuelles nach
+  korrigiereAdresse.ts Hausnummer des Restaurants auf der Startseite
+  ergaenzeBelegtes.ts  Rössli-Rolle, Falstaff-Award, Buch-Titelbild
+  setzeNewsLimit.ts    Anzahl sichtbarer Aktuelles-Einträge auf der Startseite
   syncSharedTypes.mjs  kopiert die Typen nach packages/types
 tests/unit/      Vitest, reine Logik ohne Datenbank
 ```
 
 `/` leitet über `next.config.ts` auf `/admin` um. GraphQL ist abgeschaltet.
+
+Die Seitenleiste hat **drei** Gruppen, und jede Sammlung nennt ihre selbst:
+
+| Gruppe          | Inhalt                                                   |
+| --------------- | -------------------------------------------------------- |
+| `Inhalt`        | Seiten, Aktuelles, Stationen, Signature Dishes, Angebote |
+| `Dateien`       | Medien, Icons                                            |
+| `Einstellungen` | Header & Stage, Footer, Site & SEO, Users, MCP-Schlüssel |
+
+Eine Sammlung ohne `admin.group` landet unter Payloads Fallback-Überschrift
+«Collections» — die sieht in der Leiste wie eine gewählte Kategorie aus, ist
+aber nur der Rest. Genau dort standen Users und Medien, während Icons eine
+Gruppe weiter lag, obwohl Icons und Medien dasselbe sind.
 
 Vier verfolgte Dateien werden **erzeugt** und nicht von Hand geschrieben — alle
 vier entstehen neu bei `pnpm generate:types` bzw. `pnpm generate:importmap`:

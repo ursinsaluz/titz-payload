@@ -21,6 +21,7 @@ import { Header } from './globals/Header'
 import { Footer } from './globals/Footer'
 import { SiteSettings } from './globals/SiteSettings'
 import { mitRebuild } from './hooks/rebuildWeb'
+import { cloudflareEmail } from './email/cloudflareEmail'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -107,6 +108,11 @@ export default buildConfig({
   ),
   globals: [Header, Footer, SiteSettings].map(mitRebuild),
   editor: lexicalEditor(),
+  // Ohne Adapter verschickt Payload nichts und schreibt nur eine Warnung ins
+  // Log — «Passwort vergessen» führte damit zu einer Bestätigung im Admin und
+  // zu keiner Mail. Begründung für das Binding statt SMTP in
+  // `src/email/cloudflareEmail.ts`.
+  email: cloudflareEmail,
   // Das Frontend holt seinen Content ausschliesslich über REST. GraphQL war
   // damit toter Code im Worker-Bundle — inklusive Playground-Route. Abschalten
   // entfernt Schema-Aufbau und Routen; die Handler unter
@@ -145,7 +151,7 @@ export default buildConfig({
     }),
     // Macht den Inhalt für MCP-Clients lesbar und schreibbar. Der Endpunkt liegt
     // auf `/api/mcp` und authentisiert über einen Schlüssel aus der Collection
-    // `payload-mcp-api-keys` — anlegen im Admin unter «System».
+    // `payload-mcp-api-keys` — anlegen im Admin unter «Einstellungen».
     //
     // `users` ist bewusst nicht freigegeben: Über die MCP-Tools liessen sich
     // sonst Konten anlegen und Passwörter setzen.
@@ -167,7 +173,7 @@ export default buildConfig({
       overrideApiKeyCollection: (collection) => ({
         ...collection,
         labels: { singular: 'MCP-Schlüssel', plural: 'MCP-Schlüssel' },
-        admin: { ...collection.admin, group: 'System' },
+        admin: { ...collection.admin, group: 'Einstellungen' },
       }),
     }),
   ],

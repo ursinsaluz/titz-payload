@@ -6,7 +6,7 @@ export const News: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date', '_status'],
-    group: 'Inhalte',
+    group: 'Inhalt',
   },
   access: {
     read: () => true,

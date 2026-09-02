@@ -1,13 +1,18 @@
 import type { CollectionConfig } from 'payload'
 import { iconSelect } from '../fields/iconSelect'
+import { reihenfolge } from '../fields/reihenfolge'
 
 export const Stationen: CollectionConfig = {
   slug: 'stationen',
   labels: { singular: 'Station', plural: 'Stationen (Lebenslauf)' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['period', 'title', 'place', 'order'],
-    group: 'Inhalte',
+    // `group` teilt diese Collection in vier Listen — Stationen, Ausbildung,
+    // Qualifikationen, Hobbies. Ohne die Spalte war in der Übersicht nicht zu
+    // sehen, zu welcher ein Eintrag gehört; von 15 Dokumenten sind nur 5
+    // wirkliche Stationen.
+    defaultColumns: ['group', 'period', 'title', 'place', 'order'],
+    group: 'Inhalt',
   },
   access: {
     read: () => true,
@@ -44,6 +49,6 @@ export const Stationen: CollectionConfig = {
       fields: [iconSelect(), { name: 'text', type: 'text', label: 'Text', required: true }],
     },
     { name: 'image', type: 'upload', relationTo: 'media', label: 'Bild' },
-    { name: 'order', type: 'number', label: 'Reihenfolge', defaultValue: 0 },
+    reihenfolge('stationen'),
   ],
 }

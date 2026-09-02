@@ -135,7 +135,7 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', '_status'],
-    group: 'Inhalte',
+    group: 'Inhalt',
   },
   access: {
     read: () => true,

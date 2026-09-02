@@ -14,7 +14,7 @@ auf Deutsch, mit Umlauten. Schweizer Rechtschreibung: «ss» statt «ß».
 Kommentare erklären **warum**, nicht was. Ein Kommentar, der die Zeile unter
 ihm nachspricht, wird gelöscht.
 
-## Zehn Dinge, die überraschen
+## Zwölf Dinge, die überraschen
 
 **1. Das Frontend ist statisch.** `apps/web` ist `output: 'static'`. Der Content
 wird einmal beim Build über REST geholt; danach läuft für titz.cooking kein Code
@@ -71,7 +71,30 @@ Node-Prozess, echte Bindings — und damit schreibt die Entwicklung in die
 Produktionsdatenbank, also nur bewusst. Ohne MCP: REST-API oder `payload run`
 mit `NODE_ENV=production`.
 
-**10. Das Repo ist öffentlich.** Zugangsdaten gehören in
+**10. E-Mail läuft über das Binding, nicht über SMTP.** Cloudflare bietet
+`smtp.mx.cloudflare.net:465` an, und Payload hat einen Nodemailer-Adapter —
+zusammen funktioniert das hier trotzdem nicht. Der Host löst auf 162.159.205.26
+bis .28 auf, und für Workers gilt «outbound TCP sockets to Cloudflare IP ranges
+are blocked»: Der Worker darf gerade dorthin nicht. Der Adapter in
+`src/email/cloudflareEmail.ts` nimmt darum das `send_email`-Binding, das ohne
+Zugangsdaten auskommt. Der SMTP-Endpunkt bleibt richtig für alles ausserhalb von
+Workers. Das Binding steht bewusst **ohne** `remote: true` in `wrangler.jsonc`,
+damit kein `next dev` echte Mail verschickt — lokal landet die Nachricht im Log.
+
+**11. Ein `process.exit()` am Ende eines Skripts verhindert den Rebuild.**
+`hooks/rebuildWeb.ts` setzt seinen Fetch an den Deploy-Hook im Hintergrund ab
+(`void (async () => …)()`). Wer danach sofort beendet, bricht ihn ab: Produktion
+ist geschrieben, titz.cooking zeigt weiter den alten Stand — und nichts meldet
+einen Fehler. Genau so lief `importNews.ts` beim ersten Mal. Skripte laufen
+darum ohne `process.exit` aus.
+
+Dazu: In `apps/cms/.env` ist `WEB_DEPLOY_HOOK_URL` **leer**. Der Hook meldet
+lokal also «nicht-konfiguriert» und tut nichts, auch ohne `process.exit`. Auf
+dem Worker liegt das Secret (`wrangler secret list --name titz-payload-admin`),
+im Admin gespeicherte Änderungen lösen den Build also aus. Nach einem
+Skriptlauf gegen Produktion muss man ihn selbst anstossen: `pnpm run deploy:web`.
+
+**12. Das Repo ist öffentlich.** Zugangsdaten gehören in
 `wrangler secret put` oder in eine ignorierte `.env`. `.env.example` und
 `.mcp.json` sind eingecheckt und enthalten nur Namen und `${PLATZHALTER}`. Der
 pre-commit-Hook (`scripts/secret-scan.sh`) prüft das; er ist über

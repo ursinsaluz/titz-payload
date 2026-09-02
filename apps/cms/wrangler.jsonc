@@ -53,6 +53,18 @@
     },
   },
 
+  // Ausgehende Mail über Cloudflare Email Sending. Bewusst **ohne**
+  // `"remote": true`: Sonst verschickt jedes `next dev` echte Nachrichten an
+  // echte Adressen. Lokal fehlt das Binding damit, und der Adapter in
+  // `src/email/cloudflareEmail.ts` protokolliert die Nachricht statt sie zu
+  // senden — der Link zum Zurücksetzen steht dann im Terminal. Wer einen echten
+  // Versand testen will, setzt das Flag für einen Lauf und nimmt es zurück.
+  "send_email": [
+    {
+      "name": "EMAIL",
+    },
+  ],
+
   "d1_databases": [
     {
       "binding": "D1",
