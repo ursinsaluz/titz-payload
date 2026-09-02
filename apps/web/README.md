@@ -43,6 +43,9 @@ src/
                 blocks.ts (Block-Typen), lexical.ts (RichText → HTML),
                 links.ts (Navigationsziele)
   scripts/      playful.ts — Spirale, Scroll-Reveal, Gemüse-Easter-Egg
+  lib/schema.ts JSON-LD der Startseite, aus dem CMS gebaut
+  public/fonts/ Space Grotesk, selbst gehostet statt von Google Fonts
+  public/robots.txt  verweist auf die von @astrojs/sitemap erzeugte Sitemap
   styles/       global.css — Tokens und Animationen
 public/         favicon, Logo, _headers
 tests/          Playwright-Smoke-Tests gegen den fertigen Build

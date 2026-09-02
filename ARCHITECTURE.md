@@ -111,6 +111,45 @@ Das Binding steht bewusst **ohne** `remote: true`. Sonst verschickte jedes
 `src/email/cloudflareEmail.ts` protokolliert die Nachricht statt sie zu senden —
 beim Zurücksetzen eines Passworts steht der Link dann im Terminal.
 
+### Strukturierte Daten aus dem CMS, nicht von Hand
+
+`apps/web/src/lib/schema.ts` baut das JSON-LD der Startseite aus demselben
+Content, den die Seite zeigt. Eine neue Auszeichnung im Admin erscheint damit
+ohne Zutun auch im Schema. Eine handgeschriebene Fassung wäre nach der ersten
+Änderung falsch, und niemand hätte es gemerkt — Google meldet keine veralteten
+Angaben.
+
+Zwei Typen stehen dort bewusst **nicht**:
+
+`Article` oder `NewsArticle` für die Aktuelles-Einträge. Die verlinken auf
+Beiträge von GaultMillau, Falstaff und Salz & Pfeffer — fremde Texte über
+Sebastian, nicht seine eigenen. Sie als seine Artikel auszuzeichnen behauptete
+eine Urheberschaft, die es nicht gibt. Richtig ist der umgekehrte Bezug:
+`Person.subjectOf` sagt «diese Person ist Gegenstand dieser Beiträge».
+
+`Restaurant`. Das Pinot ist eines und hat mit restaurant-pinot.ch eine eigene
+Seite, die für Restaurantsuchen ranken soll. Zwei Domains, die sich als dasselbe
+Restaurant ausweisen, teilen die Signale und schwächen beide. Hier steht darum
+`worksFor` — die Beziehung, nicht der Betrieb.
+
+### Bildtransformation am Rand, hinter einem Schalter
+
+In der Mediathek liegen rund 130 Aufnahmen mit 2560 px und 0,4 bis 2,2 MB. Als
+Archiv ist das richtig; auf Workers gibt es aber kein `sharp`, Payload erzeugt
+also keine Varianten, und damit landet jedes eingesetzte Bild in Originalgrösse
+im Browser. Gemessen am 02.09.2026: Ein PNG von 1,14 MB wurde in einer Kachel
+von 350 × 200 Pixel dargestellt.
+
+Der Weg ist Cloudflares `/cdn-cgi/image/`: dieselbe Datei verkleinert und in
+AVIF oder WebP, Original unangetastet. `mediaUrl(bild, { breite })` in
+`apps/web/src/lib/payload.ts` baut die Adresse.
+
+**Der Schalter steht auf aus.** Ist die Funktion in der Zone nicht aktiviert,
+antwortet der Pfad mit 404 — nachgemessen — und dann wäre nicht ein Bild kaputt,
+sondern jedes. Reihenfolge: erst im Dashboard unter Images → Transformations für
+die Zone aktivieren, dann `IMAGE_TRANSFORM=1` in die Build-Variablen von Workers
+Builds.
+
 ## Caching
 
 Vier Ebenen, jede mit einem anderen Grund.

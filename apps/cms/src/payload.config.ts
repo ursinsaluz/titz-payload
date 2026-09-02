@@ -14,6 +14,7 @@ import { Media } from './collections/Media'
 import { Icons } from './collections/Icons'
 import { Pages } from './collections/Pages'
 import { News } from './collections/News'
+import { Events } from './collections/Events'
 import { Angebote } from './collections/Angebote'
 import { SignatureDishes } from './collections/SignatureDishes'
 import { Stationen } from './collections/Stationen'
@@ -103,7 +104,7 @@ export default buildConfig({
   },
   // `mitRebuild` hängt an allem, was auf titz.cooking sichtbar ist, einen Hook,
   // der den Frontend-Build anstösst — siehe hooks/rebuildWeb.ts.
-  collections: [Users, Media, Icons, Pages, News, Angebote, SignatureDishes, Stationen].map(
+  collections: [Users, Media, Icons, Pages, News, Events, Angebote, SignatureDishes, Stationen].map(
     mitRebuild,
   ),
   globals: [Header, Footer, SiteSettings].map(mitRebuild),
@@ -159,6 +160,10 @@ export default buildConfig({
       collections: {
         pages: { enabled: true, description: 'Seiten mit Sektionen (Startseite, Impressum, …)' },
         news: { enabled: true, description: 'Aktuelles — Presse, Auszeichnungen, Beiträge' },
+        events: {
+          enabled: true,
+          description: 'Anlässe — Gourmetabend und einzelne Termine',
+        },
         angebote: { enabled: true, description: 'Angebote (Beratung, Catering)' },
         'signature-dishes': { enabled: true, description: 'Signature Dishes und Starter' },
         stationen: { enabled: true, description: 'Lebenslauf — Stationen, Skills, Ausbildung' },

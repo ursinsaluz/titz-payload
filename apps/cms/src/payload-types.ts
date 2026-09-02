@@ -73,6 +73,7 @@ export interface Config {
     icons: Icon;
     pages: Page;
     news: News;
+    events: Event;
     angebote: Angebote;
     'signature-dishes': SignatureDish;
     stationen: Stationen;
@@ -89,6 +90,7 @@ export interface Config {
     icons: IconsSelect<false> | IconsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
     angebote: AngeboteSelect<false> | AngeboteSelect<true>;
     'signature-dishes': SignatureDishesSelect<false> | SignatureDishesSelect<true>;
     stationen: StationenSelect<false> | StationenSelect<true>;
@@ -336,6 +338,16 @@ export interface Page {
             anchor?: string | null;
             eyebrow?: string | null;
             heading: string;
+            intro?: string | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'eventsSection';
+          }
+        | {
+            anchor?: string | null;
+            eyebrow?: string | null;
+            heading: string;
             limit?: number | null;
             id?: string | null;
             blockName?: string | null;
@@ -477,6 +489,9 @@ export interface Angebote {
     label?: string | null;
     url?: string | null;
   };
+  /**
+   * Kleiner heisst weiter vorn. Neue Einträge kommen von selbst nach hinten.
+   */
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -517,6 +532,67 @@ export interface News {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: number;
+  title: string;
+  rhythmus: 'einmalig' | 'woechentlich';
+  /**
+   * Bestimmt die Anzeige und das Termin-Schema für Google.
+   */
+  wochentag?: ('Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday') | null;
+  /**
+   * Bei einem einzelnen Termin das Datum. Bei einem wöchentlichen Anlass der Beginn der Reihe — er bleibt danach stehen.
+   */
+  datum?: string | null;
+  /**
+   * Als «18:00». Wird so angezeigt und ins Schema übernommen.
+   */
+  zeit?: string | null;
+  eyebrow?: string | null;
+  icon?: (number | null) | Icon;
+  excerpt: string;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Optional. Wechselt beim Gourmetabend wöchentlich.
+   */
+  menu?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * z.B. «CHF 98»
+   */
+  preis?: string | null;
+  ort?: string | null;
+  image?: (number | null) | Media;
+  cta?: {
+    label?: string | null;
+    url?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "signature-dishes".
  */
 export interface SignatureDish {
@@ -527,6 +603,9 @@ export interface SignatureDish {
   description?: string | null;
   image?: (number | null) | Media;
   videoUrl?: string | null;
+  /**
+   * Kleiner heisst weiter vorn. Neue Einträge kommen von selbst nach hinten.
+   */
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -554,6 +633,9 @@ export interface Stationen {
       }[]
     | null;
   image?: (number | null) | Media;
+  /**
+   * Kleiner heisst weiter vorn. Neue Einträge kommen von selbst nach hinten.
+   */
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -611,6 +693,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete news.
+     */
+    delete?: boolean | null;
+  };
+  events?: {
+    /**
+     * Allow clients to find events.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create events.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update events.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete events.
      */
     delete?: boolean | null;
   };
@@ -784,6 +884,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'news';
         value: number | News;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: number | Event;
       } | null)
     | ({
         relationTo: 'angebote';
@@ -961,6 +1065,17 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        eventsSection?:
+          | T
+          | {
+              anchor?: T;
+              eyebrow?: T;
+              heading?: T;
+              intro?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
         newsSection?:
           | T
           | {
@@ -1069,6 +1184,39 @@ export interface NewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  title?: T;
+  rhythmus?: T;
+  wochentag?: T;
+  datum?: T;
+  zeit?: T;
+  eyebrow?: T;
+  icon?: T;
+  excerpt?: T;
+  body?: T;
+  menu?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  preis?: T;
+  ort?: T;
+  image?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "angebote_select".
  */
 export interface AngeboteSelect<T extends boolean = true> {
@@ -1149,6 +1297,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         delete?: T;
       };
   news?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  events?:
     | T
     | {
         find?: T;

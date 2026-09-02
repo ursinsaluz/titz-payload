@@ -3,6 +3,7 @@ import type { Page } from '@titz/types'
 import Philosophie from './sections/Philosophie.astro'
 import Angebote from './sections/Angebote.astro'
 import News from './sections/News.astro'
+import Events from './sections/Events.astro'
 import SignatureDishes from './sections/SignatureDishes.astro'
 import Stationen from './sections/Stationen.astro'
 import Visit from './sections/Visit.astro'
@@ -32,6 +33,8 @@ const { sections } = Astro.props
         return <Philosophie block={section} />
       case 'angeboteSection':
         return <Angebote block={section} />
+      case 'eventsSection':
+        return <Events block={section} />
       case 'newsSection':
         return <News block={section} />
       case 'signatureDishesSection':

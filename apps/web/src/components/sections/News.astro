@@ -35,14 +35,18 @@ const tilts = ['-0.3deg', '0.3deg']
     <div class="news__grid">
       {
         visible.map((item, index) => {
-          const image = mediaUrl(item.image)
+          // 350 px ist die Kachelbreite im zweispaltigen Raster.
+          const image = mediaUrl(item.image, { breite: 350 })
           return (
             <article class="news__card" style={`--card-tilt:${tilts[index % 2]}`}>
               {image && (
                 <img
                   src={image}
                   alt={typeof item.image === 'object' ? (item.image?.alt ?? '') : ''}
+                  width="350"
+                  height="200"
                   loading="lazy"
+                  decoding="async"
                 />
               )}
               <div class="news__body">

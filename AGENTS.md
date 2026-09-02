@@ -21,7 +21,13 @@ wird einmal beim Build über REST geholt; danach läuft für titz.cooking kein C
 mehr. Eine Änderung im Admin erscheint erst nach einem Rebuild. Den stösst
 `apps/cms/src/hooks/rebuildWeb.ts` über den Deploy-Hook an — wer eine neue
 Collection anlegt, muss sie dort einordnen, sonst bleibt sie stumm veraltet.
-`apps/cms/tests/unit/rebuildWeb.test.ts` bricht, bis das passiert.
+`apps/cms/tests/unit/rebuildWeb.test.ts` bricht, bis das passiert; beim
+Hinzufügen von `events` hat er genau das getan.
+
+Ein Nebeneffekt davon betrifft die Anlässe: Der Filter «was noch kommt» in
+`apps/web/src/components/sections/Events.astro` läuft zur Bauzeit. Ein
+abgelaufener Einzeltermin verschwindet erst beim nächsten Build. Wöchentliche
+Anlässe haben kein Ablaufdatum und bleiben stehen.
 
 **2. Ein Push auf `main` führt keine Migrationen aus.** Workers Builds baut und
 deployt, migriert aber nicht. Nach einer Schemaänderung gilt `pnpm deploy:cms`
@@ -45,6 +51,15 @@ sah trotzdem nach Erfolg aus.
 **5. Bilder brauchen die richtige Grösse _vor_ dem Upload.** Auf Workers gibt es
 kein `sharp`, also keine Bildvarianten und kein nachträgliches Verkleinern. Was
 hochgeladen wird, wird ausgeliefert.
+
+In der Mediathek liegen rund 130 Aufnahmen mit 2560 px und 0,4 bis 2,2 MB — als
+Archiv richtig, im Browser nicht. Am 02.09.2026 stand ein PNG von 1,14 MB in
+einer Kachel von 350 × 200 Pixel. Wer ein Bild einsetzt, verkleinert es vorher
+auf die doppelte Darstellungsbreite (`cwebp -q 82 -resize <breite> 0`);
+`apps/cms/scripts/bildErsetzen.ts` tauscht die Datei an einem bestehenden
+Datensatz, ohne Verweise zu brechen. Dauerhaft löst das Cloudflares
+Bildtransformation — siehe
+[ARCHITECTURE.md](ARCHITECTURE.md#bildtransformation-am-rand-hinter-einem-schalter).
 
 **6. Der CMS-Build läuft mit `--webpack`.** Next 16 baut standardmässig mit
 Turbopack, und OpenNext kann dessen Chunks nicht bündeln. Das Flag nicht

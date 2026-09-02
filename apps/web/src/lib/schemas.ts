@@ -2,8 +2,9 @@ import { z } from 'zod'
 import type {
   Angebote,
   Config,
-  Header,
+  Event,
   Footer,
+  Header,
   Icon,
   News,
   Page,
@@ -65,6 +66,12 @@ export const newsSchema = z.object({
   excerpt: z.string(),
 })
 
+export const eventSchema = z.object({
+  title: z.string(),
+  rhythmus: z.string(),
+  excerpt: z.string(),
+})
+
 export const angeboteSchema = z.object({ title: z.string() })
 
 export const signatureDishSchema = z.object({ name: z.string() })
@@ -82,6 +89,7 @@ export const mediaSchema = z.object({ alt: z.string() })
 export const collectionSchemas = {
   pages: pageSchema,
   news: newsSchema,
+  events: eventSchema,
   angebote: angeboteSchema,
   'signature-dishes': signatureDishSchema,
   stationen: stationenSchema,
@@ -132,6 +140,7 @@ export type ModelleErfuellenSchemata = [
   Erfuellt<Footer, z.infer<typeof footerSchema>>,
   Erfuellt<Page, z.infer<typeof pageSchema>>,
   Erfuellt<News, z.infer<typeof newsSchema>>,
+  Erfuellt<Event, z.infer<typeof eventSchema>>,
   Erfuellt<Angebote, z.infer<typeof angeboteSchema>>,
   Erfuellt<SignatureDish, z.infer<typeof signatureDishSchema>>,
   Erfuellt<Stationen, z.infer<typeof stationenSchema>>,
