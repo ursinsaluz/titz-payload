@@ -151,7 +151,7 @@ export default buildConfig({
     }),
     // Macht den Inhalt für MCP-Clients lesbar und schreibbar. Der Endpunkt liegt
     // auf `/api/mcp` und authentisiert über einen Schlüssel aus der Collection
-    // `payload-mcp-api-keys` — anlegen im Admin unter «System».
+    // `payload-mcp-api-keys` — anlegen im Admin unter «Einstellungen».
     //
     // `users` ist bewusst nicht freigegeben: Über die MCP-Tools liessen sich
     // sonst Konten anlegen und Passwörter setzen.
@@ -173,7 +173,7 @@ export default buildConfig({
       overrideApiKeyCollection: (collection) => ({
         ...collection,
         labels: { singular: 'MCP-Schlüssel', plural: 'MCP-Schlüssel' },
-        admin: { ...collection.admin, group: 'System' },
+        admin: { ...collection.admin, group: 'Einstellungen' },
       }),
     }),
   ],

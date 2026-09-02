@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { iconSelect } from '../fields/iconSelect'
+import { reihenfolge } from '../fields/reihenfolge'
 
 export const SignatureDishes: CollectionConfig = {
   slug: 'signature-dishes',
@@ -7,7 +8,7 @@ export const SignatureDishes: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'order'],
-    group: 'Inhalte',
+    group: 'Inhalt',
   },
   access: {
     read: () => true,
@@ -20,6 +21,6 @@ export const SignatureDishes: CollectionConfig = {
     { name: 'description', type: 'textarea', label: 'Beschreibung' },
     { name: 'image', type: 'upload', relationTo: 'media', label: 'Bild' },
     { name: 'videoUrl', type: 'text', label: 'Video-URL (YouTube)' },
-    { name: 'order', type: 'number', label: 'Reihenfolge', defaultValue: 0 },
+    reihenfolge('signature-dishes'),
   ],
 }

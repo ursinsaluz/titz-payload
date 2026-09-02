@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { iconSelect } from '../fields/iconSelect'
+import { reihenfolge } from '../fields/reihenfolge'
 
 export const Angebote: CollectionConfig = {
   slug: 'angebote',
@@ -7,7 +8,7 @@ export const Angebote: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'order'],
-    group: 'Inhalte',
+    group: 'Inhalt',
   },
   access: {
     read: () => true,
@@ -34,6 +35,6 @@ export const Angebote: CollectionConfig = {
         { name: 'url', type: 'text', label: 'URL' },
       ],
     },
-    { name: 'order', type: 'number', label: 'Reihenfolge', defaultValue: 0 },
+    reihenfolge('angebote'),
   ],
 }

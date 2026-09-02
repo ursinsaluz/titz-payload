@@ -12,7 +12,7 @@ export const Icons: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'filename'],
-    group: 'Assets',
+    group: 'Dateien',
   },
   access: {
     read: () => true,

@@ -4,7 +4,7 @@ import { linkFields } from '../fields/link'
 export const Footer: GlobalConfig = {
   slug: 'footer',
   label: 'Footer',
-  admin: { group: 'Struktur' },
+  admin: { group: 'Einstellungen' },
   access: {
     read: () => true,
   },
