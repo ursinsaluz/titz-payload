@@ -321,23 +321,6 @@ Funktion.
   Content-API bleibt damit offen, und genau deshalb war die Zugriffsprüfung auf
   `media` die Voraussetzung und nicht die Alternative.
 
-- **Zwei Angaben warten auf Sebastians Bestätigung.** Beide kamen beim
-  Fact-Check am 02.09.2026 auf und lassen sich von aussen nicht klären.
-
-  «Co-Autor «Avantgardistische Naturküche»» steht so in der Rössli-Station. Die
-  Katalogdaten zu ISBN 978-3-03800-532-2 nennen Stefan Wiesner, Andrin C. Willi,
-  Michael Wissing und Anton Studer; Titz ist dort nicht geführt, und die
-  Rechercheliste selbst schreibt an einer Stelle nur «Rezeptentwickler». Eine
-  Nennung im Buch selbst steht in keinem Katalog — wer das Buch in der Hand hat,
-  sieht es in einer Minute. `apps/cms/scripts/korrigiereBuchrolle.ts` liegt
-  bereit und läuft erst mit `BUCHROLLE_APPLY=1`.
-
-  Der Falstaff-Profi-Award **«Bester Arbeitgeber 2026»** wird auf
-  restaurant-pinot.ch für das Pinot beansprucht, in einer Kategorie
-  «Hospitality Employee». Falstaff nennt als Gewinner Gastronomie aber Bindella
-  Terre Vite Vita SA, Zürich. Solange der Widerspruch offen ist, steht die
-  Auszeichnung **nicht** auf titz.cooking. Braucht das Belegdokument.
-
 - **`users` hat kein Rollenfeld.** Jeder angemeldete Benutzer darf alles. Wird
   fällig, wenn jemand aus dem Restaurant Inhalte pflegt und nicht an `users`
   soll — dann in einem Zug mit `users.access`.

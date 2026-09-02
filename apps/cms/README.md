@@ -37,7 +37,8 @@ scripts/
   repairProd.ts        repariert Dateien in Produktion, ohne Inhalt anzufassen
   importNews.ts        trägt recherchierte Medienberichte als Aktuelles nach
   korrigiereAdresse.ts Hausnummer des Restaurants auf der Startseite
-  korrigiereBuchrolle.ts «Co-Autor» → belegbare Formulierung (braucht Zustimmung)
+  ergaenzeBelegtes.ts  Rössli-Rolle, Falstaff-Award, Buch-Titelbild
+  setzeNewsLimit.ts    Anzahl sichtbarer Aktuelles-Einträge auf der Startseite
   syncSharedTypes.mjs  kopiert die Typen nach packages/types
 tests/unit/      Vitest, reine Logik ohne Datenbank
 ```
