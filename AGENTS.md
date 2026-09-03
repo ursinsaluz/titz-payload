@@ -192,6 +192,20 @@ Prettier bestimmt die Form (`.prettierrc.json`, 100 Zeichen, keine Semikolons,
 einfache Anführungszeichen). ESLint nur für echte Fehler; ungenutzte Variablen
 sind Errors, Stilfragen macht Prettier.
 
+### `IMAGE_TRANSFORM` gehört in jeden Produktivbuild
+
+`pnpm deploy:web` setzt die Variable seit dem 03.09.2026 selbst. Vorher tat es
+nur Workers Builds — ein lokales `pnpm deploy:web` baute damit **ohne**
+Bildtransformation und nahm sie in Produktion still zurück: kein Fehler, keine
+Warnung, nur wieder Originalbilder mit bis zu 2,2 MB. Die Variable nicht aus
+dem Skript entfernen.
+
+Prüfen lässt sich das am gebauten HTML:
+
+```bash
+grep -c cdn-cgi apps/web/dist/index.html   # muss > 0 sein
+```
+
 ### Textfarben nur aus dem Token
 
 Für gedämpften Text gibt es genau `var(--ink-muted)`. Kein
