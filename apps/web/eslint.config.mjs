@@ -15,6 +15,17 @@ export default [
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
   {
+    /**
+     * Die Astro-Konfiguration läuft in Node, nicht im Browser: Sie liest
+     * `process.env` und holt für die Sitemap `lastmod` per `fetch`. Ohne
+     * diese Globals meldet `no-undef` fünf Fehler für Code, der korrekt ist.
+     */
+    files: ['*.config.mjs', '*.config.js'],
+    languageOptions: {
+      globals: { process: 'readonly', fetch: 'readonly', console: 'readonly', URL: 'readonly' },
+    },
+  },
+  {
     rules: {
       '@typescript-eslint/no-unused-vars': [
         'error',

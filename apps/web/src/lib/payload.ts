@@ -194,14 +194,91 @@ export function mediaUrl(
    */
   if (media.mimeType === 'image/avif') return voll
 
+  return transformiert(voll, Math.round(optionen.breite * 2))
+}
+
+/**
+ * Ein `srcset` mit zwei Stufen plus das passende `sizes`.
+ *
+ * Vorher bekam jedes Gerät dieselbe Datei in doppelter Darstellungsbreite —
+ * ein 320-px-Telefon ohne Retina lud 700 px und warf drei Viertel der Pixel
+ * weg. Zwei Stufen genügen für diese Kachelgrössen; mehr Einträge kosten
+ * Cache-Varianten am Rand, ohne dass ein Gerät davon profitiert.
+ *
+ * Gibt `null` zurück, wo `mediaUrl` das auch tut — also bei fehlendem Bild,
+ * bei abgeschalteter Transformation und bei AVIF-Quellen. Der Aufrufer setzt
+ * das Attribut dann nicht, und `src` allein trägt den Fall.
+ */
+export function mediaSrcSet(
+  media: Media | number | null | undefined,
+  breite: number,
+): { srcset: string; sizes: string } | null {
+  if (media == null || typeof media === 'number' || !media.url) return null
+  if (!TRANSFORM || media.mimeType === 'image/avif') return null
+
+  const basis = PAYLOAD_URL.replace(/\/+$/, '')
+  const pfad = media.url.startsWith('/') ? media.url : `/${media.url}`
+  const voll = media.url.startsWith('http') ? media.url : `${basis}${pfad}`
+
+  return {
+    srcset: [
+      `${transformiert(voll, breite)} ${breite}w`,
+      `${transformiert(voll, breite * 2)} ${breite * 2}w`,
+    ].join(', '),
+    // Die Kacheln haben eine feste Breite und wachsen nicht mit dem Viewport;
+    // unterhalb der Kachelbreite füllt das Bild die Spalte.
+    sizes: `(max-width: ${breite}px) 100vw, ${breite}px`,
+  }
+}
+
+/**
+ * Das Vorschaubild für Open Graph und Twitter, auf 1200 × 630 zugeschnitten.
+ *
+ * Das hinterlegte Bild ist ein Portrait (1000 × 1400). `summary_large_image`
+ * erwartet 1.91:1 — WhatsApp, LinkedIn und Slack beschneiden sonst selbst,
+ * und zwar mittig, sodass vom Gesicht ein Streifen bleibt. `fit=cover`
+ * schneidet stattdessen kontrolliert am Rand zu.
+ *
+ * `gravity=auto` überlässt Cloudflare die Wahl des Ausschnitts; bei einem
+ * Portrait trifft das den Kopf zuverlässiger als die Bildmitte.
+ *
+ * Gibt `zugeschnitten: false` zurück, wenn die Transformation nicht greift —
+ * abgeschaltet oder AVIF-Quelle. Dann darf `Base.astro` keine Masse angeben,
+ * weil das Bild seine ursprünglichen behält.
+ */
+export function ogBild(
+  media: Media | number | null | undefined,
+): { url: string; zugeschnitten: boolean } | null {
+  const voll = mediaUrl(media)
+  if (!voll) return null
+  if (!TRANSFORM || (typeof media === 'object' && media?.mimeType === 'image/avif')) {
+    return { url: voll, zugeschnitten: false }
+  }
+  const u = new URL(voll)
+  const optionen = 'width=1200,height=630,fit=cover,gravity=auto,format=auto,quality=80'
+  return {
+    url: `${u.origin}/cdn-cgi/image/${optionen}${u.pathname}${u.search}`,
+    zugeschnitten: true,
+  }
+}
+
+/** Der `/cdn-cgi/image/`-Pfad für eine konkrete Pixelbreite. */
+function transformiert(voll: string, pixel: number): string {
   // `format=auto` gibt AVIF, wo der Browser es annimmt, sonst WebP.
   // `fit=scale-down` vergrössert nie — ein kleines Original bleibt klein.
-  const optionenPfad = [
-    `width=${Math.round(optionen.breite * 2)}`,
-    'format=auto',
-    'quality=82',
-    'fit=scale-down',
-  ].join(',')
+  //
+  // `quality=75` statt 82. Der Gewinn ist kleiner als erwartet — gemessen am
+  // 02.09.2026 an den drei grössten Bildern der Startseite bei 700 px:
+  //
+  //   wine-cabinet   90,8 → 81,8 KB   (−10 %)
+  //   wiesner        27,5 → 24,6 KB   (−11 %)
+  //
+  // AVIF ist bei diesen Motiven schon nahe am Boden; die Qualitätsstufe
+  // verschiebt wenig. Der eigentliche Hebel ist das `srcset` darüber: dasselbe
+  // Bild bei 350 px wiegt 21,1 statt 81,8 KB. Deshalb bleibt 75 stehen — es
+  // kostet nichts Sichtbares —, aber die Erwartung gehört hierher, damit
+  // niemand später eine grosse Ersparnis von dieser Zeile erwartet.
+  const optionenPfad = [`width=${pixel}`, 'format=auto', 'quality=75', 'fit=scale-down'].join(',')
 
   const u = new URL(voll)
   // `u.pathname` beginnt mit einem Schrägstrich — ohne dieses Detail entstand

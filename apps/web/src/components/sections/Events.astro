@@ -1,5 +1,5 @@
 ---
-import { getCollection, mediaUrl } from '../../lib/payload'
+import { getCollection, mediaSrcSet, mediaUrl } from '../../lib/payload'
 import Icon from '../Icon.astro'
 import Egg from '../Egg.astro'
 import type { Block } from '../../lib/blocks'
@@ -80,6 +80,7 @@ const datumsText = (e: (typeof kommende)[number]) => {
         <div class="events__list">
           {kommende.map((e) => {
             const bild = mediaUrl(e.image, { breite: 320 })
+            const responsiv = mediaSrcSet(e.image, 320)
             return (
               <article class={`event${e.rhythmus === 'woechentlich' ? ' event--fix' : ''}`}>
                 <div class="event__when">
@@ -118,6 +119,8 @@ const datumsText = (e: (typeof kommende)[number]) => {
                   <img
                     class="event__img"
                     src={bild}
+                    srcset={responsiv?.srcset}
+                    sizes={responsiv?.sizes}
                     alt={typeof e.image === 'object' ? (e.image?.alt ?? '') : ''}
                     width="320"
                     height="220"
@@ -149,7 +152,7 @@ const datumsText = (e: (typeof kommende)[number]) => {
   .events__intro {
     max-width: 60ch;
     margin: 12px auto 0;
-    color: var(--ink-70);
+    color: var(--ink-muted);
   }
 
   .events__list {
@@ -201,7 +204,7 @@ const datumsText = (e: (typeof kommende)[number]) => {
   .event__time {
     font-size: 12px;
     letter-spacing: 0.06em;
-    color: var(--ink-55);
+    color: var(--ink-muted);
     font-variant-numeric: tabular-nums;
   }
 
@@ -234,7 +237,7 @@ const datumsText = (e: (typeof kommende)[number]) => {
     margin: 8px 0 0;
     font-size: 14px;
     line-height: 1.6;
-    color: var(--ink-70);
+    color: var(--ink-muted);
   }
 
   .event__menu {
@@ -251,7 +254,7 @@ const datumsText = (e: (typeof kommende)[number]) => {
     padding: 4px 11px;
     border-radius: 20px;
     background: rgba(47, 53, 56, 0.05);
-    color: var(--ink-70);
+    color: var(--ink-muted);
   }
 
   .event__foot {
@@ -270,7 +273,7 @@ const datumsText = (e: (typeof kommende)[number]) => {
   }
 
   .event__place {
-    color: var(--ink-55);
+    color: var(--ink-muted);
   }
 
   .event__cta {

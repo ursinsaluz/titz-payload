@@ -1,5 +1,5 @@
 ---
-import { getEggData, getGlobal, mediaUrl, type Page } from '../lib/payload'
+import { getEggData, getGlobal, ogBild, type Page } from '../lib/payload'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 import '../styles/global.css'
@@ -27,7 +27,14 @@ const title = seo?.title
     ? template.replace('%s', pageTitle)
     : (settings.defaultSeo?.title ?? settings.siteName ?? 'Sebastian Titz')
 const description = seo?.description ?? settings.defaultSeo?.description ?? ''
-const ogImage = mediaUrl(seo?.image) ?? mediaUrl(settings.defaultSeo?.image)
+
+const ogQuelle = seo?.image ?? settings.defaultSeo?.image
+const og = ogBild(ogQuelle)
+const ogImage = og?.url
+// Der Alt-Text kommt aus der Mediathek; ohne Eintrag der Seitentitel, der die
+// Person und den Ort nennt und damit die Aufgabe erfüllt.
+const ogImageAlt =
+  (typeof ogQuelle === 'object' ? ogQuelle?.alt : null) || (settings.siteName ?? 'Sebastian Titz')
 const canonical = new URL(
   Astro.url.pathname,
   settings.domain ?? Astro.site ?? 'https://titz.cooking',
@@ -49,11 +56,32 @@ const canonical = new URL(
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    {
+      /* Masse und Alt-Text zum Vorschaubild. Ohne `og:image:width`/`:height`
+         rendert Facebook den ersten Share als kleine Kachel, weil es das Bild
+         zu diesem Zeitpunkt noch nicht geholt hat — beim zweiten stimmt es
+         dann, was den Fehler schwer auffindbar macht. Die Werte sind fest:
+         Das Bild wird unten auf genau dieses Format zugeschnitten. */
+    }
+    {
+      ogImage && (
+        <>
+          <meta property="og:image" content={ogImage} />
+          {og?.zugeschnitten && (
+            <>
+              <meta property="og:image:width" content="1200" />
+              <meta property="og:image:height" content="630" />
+            </>
+          )}
+          <meta property="og:image:alt" content={ogImageAlt} />
+        </>
+      )
+    }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     {ogImage && <meta name="twitter:image" content={ogImage} />}
+    {ogImage && <meta name="twitter:image:alt" content={ogImageAlt} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {
       /* Die Bilder liegen auf dem CMS-Worker, also einer anderen Herkunft.
@@ -79,8 +107,16 @@ const canonical = new URL(
     {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
+    {
+      /* Vor dem Inhalt stehen Marke, sechs Navigationslinks und der
+         Reservieren-Button — dazu über die Seite verteilt 23 Gemüse-Buttons
+         des Easter-Egg-Spiels. Ohne diesen Sprung arbeitet sich jede
+         Tastaturnavigation und jeder Screenreader jedes Mal durch alles
+         hindurch. Sichtbar wird der Link erst bei Fokus. */
+    }
+    <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
     <Header />
-    <main>
+    <main id="inhalt" tabindex="-1">
       <slot />
     </main>
     <Footer />

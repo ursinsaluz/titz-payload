@@ -192,6 +192,24 @@ Prettier bestimmt die Form (`.prettierrc.json`, 100 Zeichen, keine Semikolons,
 einfache Anführungszeichen). ESLint nur für echte Fehler; ungenutzte Variablen
 sind Errors, Stilfragen macht Prettier.
 
+### Textfarben nur aus dem Token
+
+Für gedämpften Text gibt es genau `var(--ink-muted)`. Kein
+`rgba(47, 53, 56, 0.6)` daneben, auch nicht «nur an dieser einen Stelle».
+
+Vorher standen drei Token-Stufen und in sechs Komponenten handgeschriebene
+Alphawerte zwischen 0.5 und 0.65; auf Weiss ergab das 2.5:1 bis 4.2:1 und damit
+durchweg weniger als die 4.5:1, die WCAG AA für Text unter 18.66 px verlangt.
+Der Token heisst darum nicht mehr `--ink-70` — die Zahl im Namen war die
+Einladung, für «etwas leiser» eine eigene zu schreiben.
+
+Dasselbe gilt für `--gold`: Die Farbe trägt ausschliesslich Text und ist auf den
+dunkelsten Untergrund gerechnet, auf dem sie steht — `--mint` in den Anlässen,
+nicht Weiss. Wer sie aufhellt, bricht die Anlässe, nicht die Startseite.
+
+Gegenprüfen lässt sich das mit Lighthouse gegen `pnpm --filter @titz/web preview`;
+der Wert für Barrierefreiheit steht am 03.09.2026 auf 100.
+
 ## Deployen
 
 ```bash

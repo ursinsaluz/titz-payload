@@ -49,12 +49,35 @@
   --bg: #ffffff;
   --bg-soft: #fbfaf7;
   --ink: #2f3538;
-  --ink-70: rgba(47, 53, 56, 0.7);
-  --ink-55: rgba(47, 53, 56, 0.55);
-  --ink-45: rgba(47, 53, 56, 0.45);
+  /**
+   * Die einzige gedämpfte Textfarbe.
+   *
+   * Vorher gab es drei Token-Stufen — 0.45, 0.55, 0.70 — und daneben in sechs
+   * Komponenten handgeschriebene 0.5, 0.6 und 0.65. Auf Weiss ergab das
+   * zwischen 2.5:1 und 4.2:1, durchweg unter den 4.5:1, die WCAG AA für Text
+   * unter 18.66 px verlangt.
+   *
+   * Der Name trägt bewusst keine Zahl mehr: «--ink-70» hat genau dazu
+   * eingeladen, daneben ein «rgba(…, 0.65)» zu schreiben, wenn es etwas
+   * leiser sein sollte. Oberhalb der Schwelle ist für solche Zwischenstufen
+   * kein Platz.
+   *
+   * 0.75 statt 0.70, weil die Anlässe auf Mint (--mint) stehen und nicht auf
+   * Weiss: Dort ergab 0.70 nur 4.49:1. Gemessen mit 0.75 — 5.7:1 auf Weiss,
+   * 5.2:1 auf Mint.
+   */
+  --ink-muted: rgba(47, 53, 56, 0.75);
   --rule: rgba(47, 53, 56, 0.08);
   --green: #2a4d38;
-  --gold: #c5a059;
+  /* Gold war #c5a059 und ergab auf Weiss 2.5:1. Die Farbe trägt in diesem
+     Projekt ausschliesslich Text — Eyebrows, Zeitangaben, Hover-Zustände,
+     die beiden ✦-Glyphen —, nie eine Fläche oder einen Rand. Sie muss die
+     4.5:1 also erfüllen und kann nicht durch einen zweiten Token umgangen
+     werden; ein «--gold-text» daneben liesse --gold ohne Verwendung zurück.
+     Derselbe Farbton, dunkler. Der Wert richtet sich nach dem dunkelsten
+     Untergrund, auf dem er steht — Mint in den Anlässen, nicht Weiss:
+     5.5:1 auf Weiss, 4.6:1 auf Mint. */
+  --gold: #856426;
 
   /* Pastell-Chips */
   --mint: #dff0e3;
@@ -179,6 +202,36 @@ img {
 .pill--mint:hover {
   transform: translateY(-2px) rotate(-1deg);
   background: var(--mint-deep);
+}
+
+/**
+ * Sprunglink zum Inhalt.
+ *
+ * Ausserhalb des Sichtfelds geparkt statt mit `display: none` versteckt —
+ * `display: none` nimmt ein Element auch aus der Fokusreihenfolge, und dann
+ * gibt es nichts mehr zu überspringen.
+ */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 999;
+  background: var(--ink);
+  color: #fff;
+  padding: 13px 24px;
+  border-radius: 0 0 12px 0;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* `main` bekommt `tabindex="-1"`, damit der Sprung den Fokus wirklich
+   mitnimmt. Der Umriss, den Browser darauf zeichnen, gehört nicht dazu. */
+main:focus {
+  outline: none;
 }
 
 /* Icon-Kreis (Karten) */
@@ -421,5 +474,36 @@ img {
 
   .egg {
     display: none;
+  }
+}
+
+/**
+ * Bewegung abschalten, wenn das Betriebssystem danach fragt.
+ *
+ * Die Seite hält 13 Gemüse-Eier mit `animation: … infinite` und die Spirale
+ * mit `tzSpiralZoom 120s`. Die Eier verschwinden unter 720 px ohnehin
+ * (`.egg { display: none }` weiter oben), die Spirale läuft überall — auf
+ * einem Telefon also dauerhaft ein Compositor-Layer über 70 vw.
+ *
+ * WCAG 2.3.3 verlangt, dass Bewegung abschaltbar ist, die kein wesentlicher
+ * Teil der Information ist. Das trifft hier auf alles zu: Die Eier sind ein
+ * Spiel, die Spirale Dekoration.
+ *
+ * `0.01ms` statt `none`: Eine Animation, die auf Dauer 0 gesetzt wird, feuert
+ * ihr `animationend` nicht zuverlässig. Scroll-Reveal hängt zwar an einem
+ * IntersectionObserver und nicht daran, aber die Regel ist die verbreitete,
+ * und ein späterer Effekt soll nicht daran scheitern.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
   }
 }
