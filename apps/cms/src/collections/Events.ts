@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { iconSelect } from '../fields/iconSelect'
+import { seoFields } from '../fields/seo'
+import { slugFeld } from '../fields/slugFeld'
 
 /**
  * Anlässe, die noch kommen.
@@ -26,7 +28,7 @@ export const Events: CollectionConfig = {
   labels: { singular: 'Anlass', plural: 'Anlässe' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'rhythmus', 'datum', '_status'],
+    defaultColumns: ['title', 'slug', 'rhythmus', 'datum', '_status'],
     group: 'Inhalt',
   },
   access: {
@@ -36,6 +38,7 @@ export const Events: CollectionConfig = {
   defaultSort: 'datum',
   fields: [
     { name: 'title', type: 'text', label: 'Titel', required: true },
+    slugFeld('events'),
     {
       name: 'rhythmus',
       type: 'select',
@@ -109,5 +112,6 @@ export const Events: CollectionConfig = {
         { name: 'url', type: 'text', label: 'URL' },
       ],
     },
+    seoFields,
   ],
 }

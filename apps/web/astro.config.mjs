@@ -22,11 +22,24 @@ const PAYLOAD_URL = (process.env.PAYLOAD_URL || 'https://admin.titz.cooking').re
 /** Die Collections, deren Inhalt auf der Startseite steht. */
 const STARTSEITE = ['news', 'events', 'angebote', 'stationen', 'signature-dishes', 'pages']
 
+/** Sammlungen mit eigenen Detailseiten: Slug → Adressprefix. */
+const DETAILSEITEN = { events: 'anlaesse', angebote: 'angebote' }
+
 async function juengstesUpdate(slug) {
   const res = await fetch(`${PAYLOAD_URL}/api/${slug}?limit=1&sort=-updatedAt&depth=0`)
   if (!res.ok) throw new Error(`${slug}: HTTP ${res.status}`)
   const { docs } = await res.json()
   return docs?.[0]?.updatedAt ?? null
+}
+
+/** Slug und Zeitstempel jedes Datensatzes mit eigener Adresse. */
+async function detailStaende(collection, prefix) {
+  const res = await fetch(`${PAYLOAD_URL}/api/${collection}?limit=200&depth=0`)
+  if (!res.ok) throw new Error(`${collection}: HTTP ${res.status}`)
+  const { docs } = await res.json()
+  return docs
+    .filter((doc) => doc.slug && doc._status !== 'draft')
+    .map((doc) => [`/${prefix}/${doc.slug}/`, doc.updatedAt])
 }
 
 async function seitenStand() {
@@ -42,9 +55,12 @@ async function seitenStand() {
 const lastmod = new Map()
 
 try {
-  const [stempel, seiten] = await Promise.all([
+  const [stempel, seiten, ...details] = await Promise.all([
     Promise.all(STARTSEITE.map(juengstesUpdate)),
     seitenStand(),
+    ...Object.entries(DETAILSEITEN).map(([collection, prefix]) =>
+      detailStaende(collection, prefix),
+    ),
   ])
 
   const juengstes = stempel.filter(Boolean).sort().at(-1)
@@ -52,6 +68,10 @@ try {
 
   for (const [slug, stand] of seiten) {
     if (slug !== 'home' && stand) lastmod.set(`/${slug}/`, stand)
+  }
+
+  for (const [pfad, stand] of details.flat()) {
+    if (stand) lastmod.set(pfad, stand)
   }
 } catch (fehler) {
   console.warn(`[sitemap] Kein lastmod — CMS nicht erreichbar: ${fehler.message}`)
@@ -70,9 +90,13 @@ export default defineConfig({
      * Pfad ausgibt.
      *
      * Der Einwand gegen `'always'` ist, dass CSS über Seiten hinweg nicht mehr
-     * gecacht wird. Bei drei Seiten, von denen praktisch jeder Besuch auf der
-     * Startseite beginnt, trägt das nicht. Sobald Angebote und Anlässe eigene
-     * URLs haben, ist die Rechnung neu zu stellen.
+     * gecacht wird. Mit den Detailseiten sind es jetzt sechs statt drei Seiten,
+     * und die Rechnung geht trotzdem auf: Besucher kommen aus der Suche direkt
+     * auf *eine* Seite, also mit kaltem Cache — dort zählt allein, dass keine
+     * zweite Anfrage vor dem ersten Bild steht. Ein Wechsel zwischen zwei
+     * Detailseiten ist der seltene Fall, nicht der übliche.
+     *
+     * Neu zu bewerten, wenn die Anlässe einmal zweistellig werden.
      */
     inlineStylesheets: 'always',
   },

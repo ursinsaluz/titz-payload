@@ -15,7 +15,7 @@
     "generate:types": "pnpm --filter @titz/cms run generate:types",
     "migrate:status": "pnpm --filter @titz/cms run migrate:status",
     "migrate:status:prod": "pnpm --filter @titz/cms run migrate:status:prod",
-    "check": "pnpm --filter @titz/cms exec tsc --noEmit && pnpm --filter @titz/web run check",
+    "check": "pnpm --filter @titz/cms run check && pnpm --filter @titz/web run check",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
     "format": "prettier --write .",

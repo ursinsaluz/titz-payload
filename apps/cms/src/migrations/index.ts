@@ -6,6 +6,7 @@ import * as migration_20260703_184954_social_icon_media from './20260703_184954_
 import * as migration_20260831_111049_media_metadaten from './20260831_111049_media_metadaten';
 import * as migration_20260831_113204_mcp_schluessel from './20260831_113204_mcp_schluessel';
 import * as migration_20260902_082620_anlaesse from './20260902_082620_anlaesse';
+import * as migration_20260903_093910_anlass_angebot_slug from './20260903_093910_anlass_angebot_slug';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20260902_082620_anlaesse.up,
     down: migration_20260902_082620_anlaesse.down,
-    name: '20260902_082620_anlaesse'
+    name: '20260902_082620_anlaesse',
+  },
+  {
+    up: migration_20260903_093910_anlass_angebot_slug.up,
+    down: migration_20260903_093910_anlass_angebot_slug.down,
+    name: '20260903_093910_anlass_angebot_slug',
   },
 ];

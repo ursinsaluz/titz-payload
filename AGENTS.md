@@ -192,6 +192,22 @@ Prettier bestimmt die Form (`.prettierrc.json`, 100 Zeichen, keine Semikolons,
 einfache Anführungszeichen). ESLint nur für echte Fehler; ungenutzte Variablen
 sind Errors, Stilfragen macht Prettier.
 
+### Der CMS-Typcheck braucht einen grösseren Stack
+
+`pnpm --filter @titz/cms run check` ruft `tsc` über
+`node --stack-size=4000` auf. Das ist kein Aberglaube: Mit der SEO-Gruppe an
+Anlässen und Angeboten sind die generierten Typen so weit gewachsen, dass
+`tsc --noEmit` mit dem Standard-Stack **abstürzt** statt zu prüfen —
+
+```
+RangeError: Maximum call stack size exceeded
+```
+
+Der Absturz sieht in der CI wie ein Fehlschlag aus, verdeckt aber echte
+Typfehler: Am 03.09.2026 lagen drei darunter, in `slugFeld.ts`, in der neuen
+Migration und in `seoInhalt.ts`. Wer das Flag entfernt, prüft nichts mehr,
+sobald das Modell wieder wächst.
+
 ### `IMAGE_TRANSFORM` gehört in jeden Produktivbuild
 
 `pnpm deploy:web` setzt die Variable seit dem 03.09.2026 selbst. Vorher tat es

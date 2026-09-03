@@ -31,6 +31,26 @@ import type { Config, Event } from '@titz/types'
 const AUTOR = 'https://titz.cooking/#person'
 
 /**
+ * Die Adressen der Detailseiten, an einer Stelle.
+ *
+ * Sie stehen hier und nicht in den Astro-Seiten, weil drei Stellen sie
+ * brauchen und sonst auseinanderlaufen: die Route selbst, die Verlinkung aus
+ * der Sektion auf der Startseite und die `url` im Schema. Eine falsche `url`
+ * im Schema ist der teuerste der drei Fehler — Google verwirft den Eintrag
+ * stillschweigend.
+ */
+/**
+ * Der Schrägstrich am Ende ist kein Schönheitsfehler, sondern nötig.
+ * `trailingSlash: 'ignore'` lässt Astro `/impressum/` bauen, das Canonical
+ * trägt ihn, die Sitemap auch — und `/anlaesse/x` ohne ihn beantwortet
+ * Cloudflare mit einem 307 auf `/anlaesse/x/`. Eine `url` im Schema, die erst
+ * umgeleitet wird, ist genau die Unstimmigkeit, an der Rich Results
+ * unzuverlässig werden.
+ */
+export const anlassPfad = (slug: string) => `/anlaesse/${slug}/`
+export const angebotPfad = (slug: string) => `/angebote/${slug}/`
+
+/**
  * Das Einsatzgebiet. Diese Namen sind der Grund, warum es das Feld gibt: Google
  * verknüpft `areaServed` mit seinen eigenen Ortsdaten, und Herrschaft,
  * Sarganserland und Werdenberg sind die drei Regionen, um die es geht.
@@ -114,55 +134,64 @@ function laufbahn(stationen: Station[]) {
  * `eventAttendanceMode` und `eventStatus` sind Pflichtangaben, seit Google die
  * Termin-Ergebnisse um Online-Anlässe erweitert hat. Ohne sie wird der Eintrag
  * stillschweigend verworfen.
+ *
+ * Wird zweimal gebraucht: für den Graph der Startseite und für die
+ * Detailseite, wo derselbe Eintrag allein steht. Darum als eigene Funktion und
+ * nicht als Schleifenrumpf — zwei Fassungen desselben Schemas würden
+ * auseinanderlaufen, und die Abweichung fiele niemandem auf.
  */
-function anlaesse(events: Event[], domain: string) {
-  return events
-    .filter((e) => e.title && e._status !== 'draft')
-    .map((e) => {
-      const wiederkehrend = e.rhythmus === 'woechentlich'
+export function einAnlass(e: Event, domain: string) {
+  const wiederkehrend = e.rhythmus === 'woechentlich'
 
-      return ohneLeere({
-        '@type': 'Event',
-        name: e.title,
-        description: e.excerpt ?? undefined,
-        url: `${domain}/#anlaesse`,
-        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-        eventStatus: 'https://schema.org/EventScheduled',
-        inLanguage: 'de-CH',
-        location: e.ort
-          ? {
-              '@type': 'Place',
-              name: e.ort.split(',')[0]?.trim(),
-              address: e.ort,
-            }
-          : undefined,
-        performer: { '@id': AUTOR },
-        organizer: { '@id': AUTOR },
-        // Ein einzelner Termin trägt `startDate`, eine Reihe `eventSchedule`.
-        // Beides zugleich wäre widersprüchlich.
-        startDate: !wiederkehrend && e.datum ? datumZeit(e.datum, e.zeit) : undefined,
-        eventSchedule: wiederkehrend
-          ? ohneLeere({
-              '@type': 'Schedule',
-              repeatFrequency: 'P1W',
-              byDay: e.wochentag ? `https://schema.org/${e.wochentag}` : undefined,
-              startTime: e.zeit ? `${e.zeit}:00` : undefined,
-              startDate: e.datum ? String(e.datum).slice(0, 10) : undefined,
-              scheduleTimezone: 'Europe/Zurich',
-            })
-          : undefined,
-        offers: e.preis
-          ? ohneLeere({
-              '@type': 'Offer',
-              price: e.preis.replace(/[^\d.]/g, '') || undefined,
-              priceCurrency: /chf/i.test(e.preis) ? 'CHF' : undefined,
-              description: e.preis,
-              url: e.cta?.url ?? undefined,
-              availability: 'https://schema.org/InStock',
-            })
-          : undefined,
-      })
-    })
+  return ohneLeere({
+    '@type': 'Event',
+    name: e.title,
+    description: e.excerpt ?? undefined,
+    // Seit dem 03.09.2026 die eigene Detailseite statt `#anlaesse`. Ein
+    // Fragment auf einer Sammelseite erfüllt die Anforderung formal, wird von
+    // Google aber regelmässig als Duplikat zusammengefasst — von vier
+    // Anlässen erschien dann höchstens einer.
+    url: `${domain}${anlassPfad(e.slug)}`,
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    inLanguage: 'de-CH',
+    location: e.ort
+      ? {
+          '@type': 'Place',
+          name: e.ort.split(',')[0]?.trim(),
+          address: e.ort,
+        }
+      : undefined,
+    performer: { '@id': AUTOR },
+    organizer: { '@id': AUTOR },
+    // Ein einzelner Termin trägt `startDate`, eine Reihe `eventSchedule`.
+    // Beides zugleich wäre widersprüchlich.
+    startDate: !wiederkehrend && e.datum ? datumZeit(e.datum, e.zeit) : undefined,
+    eventSchedule: wiederkehrend
+      ? ohneLeere({
+          '@type': 'Schedule',
+          repeatFrequency: 'P1W',
+          byDay: e.wochentag ? `https://schema.org/${e.wochentag}` : undefined,
+          startTime: e.zeit ? `${e.zeit}:00` : undefined,
+          startDate: e.datum ? String(e.datum).slice(0, 10) : undefined,
+          scheduleTimezone: 'Europe/Zurich',
+        })
+      : undefined,
+    offers: e.preis
+      ? ohneLeere({
+          '@type': 'Offer',
+          price: e.preis.replace(/[^\d.]/g, '') || undefined,
+          priceCurrency: /chf/i.test(e.preis) ? 'CHF' : undefined,
+          description: e.preis,
+          url: e.cta?.url ?? undefined,
+          availability: 'https://schema.org/InStock',
+        })
+      : undefined,
+  })
+}
+
+function anlaesse(events: Event[], domain: string) {
+  return events.filter((e) => e.title && e._status !== 'draft').map((e) => einAnlass(e, domain))
 }
 
 /** «2026-09-10» und «18:00» zu einem ISO-Zeitpunkt mit Schweizer Zone. */
@@ -170,6 +199,82 @@ function datumZeit(datum: string, zeit?: string | null): string {
   const tag = String(datum).slice(0, 10)
   if (!zeit) return tag
   return `${tag}T${zeit.length === 5 ? zeit : zeit.padStart(5, '0')}:00+02:00`
+}
+
+/**
+ * Ein Angebot als `Service`.
+ *
+ * `areaServed` ist hier das Feld, um das es geht: Beratung und Catering sind
+ * ortsgebundene Leistungen, und Google verknüpft die Namen mit seinen eigenen
+ * Ortsdaten. Ohne die Angabe steht dort eine Leistung ohne Einzugsgebiet.
+ *
+ * Kein `LocalBusiness` und kein `Offer` mit Preis: Beides behauptet Angaben —
+ * Öffnungszeiten, einen Betriebssitz, einen festen Preis —, die es so nicht
+ * gibt. `Service` mit `provider` ist die Aussage, die stimmt.
+ */
+export function einAngebot(a: Angebot, domain: string) {
+  return ohneLeere({
+    '@type': 'Service',
+    name: a.title,
+    serviceType: a.eyebrow ?? undefined,
+    provider: { '@id': AUTOR },
+    areaServed: GEBIETE.map((g) => ({ '@type': 'AdministrativeArea', name: g })),
+    url: `${domain}${angebotPfad(a.slug)}`,
+  })
+}
+
+/**
+ * Die Brotkrume einer Detailseite.
+ *
+ * Google zeigt sie in der Trefferliste anstelle der nackten URL — aus
+ * «titz.cooking › anlaesse › gourmetabend-im-pinot» wird «Sebastian Titz ›
+ * Anlässe › Gourmetabend im PINOT». Das ist der sichtbare Nutzen; der zweite
+ * ist, dass die Seite damit ihre Stellung in der Struktur benennt, statt sie
+ * Google aus der Verlinkung raten zu lassen.
+ */
+export function brotkrume(
+  domain: string,
+  eintraege: { name: string; pfad: string }[],
+): Record<string, unknown> {
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: eintraege.map((e, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: e.name,
+      item: `${domain}${e.pfad}`,
+    })),
+  }
+}
+
+/** Der Graph einer Anlass-Detailseite: der Anlass, die Brotkrume, die Person. */
+export function anlassSeitenSchema(e: Event, domain: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      einAnlass(e, domain),
+      brotkrume(domain, [
+        { name: 'Start', pfad: '/' },
+        { name: 'Anlässe', pfad: '/#anlaesse' },
+        { name: e.title, pfad: anlassPfad(e.slug) },
+      ]),
+    ],
+  }
+}
+
+/** Der Graph einer Angebots-Detailseite. */
+export function angebotSeitenSchema(a: Angebot, domain: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      einAngebot(a, domain),
+      brotkrume(domain, [
+        { name: 'Start', pfad: '/' },
+        { name: 'Angebote', pfad: '/#angebote' },
+        { name: a.title, pfad: angebotPfad(a.slug) },
+      ]),
+    ],
+  }
 }
 
 export function startseitenSchema(args: {
@@ -237,18 +342,7 @@ export function startseitenSchema(args: {
       ),
   })
 
-  const dienste = angebote
-    .filter((a) => a.title)
-    .map((a) =>
-      ohneLeere({
-        '@type': 'Service',
-        name: a.title,
-        serviceType: a.eyebrow ?? undefined,
-        provider: { '@id': AUTOR },
-        areaServed: GEBIETE.map((g) => ({ '@type': 'AdministrativeArea', name: g })),
-        url: `${domain}/#angebote`,
-      }),
-    )
+  const dienste = angebote.filter((a) => a.title).map((a) => einAngebot(a, domain))
 
   const website = ohneLeere({
     '@type': 'WebSite',

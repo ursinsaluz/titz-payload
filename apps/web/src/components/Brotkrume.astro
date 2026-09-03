@@ -1,0 +1,83 @@
+---
+/**
+ * Die sichtbare Brotkrume einer Detailseite.
+ *
+ * Sie ist zugleich die interne Verlinkung, die der Seite bis zum 03.09.2026
+ * vollständig gefehlt hat: 15 ausgehende Links nach draussen, keinen einzigen
+ * internen ausser Impressum und Datenschutz. Ohne interne Links weiss Google
+ * nicht, welche Seiten zusammengehören und welche wichtig ist.
+ *
+ * `aria-current="page"` auf dem letzten Eintrag, und der ist bewusst kein
+ * Link — er zeigt auf die Seite, auf der man schon steht.
+ */
+interface Props {
+  eintraege: { name: string; pfad: string }[]
+}
+
+const { eintraege } = Astro.props
+const letzter = eintraege.length - 1
+---
+
+<nav class="krume" aria-label="Brotkrume">
+  <ol>
+    {
+      eintraege.map((eintrag, index) => (
+        <li>
+          {index === letzter ? (
+            <span aria-current="page">{eintrag.name}</span>
+          ) : (
+            <a href={eintrag.pfad}>{eintrag.name}</a>
+          )}
+          {index < letzter && (
+            <span class="krume__trenner" aria-hidden="true">
+              ›
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .krume {
+    margin-bottom: 26px;
+  }
+
+  .krume ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .krume li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .krume a {
+    color: var(--ink-muted);
+    transition: color 200ms;
+  }
+
+  .krume a:hover {
+    color: var(--green);
+  }
+
+  .krume__trenner {
+    color: var(--rule);
+  }
+
+  .krume [aria-current='page'] {
+    color: var(--ink);
+  }
+</style>

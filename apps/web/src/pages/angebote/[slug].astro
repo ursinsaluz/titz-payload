@@ -1,0 +1,190 @@
+---
+import Base from '../../layouts/Base.astro'
+import Brotkrume from '../../components/Brotkrume.astro'
+import IconCircle from '../../components/IconCircle.astro'
+import Icon from '../../components/Icon.astro'
+import { getCollection, getGlobal, mediaSrcSet, mediaUrl } from '../../lib/payload'
+import { lexicalToHtml } from '../../lib/lexical'
+import { angebotPfad, angebotSeitenSchema } from '../../lib/schema'
+
+/**
+ * Eine Detailseite je Angebot.
+ *
+ * Der eigentliche Zweck des ganzen Vorhabens: «Catering Bündner Herrschaft»
+ * und «Gastroberatung Ostschweiz» sind verschiedene Suchabsichten, und ein
+ * einzelnes Dokument kann nur eine davon im Title und in der Description
+ * bedienen. Jetzt hat jede ihre eigene Seite mit eigenem `Service`-Schema und
+ * eigenem `areaServed`.
+ */
+export async function getStaticPaths() {
+  const angebote = await getCollection('angebote', '&sort=order')
+  return angebote
+    .filter((angebot) => angebot.slug)
+    .map((angebot) => ({ params: { slug: angebot.slug }, props: { angebot } }))
+}
+
+const { angebot } = Astro.props
+const settings = await getGlobal('site-settings')
+const domain = settings.domain ?? 'https://titz.cooking'
+
+const bild = mediaUrl(angebot.image, { breite: 760 })
+const responsiv = mediaSrcSet(angebot.image, 760)
+
+const jsonLd = angebotSeitenSchema(angebot, domain)
+---
+
+<Base seo={angebot.seo} pageTitle={angebot.title} jsonLd={jsonLd}>
+  <article class="detail">
+    <div class="detail__inner">
+      <Brotkrume
+        eintraege={[
+          { name: 'Start', pfad: '/' },
+          { name: 'Angebote', pfad: '/#angebote' },
+          { name: angebot.title, pfad: angebotPfad(angebot.slug) },
+        ]}
+      />
+
+      <div class="detail__kopf">
+        {angebot.icon && <IconCircle icon={angebot.icon} size={64} />}
+        <div>
+          {angebot.eyebrow && <div class="eyebrow">{angebot.eyebrow}</div>}
+          <h1>{angebot.title}</h1>
+        </div>
+      </div>
+
+      {
+        bild && (
+          <img
+            class="detail__bild"
+            src={bild}
+            srcset={responsiv?.srcset}
+            sizes={responsiv?.sizes}
+            alt={typeof angebot.image === 'object' ? (angebot.image?.alt ?? '') : ''}
+            width="760"
+            height="428"
+            decoding="async"
+          />
+        )
+      }
+
+      {
+        angebot.description && (
+          <div class="detail__text" set:html={lexicalToHtml(angebot.description)} />
+        )
+      }
+
+      {
+        angebot.features && angebot.features.length > 0 && (
+          <section class="detail__leistungen">
+            <h2>Was dazugehört</h2>
+            <ul>
+              {angebot.features.map((merkmal) => (
+                <li>
+                  {merkmal.icon && <Icon icon={merkmal.icon} class="detail__merkmal-icon" />}
+                  <span>{merkmal.text}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        angebot.cta?.url && (
+          <a class="pill pill--dark detail__cta" href={angebot.cta.url}>
+            {angebot.cta.label ?? 'Anfragen'}
+          </a>
+        )
+      }
+    </div>
+  </article>
+</Base>
+
+<style>
+  .detail {
+    padding: 60px 40px 90px;
+  }
+
+  .detail__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .detail__kopf {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 12px;
+  }
+
+  .detail h1 {
+    margin: 6px 0 0;
+    font-size: clamp(32px, 5vw, 46px);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .detail__bild {
+    width: 100%;
+    height: auto;
+    border-radius: 22px;
+    margin-top: 34px;
+  }
+
+  .detail__text {
+    margin-top: 30px;
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .detail__leistungen {
+    margin-top: 46px;
+    padding-top: 26px;
+    border-top: 1.5px solid var(--rule);
+  }
+
+  .detail__leistungen h2 {
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+
+  .detail__leistungen ul {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 11px;
+  }
+
+  .detail__leistungen li {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 15px;
+  }
+
+  .detail__merkmal-icon {
+    display: inline-flex;
+    width: 19px;
+    height: 19px;
+    color: var(--green);
+    flex: 0 0 auto;
+  }
+
+  .detail__cta {
+    margin-top: 46px;
+  }
+
+  @media (max-width: 720px) {
+    .detail {
+      padding: 40px 24px 70px;
+    }
+
+    .detail__kopf {
+      gap: 14px;
+    }
+  }
+</style>

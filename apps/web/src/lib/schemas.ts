@@ -68,11 +68,14 @@ export const newsSchema = z.object({
 
 export const eventSchema = z.object({
   title: z.string(),
+  // Ohne Slug lässt sich `/anlaesse/<slug>` nicht bauen — und `getStaticPaths`
+  // würde die Seite still auslassen statt den Build abzubrechen.
+  slug: z.string(),
   rhythmus: z.string(),
   excerpt: z.string(),
 })
 
-export const angeboteSchema = z.object({ title: z.string() })
+export const angeboteSchema = z.object({ title: z.string(), slug: z.string() })
 
 export const signatureDishSchema = z.object({ name: z.string() })
 

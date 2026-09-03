@@ -1,13 +1,15 @@
 import type { CollectionConfig } from 'payload'
 import { iconSelect } from '../fields/iconSelect'
 import { reihenfolge } from '../fields/reihenfolge'
+import { seoFields } from '../fields/seo'
+import { slugFeld } from '../fields/slugFeld'
 
 export const Angebote: CollectionConfig = {
   slug: 'angebote',
   labels: { singular: 'Angebot', plural: 'Angebote' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'order'],
+    defaultColumns: ['title', 'slug', 'order'],
     group: 'Inhalt',
   },
   access: {
@@ -16,6 +18,7 @@ export const Angebote: CollectionConfig = {
   defaultSort: 'order',
   fields: [
     { name: 'title', type: 'text', label: 'Titel', required: true },
+    slugFeld('angebote'),
     { name: 'eyebrow', type: 'text', label: 'Eyebrow / Überzeile' },
     iconSelect({ admin: { description: 'Icon für Karten-/Tab-Darstellung' } }),
     { name: 'description', type: 'richText', label: 'Beschreibung' },
@@ -36,5 +39,6 @@ export const Angebote: CollectionConfig = {
       ],
     },
     reihenfolge('angebote'),
+    seoFields,
   ],
 }

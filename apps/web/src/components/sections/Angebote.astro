@@ -1,6 +1,7 @@
 ---
 import type { Angebote } from '@titz/types'
 import { getCollection } from '../../lib/payload'
+import { angebotPfad } from '../../lib/schema'
 import { lexicalToHtml } from '../../lib/lexical'
 import IconCircle from '../IconCircle.astro'
 import Egg from '../Egg.astro'
@@ -50,12 +51,14 @@ const cardTilts = ['-0.4deg', '0.4deg', '-0.4deg', '0.4deg']
             style={`background:${cardColors[index % 4]};--card-tilt:${cardTilts[index % 4]}`}
           >
             {angebot.icon ? <IconCircle icon={angebot.icon} size={60} /> : null}
-            <h3>{angebot.title}</h3>
+            <h3>
+              <a href={angebotPfad(angebot.slug)}>{angebot.title}</a>
+            </h3>
             {angebot.description ? (
               <div class="angebote__body" set:html={lexicalToHtml(angebot.description)} />
             ) : null}
             {angebot.cta?.label && (
-              <a class="pill pill--dark" href={angebot.cta.url ?? '#'}>
+              <a class="pill pill--dark" href={angebotPfad(angebot.slug)}>
                 {angebot.cta.label}
               </a>
             )}

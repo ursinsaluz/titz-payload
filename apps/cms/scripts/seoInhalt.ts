@@ -22,6 +22,7 @@
  */
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { slugify } from '../src/fields/slugFeld'
 
 const APPLY = process.env.SEO_APPLY === '1'
 
@@ -213,6 +214,10 @@ const TITEL_ABEND = 'Gourmetabend im PINOT'
         collection: 'events',
         data: {
           title: TITEL_ABEND,
+          // Wie im Seed: Der Feld-Hook bildet den Slug zwar selbst, das
+          // generierte Modell verlangt ihn aber — Payloads Typen kennen die
+          // Hooks nicht.
+          slug: slugify(TITEL_ABEND),
           rhythmus: 'woechentlich',
           wochentag: 'Thursday',
           zeit: '18:00',
