@@ -23,6 +23,27 @@ import fs from 'fs'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
+/**
+ * «34% kleiner» oder «84% grösser» — mit Vorzeichen in die richtige Richtung.
+ *
+ * Vorher stand hier `100 - (neu * 100 / alt)` und das Wort «kleiner» fest im
+ * Text. Bei einer Datei, die wächst, wurde daraus «-85% kleiner»: eine
+ * Verdopplung, die wie eine Halbierung aussah. Am 03.09.2026 sind so drei
+ * AVIF-Dateien durch grössere WebP ersetzt worden, und die Ausgabe meldete
+ * jedes Mal einen Gewinn.
+ *
+ * Grösser ist hier übrigens richtig — WebP komprimiert schlechter als AVIF,
+ * dafür kann Cloudflare es am Rand verkleinern. Was zählt, ist die
+ * ausgelieferte Grösse, nicht die im Archiv. Die Meldung soll das nur nicht
+ * verschleiern.
+ */
+function aenderung(alt: number, neu: number): string {
+  if (!alt) return ''
+  const prozent = Math.round(((neu - alt) / alt) * 100)
+  if (prozent === 0) return '(gleich gross)'
+  return prozent > 0 ? `(${prozent}% grösser)` : `(${-prozent}% kleiner)`
+}
+
 const APPLY = process.env.BILD_APPLY === '1'
 const ID = Number(process.env.BILD_ID)
 const DATEI = process.env.BILD_DATEI ?? ''
@@ -44,9 +65,7 @@ if (!ID || !DATEI || !NAME) {
     `          ${(altGross / 1024).toFixed(0)} KB · ${vorher.mimeType} · ${vorher.width}×${vorher.height}`,
   )
   console.log(`  ${APPLY ? 'nachher' : 'würde  '}: ${NAME}`)
-  console.log(
-    `          ${(neuGross / 1024).toFixed(0)} KB  (${100 - Math.round((neuGross * 100) / altGross)}% kleiner)`,
-  )
+  console.log(`          ${(neuGross / 1024).toFixed(0)} KB  ${aenderung(altGross, neuGross)}`)
 
   if (APPLY) {
     const nachher = await payload.update({
