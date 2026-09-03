@@ -1,5 +1,6 @@
 ---
 import { getCollection, mediaSrcSet, mediaUrl } from '../../lib/payload'
+import { anlassPfad } from '../../lib/schema'
 import Icon from '../Icon.astro'
 import Egg from '../Egg.astro'
 import type { Block } from '../../lib/blocks'
@@ -92,7 +93,7 @@ const datumsText = (e: (typeof kommende)[number]) => {
                   {e.eyebrow && <div class="event__eyebrow">{e.eyebrow}</div>}
                   <h3 class="event__title">
                     {e.icon && <Icon icon={e.icon} class="event__icon" />}
-                    {e.title}
+                    <a href={anlassPfad(e.slug)}>{e.title}</a>
                   </h3>
                   <p class="event__text">{e.excerpt}</p>
 
@@ -107,6 +108,9 @@ const datumsText = (e: (typeof kommende)[number]) => {
                   <div class="event__foot">
                     {e.preis && <span class="event__price">{e.preis}</span>}
                     {e.ort && <span class="event__place">{e.ort}</span>}
+                    <a class="event__cta" href={anlassPfad(e.slug)}>
+                      Details <span aria-hidden="true">→</span>
+                    </a>
                     {e.cta?.url && (
                       <a class="event__cta" href={e.cta.url}>
                         {e.cta.label ?? 'Reservieren'} <span aria-hidden="true">→</span>
@@ -214,6 +218,14 @@ const datumsText = (e: (typeof kommende)[number]) => {
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 6px;
+  }
+
+  .event__title a {
+    transition: color 200ms;
+  }
+
+  .event__title a:hover {
+    color: var(--green);
   }
 
   .event__title {

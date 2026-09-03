@@ -11,6 +11,7 @@ import { getPayload, type Payload } from 'payload'
 import config from '@payload-config'
 import { toLexical } from './lexical'
 import { MEDIEN, VEG_TOASTS, type MedienSchluessel } from './inhalte'
+import { slugify } from '../fields/slugFeld'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const inventory = JSON.parse(fs.readFileSync(path.join(dirname, 'content.json'), 'utf-8'))
@@ -180,6 +181,11 @@ async function run() {
       collection: 'angebote',
       data: {
         title: item.title,
+        // Der `beforeValidate`-Hook am Feld würde den Slug selbst bilden, das
+        // generierte Modell verlangt ihn aber trotzdem — Payloads Typen kennen
+        // die Hooks nicht. Explizit ist hier ohnehin besser: Der Seed schreibt
+        // damit denselben Slug, den ein Anlegen im Admin ergäbe.
+        slug: slugify(item.title),
         icon: item.icon,
         description: toLexical(
           item.paragraphs.map((text) => ({ type: 'paragraph', text })),

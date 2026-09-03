@@ -1,0 +1,262 @@
+---
+import Base from '../../layouts/Base.astro'
+import Brotkrume from '../../components/Brotkrume.astro'
+import Icon from '../../components/Icon.astro'
+import { getCollection, getGlobal, mediaSrcSet, mediaUrl } from '../../lib/payload'
+import { lexicalToHtml } from '../../lib/lexical'
+import { anlassPfad, anlassSeitenSchema } from '../../lib/schema'
+
+/**
+ * Eine Detailseite je Anlass.
+ *
+ * Der Grund ist nicht die Darstellung — der Anlass steht auch auf der
+ * Startseite —, sondern die Adresse. Googles Termin-Ergebnisse verlangen eine
+ * Seite, die *einen* Anlass beschreibt; vier `Event`-Objekte, die alle auf
+ * `/#anlaesse` zeigen, werden regelmässig zu einem zusammengefasst.
+ *
+ * Auch abgelaufene Einzeltermine bekommen ihre Seite. Die Startseite blendet
+ * sie aus, die Adresse bleibt aber gültig: Ein Link, den jemand geteilt hat,
+ * soll nicht auf eine 404 laufen, nur weil das Datum vorbei ist.
+ */
+export async function getStaticPaths() {
+  const anlaesse = await getCollection('events', '&where[_status][equals]=published')
+  return anlaesse
+    .filter((anlass) => anlass.slug)
+    .map((anlass) => ({ params: { slug: anlass.slug }, props: { anlass } }))
+}
+
+const { anlass } = Astro.props
+const settings = await getGlobal('site-settings')
+const domain = settings.domain ?? 'https://titz.cooking'
+
+const WOCHENTAGE: Record<string, string> = {
+  Monday: 'Montag',
+  Tuesday: 'Dienstag',
+  Wednesday: 'Mittwoch',
+  Thursday: 'Donnerstag',
+  Friday: 'Freitag',
+  Saturday: 'Samstag',
+  Sunday: 'Sonntag',
+}
+
+const wiederkehrend = anlass.rhythmus === 'woechentlich'
+const termin = wiederkehrend
+  ? anlass.wochentag
+    ? `Jeden ${WOCHENTAGE[anlass.wochentag]}`
+    : 'Wöchentlich'
+  : anlass.datum
+    ? new Date(anlass.datum).toLocaleDateString('de-CH', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      })
+    : null
+
+// 760 px ist die Textspalte dieser Seite.
+const bild = mediaUrl(anlass.image, { breite: 760 })
+const responsiv = mediaSrcSet(anlass.image, 760)
+
+const jsonLd = anlassSeitenSchema(anlass, domain)
+---
+
+<Base seo={anlass.seo} pageTitle={anlass.title} jsonLd={jsonLd}>
+  <article class="detail">
+    <div class="detail__inner">
+      <Brotkrume
+        eintraege={[
+          { name: 'Start', pfad: '/' },
+          { name: 'Anlässe', pfad: '/#anlaesse' },
+          { name: anlass.title, pfad: anlassPfad(anlass.slug) },
+        ]}
+      />
+
+      {anlass.eyebrow && <div class="eyebrow">{anlass.eyebrow}</div>}
+      <h1>
+        {anlass.icon && <Icon icon={anlass.icon} class="detail__icon" />}
+        {anlass.title}
+      </h1>
+
+      <dl class="detail__fakten">
+        {
+          termin && (
+            <div>
+              <dt>Wann</dt>
+              <dd>
+                {termin}
+                {anlass.zeit && <> · ab {anlass.zeit}</>}
+              </dd>
+            </div>
+          )
+        }
+        {
+          anlass.ort && (
+            <div>
+              <dt>Wo</dt>
+              <dd>{anlass.ort}</dd>
+            </div>
+          )
+        }
+        {
+          anlass.preis && (
+            <div>
+              <dt>Preis</dt>
+              <dd>{anlass.preis}</dd>
+            </div>
+          )
+        }
+      </dl>
+
+      {
+        bild && (
+          <img
+            class="detail__bild"
+            src={bild}
+            srcset={responsiv?.srcset}
+            sizes={responsiv?.sizes}
+            alt={typeof anlass.image === 'object' ? (anlass.image?.alt ?? '') : ''}
+            width="760"
+            height="428"
+            decoding="async"
+          />
+        )
+      }
+
+      <p class="detail__lead">{anlass.excerpt}</p>
+
+      {anlass.body && <div class="detail__text" set:html={lexicalToHtml(anlass.body)} />}
+
+      {
+        anlass.menu && anlass.menu.length > 0 && (
+          <section class="detail__menue">
+            <h2>Menü</h2>
+            <ul>
+              {anlass.menu.map((gang) => (
+                <li>{gang.text}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        anlass.cta?.url && (
+          <a class="pill pill--dark detail__cta" href={anlass.cta.url}>
+            {anlass.cta.label ?? 'Reservieren'}
+          </a>
+        )
+      }
+    </div>
+  </article>
+</Base>
+
+<style>
+  .detail {
+    padding: 60px 40px 90px;
+  }
+
+  .detail__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .detail h1 {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 12px 0 0;
+    font-size: clamp(32px, 5vw, 46px);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .detail__icon {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    color: var(--green);
+    flex: 0 0 auto;
+  }
+
+  .detail__fakten {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 42px;
+    margin: 30px 0 0;
+    padding: 20px 0;
+    border-top: 1.5px solid var(--rule);
+    border-bottom: 1.5px solid var(--rule);
+  }
+
+  .detail__fakten dt {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 5px;
+  }
+
+  .detail__fakten dd {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .detail__bild {
+    width: 100%;
+    height: auto;
+    border-radius: 22px;
+    margin-top: 34px;
+  }
+
+  .detail__lead {
+    margin: 34px 0 0;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+
+  .detail__text {
+    margin-top: 20px;
+    color: var(--ink-muted);
+    line-height: 1.75;
+  }
+
+  .detail__menue {
+    margin-top: 42px;
+  }
+
+  .detail__menue h2 {
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+
+  .detail__menue ul {
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .detail__menue li {
+    font-size: 13px;
+    padding: 7px 15px;
+    border-radius: 20px;
+    background: var(--mint);
+  }
+
+  .detail__cta {
+    margin-top: 42px;
+  }
+
+  @media (max-width: 720px) {
+    .detail {
+      padding: 40px 24px 70px;
+    }
+  }
+</style>

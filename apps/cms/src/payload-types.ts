@@ -457,6 +457,10 @@ export interface Page {
 export interface Angebote {
   id: number;
   title: string;
+  /**
+   * Der Teil der Adresse nach dem Sammlungsnamen. Wird beim Anlegen aus dem Titel gebildet und danach nicht mehr geändert — ein neuer Slug bricht geteilte Links.
+   */
+  slug: string;
   eyebrow?: string | null;
   /**
    * Icon für Karten-/Tab-Darstellung
@@ -493,6 +497,15 @@ export interface Angebote {
    * Kleiner heisst weiter vorn. Neue Einträge kommen von selbst nach hinten.
    */
   order?: number | null;
+  seo?: {
+    /**
+     * Leer lassen für Standard aus Site-Einstellungen
+     */
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -537,6 +550,10 @@ export interface News {
 export interface Event {
   id: number;
   title: string;
+  /**
+   * Der Teil der Adresse nach dem Sammlungsnamen. Wird beim Anlegen aus dem Titel gebildet und danach nicht mehr geändert — ein neuer Slug bricht geteilte Links.
+   */
+  slug: string;
   rhythmus: 'einmalig' | 'woechentlich';
   /**
    * Bestimmt die Anzeige und das Termin-Schema für Google.
@@ -586,6 +603,15 @@ export interface Event {
   cta?: {
     label?: string | null;
     url?: string | null;
+  };
+  seo?: {
+    /**
+     * Leer lassen für Standard aus Site-Einstellungen
+     */
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -1188,6 +1214,7 @@ export interface NewsSelect<T extends boolean = true> {
  */
 export interface EventsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   rhythmus?: T;
   wochentag?: T;
   datum?: T;
@@ -1211,6 +1238,14 @@ export interface EventsSelect<T extends boolean = true> {
         label?: T;
         url?: T;
       };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1221,6 +1256,7 @@ export interface EventsSelect<T extends boolean = true> {
  */
 export interface AngeboteSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   eyebrow?: T;
   icon?: T;
   description?: T;
@@ -1239,6 +1275,14 @@ export interface AngeboteSelect<T extends boolean = true> {
         url?: T;
       };
   order?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
