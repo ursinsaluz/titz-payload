@@ -1,5 +1,5 @@
 ---
-import { getCollection, mediaUrl } from '../../lib/payload'
+import { getCollection, mediaSrcSet, mediaUrl } from '../../lib/payload'
 import Egg from '../Egg.astro'
 import type { Block } from '../../lib/blocks'
 
@@ -37,11 +37,14 @@ const tilts = ['-0.3deg', '0.3deg']
         visible.map((item, index) => {
           // 350 px ist die Kachelbreite im zweispaltigen Raster.
           const image = mediaUrl(item.image, { breite: 350 })
+          const responsiv = mediaSrcSet(item.image, 350)
           return (
             <article class="news__card" style={`--card-tilt:${tilts[index % 2]}`}>
               {image && (
                 <img
                   src={image}
+                  srcset={responsiv?.srcset}
+                  sizes={responsiv?.sizes}
                   alt={typeof item.image === 'object' ? (item.image?.alt ?? '') : ''}
                   width="350"
                   height="200"
@@ -118,7 +121,7 @@ const tilts = ['-0.3deg', '0.3deg']
   .news__date {
     font-size: 11px;
     letter-spacing: 0.14em;
-    color: var(--ink-45);
+    color: var(--ink-muted);
   }
 
   .news__title {
@@ -138,7 +141,7 @@ const tilts = ['-0.3deg', '0.3deg']
     margin: 8px 0 0;
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(47, 53, 56, 0.65);
+    color: var(--ink-muted);
   }
 
   @media (max-width: 640px) {

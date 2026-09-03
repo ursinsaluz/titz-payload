@@ -31,6 +31,10 @@ function showToast(message: string) {
 function updateCount() {
   document.querySelectorAll('[data-egg-count]').forEach((el) => {
     el.textContent = String(found.size)
+    // Der Zähler ist die einzige Rückmeldung des Spiels, die dauerhaft
+    // stehen bleibt. `aria-live` erst hier setzen und nicht im Markup: Beim
+    // Laden stünde sonst eine Ansage an, bevor jemand etwas getan hat.
+    el.setAttribute('aria-live', 'polite')
   })
 }
 
@@ -81,12 +85,17 @@ function initReveal() {
     },
     { threshold: 0.12 },
   )
-  document.querySelectorAll<HTMLElement>('[data-rev]').forEach((el) => {
-    if (el.getBoundingClientRect().top > window.innerHeight * 0.88) {
-      el.classList.add('rev-hidden')
-    }
-    io.observe(el)
-  })
+  // Erst messen, dann schreiben. Vorher stand beides in derselben Schleife:
+  // Jedes `classList.add` machte das Layout ungültig, jedes folgende
+  // `getBoundingClientRect` erzwang es neu — der Chrome-Trace wies das als
+  // «Forced reflow» aus. Bei 14 Elementen kostet das wenig, aber das Muster
+  // wächst mit dem Inhalt.
+  const elemente = [...document.querySelectorAll<HTMLElement>('[data-rev]')]
+  const unterhalb = elemente.filter(
+    (el) => el.getBoundingClientRect().top > window.innerHeight * 0.88,
+  )
+  unterhalb.forEach((el) => el.classList.add('rev-hidden'))
+  elemente.forEach((el) => io.observe(el))
 }
 
 initSpiral()

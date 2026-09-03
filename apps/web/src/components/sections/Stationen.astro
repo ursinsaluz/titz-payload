@@ -98,7 +98,11 @@ const dotColors = [
                   <div>
                     {hobby.title}
                     {index === hobbies.length - 1 && (
-                      <span data-egg-star style="cursor:pointer;color:var(--gold)">
+                      <span
+                        data-egg-star
+                        aria-hidden="true"
+                        style="cursor:pointer;color:var(--gold)"
+                      >
                         {' '}
                         ✦
                       </span>
@@ -124,7 +128,7 @@ const dotColors = [
   .cv__intro {
     max-width: 560px;
     margin: 21px auto 0;
-    color: var(--ink-70);
+    color: var(--ink-muted);
   }
 
   .cv__grid {
@@ -192,7 +196,7 @@ const dotColors = [
   .cv__text {
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(47, 53, 56, 0.65);
+    color: var(--ink-muted);
   }
 
   .cv__side {
@@ -225,7 +229,7 @@ const dotColors = [
   .cv__list {
     font-size: 14px;
     line-height: 1.9;
-    color: var(--ink-70);
+    color: var(--ink-muted);
   }
 
   .cv__list-item {

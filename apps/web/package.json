@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "cross-env PAYLOAD_URL=https://admin.titz.cooking astro build && wrangler deploy",
+    "deploy": "cross-env PAYLOAD_URL=https://admin.titz.cooking IMAGE_TRANSFORM=1 astro build && wrangler deploy",
     "check": "astro check",
     "test": "playwright test",
     "lint": "eslint ."
