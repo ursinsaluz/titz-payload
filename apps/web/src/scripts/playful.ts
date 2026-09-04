@@ -98,6 +98,23 @@ function initReveal() {
   elemente.forEach((el) => io.observe(el))
 }
 
-initSpiral()
+/**
+ * Die Reihenfolge ist nicht beliebig: **lesen vor schreiben.**
+ *
+ * `initSpiral` setzt einen Pfad mit rund 460 Punkten (5483 Zeichen) und macht
+ * damit das Layout ungültig. `initReveal` liest unmittelbar danach Geometrie —
+ * und erzwingt genau dieses Layout neu. Lighthouse wies das am 03.09.2026 als
+ * «erzwungenen dynamischen Umbruch» mit 479 ms aus.
+ *
+ * Auf einer aufgewärmten Seite kostet es allerdings gemessene 0,6 ms; die
+ * 479 ms liessen sich ausserhalb von Lighthouses gedrosseltem Kaltstart nicht
+ * reproduzieren. Die Umstellung ist deshalb keine Optimierung mit belegter
+ * Wirkung, sondern die richtige Ordnung: `initReveal` liest gegen das Layout,
+ * das der Browser für den ersten Aufbau ohnehin berechnet hat, und `initSpiral`
+ * schreibt danach, ohne dass jemand das Ergebnis sofort wieder abfragt.
+ *
+ * Wer hier umsortiert, holt den Umbruch zurück.
+ */
 initReveal()
+initSpiral()
 initEggs()

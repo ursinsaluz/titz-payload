@@ -9,12 +9,16 @@
   Cache-Control: public, max-age=31536000, immutable
 
 # Logo und Favicon behalten ihren Namen über Deploys hinweg, darum kein
-# `immutable`. Ein Tag Browser-Cache statt Nachfragen bei jedem Seitenaufruf.
+# `immutable` — ein Austausch soll ankommen. Ein Tag war aber zu knapp:
+# Lighthouse wies die Marke am 03.09.2026 unter «effiziente Verweildauer im
+# Cache» aus. Dreissig Tage sind der Kompromiss — die Marke wechselt seltener
+# als einmal im Monat, und `stale-while-revalidate` liefert beim ersten Aufruf
+# danach die alte Fassung sofort und holt die neue im Hintergrund.
 /titz-mark.svg
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
 
 /favicon.svg
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
 
 # Für HTML bleibt der Standard (`max-age=0, must-revalidate`) bewusst stehen:
 # Cloudflare hält die Seiten am Rand — `cf-cache-status: HIT` — und der Browser
