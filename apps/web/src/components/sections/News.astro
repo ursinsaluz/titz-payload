@@ -1,5 +1,7 @@
 ---
 import { getCollection, mediaSrcSet, mediaUrl } from '../../lib/payload'
+import { hatLexicalInhalt } from '../../lib/lexical'
+import { aktuellesPfad, aktuellesSlug } from '../../lib/schema'
 import Egg from '../Egg.astro'
 import type { Block } from '../../lib/blocks'
 
@@ -38,6 +40,9 @@ const tilts = ['-0.3deg', '0.3deg']
           // 350 px ist die Kachelbreite im zweispaltigen Raster.
           const image = mediaUrl(item.image, { breite: 350 })
           const responsiv = mediaSrcSet(item.image, 350)
+          const eigenerBeitrag = hatLexicalInhalt(item.body)
+          const href = eigenerBeitrag ? aktuellesPfad(aktuellesSlug(item.title)) : item.link?.url
+          const extern = Boolean(href && !eigenerBeitrag && href.startsWith('http'))
           return (
             <article class="news__card" style={`--card-tilt:${tilts[index % 2]}`}>
               {image && (
@@ -53,9 +58,17 @@ const tilts = ['-0.3deg', '0.3deg']
                 />
               )}
               <div class="news__body">
-                <div class="news__date">{formatDate(item.date)}</div>
-                {item.link?.url ? (
-                  <a class="news__title" href={item.link.url} target="_blank" rel="noopener">
+                <div class="news__date">
+                  {formatDate(item.date)}
+                  {item.badge && <span class="news__badge"> · {item.badge}</span>}
+                </div>
+                {href ? (
+                  <a
+                    class="news__title"
+                    href={href}
+                    target={extern ? '_blank' : undefined}
+                    rel={extern ? 'noopener' : undefined}
+                  >
                     {item.title} <span style="color:var(--gold)">→</span>
                   </a>
                 ) : (

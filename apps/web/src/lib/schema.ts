@@ -49,6 +49,23 @@ const AUTOR = 'https://titz.cooking/#person'
  */
 export const anlassPfad = (slug: string) => `/anlaesse/${slug}/`
 export const angebotPfad = (slug: string) => `/angebote/${slug}/`
+export const aktuellesPfad = (slug: string) => `/aktuelles/${slug}/`
+
+/** Leitet aus einem Beitragstitel den URL-Bestandteil ab. */
+export function aktuellesSlug(titel: string): string {
+  return titel
+    .toLowerCase()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+    .replace(/-+$/, '')
+}
 
 /**
  * Das Einsatzgebiet. Diese Namen sind der Grund, warum es das Feld gibt: Google
@@ -272,6 +289,39 @@ export function angebotSeitenSchema(a: Angebot, domain: string) {
         { name: 'Start', pfad: '/' },
         { name: 'Angebote', pfad: '/#angebote' },
         { name: a.title, pfad: angebotPfad(a.slug) },
+      ]),
+    ],
+  }
+}
+
+/** Der Graph einer eigenen Beitragsseite unter `/aktuelles/<slug>/`. */
+export function aktuellesSeitenSchema(
+  artikel: News,
+  slug: string,
+  domain: string,
+  bildUrl?: string | null,
+) {
+  const pfad = aktuellesPfad(slug)
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      ohneLeere({
+        '@type': 'Article',
+        headline: artikel.title,
+        description: artikel.excerpt,
+        datePublished: artikel.date ? String(artikel.date).slice(0, 10) : undefined,
+        dateModified: artikel.updatedAt ? String(artikel.updatedAt).slice(0, 10) : undefined,
+        inLanguage: 'de-CH',
+        url: `${domain}${pfad}`,
+        mainEntityOfPage: `${domain}${pfad}`,
+        image: bildUrl ?? undefined,
+        author: { '@id': AUTOR },
+        publisher: { '@id': AUTOR },
+      }),
+      brotkrume(domain, [
+        { name: 'Start', pfad: '/' },
+        { name: 'Aktuelles', pfad: '/#aktuelles' },
+        { name: artikel.title, pfad },
       ]),
     ],
   }

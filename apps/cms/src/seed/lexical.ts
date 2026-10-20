@@ -6,6 +6,8 @@ interface ContentNode {
   level?: string | number
   ordered?: boolean
   items?: string[]
+  mediaId?: number
+  id?: string
 }
 
 const textNode = (text: string, format = 0) => ({
@@ -52,6 +54,17 @@ function convertNode(node: ContentNode): Record<string, unknown> | null {
       }
     case 'divider':
       return { ...base, type: 'horizontalrule' }
+    case 'upload':
+      if (!node.mediaId) return null
+      return {
+        type: 'upload',
+        version: 3,
+        format: '',
+        id: node.id ?? `67152000000000000000${String(node.mediaId).padStart(4, '0')}`,
+        fields: null,
+        relationTo: 'media',
+        value: node.mediaId,
+      }
     default:
       return node.text ? { ...base, type: 'paragraph', children: [textNode(node.text)] } : null
   }

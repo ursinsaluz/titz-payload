@@ -72,3 +72,54 @@ test('Keine Konsolenfehler beim Laden', async ({ page }) => {
   const echte = fehler.filter((text) => !/Failed to load resource|net::ERR/i.test(text))
   expect(echte).toEqual([])
 })
+
+test('Eigene Beiträge unter /aktuelles/ zeigen die vier Senf-Etiketten und das Kräuter-Video', async ({
+  page,
+}) => {
+  const senf = await page.goto('/aktuelles/viermal-flaescher-bio-senf-mit-adanks-biofarm/')
+  expect(senf?.status()).toBe(200)
+  await expect(page.locator('main h1')).toContainText('Fläscher Bio-Senf')
+  await expect(page.locator('.richtext-media img')).toHaveCount(4)
+
+  const kraeuter = await page.goto(
+    '/aktuelles/kraeutertour-ums-pinot-lorbeer-rosmarin-und-oregano/',
+  )
+  expect(kraeuter?.status()).toBe(200)
+  await expect(page.locator('main h1')).toContainText('Kräutertour')
+  await expect(page.locator('.richtext-media video')).toHaveCount(1)
+})
+
+test('WebMCP stellt die vier Werkzeuge und den Datenindex bereit', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('load')
+
+  const ergebnis = await page.evaluate(async () => {
+    const api = (
+      window as unknown as {
+        titzWebMCP?: {
+          tools: { name: string }[]
+          callTool: (
+            name: string,
+            input?: Record<string, unknown>,
+          ) => Promise<{
+            content: { type: string; text: string }[]
+          }>
+        }
+      }
+    ).titzWebMCP
+    if (!api) return null
+    const antwort = await api.callTool('aktuelles_und_artikel', { suche: 'Senf' })
+    return {
+      toolNamen: api.tools.map((t) => t.name),
+      text: antwort.content[0]?.text ?? '',
+    }
+  })
+
+  expect(ergebnis?.toolNamen).toEqual([
+    'angebote_und_anlaesse',
+    'aktuelles_und_artikel',
+    'profil_und_stationen',
+    'anfrage_vorbereiten',
+  ])
+  expect(ergebnis?.text).toContain('Adanks Biofarm')
+})

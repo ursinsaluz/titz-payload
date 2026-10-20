@@ -26,6 +26,26 @@ export const MEDIEN = {
   kuecheFinish: { datei: 'kueche-finish.webp', alt: 'Letzter Handgriff am Teller' },
   anrichten: { datei: 'titz-anrichten.webp', alt: 'Sebastian Titz beim Anrichten' },
   instagram: { datei: 'instagram.svg', alt: 'Instagram' },
+  gelbsenf: {
+    datei: 'adanks-biofarm-flaescher-gelbsenf.webp',
+    alt: 'Etikette Fläscher Gelbsenf von Adanks Biofarm, hergestellt von Chefkoch Sebastian Titz',
+  },
+  braunsenf: {
+    datei: 'adanks-biofarm-flaescher-braunsenf.webp',
+    alt: 'Etikette Fläscher Braunsenf von Adanks Biofarm, hergestellt von Chefkoch Sebastian Titz',
+  },
+  knoblauchsenf: {
+    datei: 'adanks-biofarm-knoblauch-senf.webp',
+    alt: 'Etikette Knoblauch-Senf von Adanks Biofarm, hergestellt von Chefkoch Sebastian Titz',
+  },
+  safransenf: {
+    datei: 'adanks-biofarm-safran-senf.webp',
+    alt: 'Etikette Safran-Senf von Adanks Biofarm, hergestellt von Chefkoch Sebastian Titz',
+  },
+  kraeuterBild: {
+    datei: 'kraeuter-tour-sebastian-titz-pinot.webp',
+    alt: 'Sebastian Titz bei der Kräutertour im Garten des Restaurant PINOT in Fläsch',
+  },
 } as const
 
 export type MedienSchluessel = keyof typeof MEDIEN

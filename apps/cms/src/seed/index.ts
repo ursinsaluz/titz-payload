@@ -152,7 +152,83 @@ async function run() {
       },
     })
   }
-  payload.logger.info(`${news.length} News angelegt`)
+  await payload.create({
+    collection: 'news',
+    data: {
+      title: 'Viermal Fläscher Bio-Senf mit Adanks Biofarm',
+      date: new Date('2026-10-20').toISOString(),
+      badge: 'Produkte',
+      excerpt:
+        'Aus dem eigenen Anbau von Adanks Biofarm in Fläsch entstehen in der Küche von Sebastian Titz vier Bio-Senfsorten im 100-Gramm-Glas: Gelbsenf, Braunsenf, Knoblauchsenf und Safransenf — mit Birnell statt raffiniertem Zucker.',
+      image: bild('gelbsenf'),
+      body: toLexical([
+        {
+          type: 'lead',
+          text: 'Auf den Feldern von Adanks Biofarm an der Neugüter 5 in Fläsch wachsen Senf, Knoblauch und Safran in biologischem Anbau. Sebastian Titz verarbeitet die Ernte direkt im Dorf zu vier eigenständigen Senfsorten im 100-Gramm-Glas.',
+        },
+        {
+          type: 'paragraph',
+          text: 'Die Zutatenliste bleibt bei allen vier Gläsern bewusst kurz: Essig, Birnell, Rapsöl, Rohrzucker und Salz — alle landwirtschaftlichen Zutaten stammen aus biologischem Anbau.',
+        },
+        { type: 'heading', level: 2, text: 'Fläscher Gelbsenf' },
+        { type: 'upload', mediaId: bild('gelbsenf') ?? undefined, id: '671520000000000000000101' },
+        { type: 'heading', level: 2, text: 'Fläscher Braunsenf' },
+        { type: 'upload', mediaId: bild('braunsenf') ?? undefined, id: '671520000000000000000102' },
+        { type: 'heading', level: 2, text: 'Knoblauch-Senf' },
+        {
+          type: 'upload',
+          mediaId: bild('knoblauchsenf') ?? undefined,
+          id: '671520000000000000000103',
+        },
+        { type: 'heading', level: 2, text: 'Safran-Senf' },
+        {
+          type: 'upload',
+          mediaId: bild('safransenf') ?? undefined,
+          id: '671520000000000000000104',
+        },
+      ]) as never,
+      link: { label: 'Zu Adanks Biofarm', url: 'https://adanksbiofarm.ch' },
+      _status: 'published',
+    },
+  })
+  await payload.create({
+    collection: 'news',
+    data: {
+      title: 'Kräutertour ums PINOT: Lorbeer, Rosmarin und Oregano',
+      date: new Date('2026-10-16').toISOString(),
+      badge: 'Aus der Küche',
+      excerpt:
+        'Ein Rundgang durch den Kräutergarten am Restaurant PINOT in Fläsch: warum frischer Lorbeer mit getrocknetem kaum zu vergleichen ist, wie aus jungen Rosmarinspitzen Kräuteröl für die Beurre blanc entsteht und wozu der Oregano an der Steinmauer passt.',
+      image: bild('kraeuterBild'),
+      body: toLexical([
+        {
+          type: 'lead',
+          text: 'Direkt vor der Küche des Restaurant PINOT in Fläsch wachsen die Kräuter im sonnigen Bündner Klima an der warmen Steinmauer. Im kurzen Rundgang zeigt Sebastian Titz drei Stauden, die täglich den Weg auf den Teller finden.',
+        },
+        { type: 'heading', level: 2, text: 'Frischer Lorbeer statt trockener Blätter' },
+        {
+          type: 'paragraph',
+          text: 'Zwischen einem getrockneten Blatt aus dem Vorrat und frisch gepflücktem Lorbeer liegt in der Küche ein gewaltiger Unterschied.',
+        },
+        { type: 'heading', level: 2, text: 'Junge Rosmarinspitzen für Kräuteröl und Beurre blanc' },
+        {
+          type: 'paragraph',
+          text: 'Aus dem jungen, hellgrünen Austrieb zieht Sebastian Titz ein grünes Kräuteröl für die Beurre blanc.',
+        },
+        { type: 'heading', level: 2, text: 'Oregano für die mediterrane Seite' },
+        {
+          type: 'paragraph',
+          text: 'Frisch gezupft im Ratatouille oder zu kurz sautierten Zucchetti.',
+        },
+      ]) as never,
+      link: {
+        label: 'Zum Beitrag & Video',
+        url: '/aktuelles/kraeutertour-ums-pinot-lorbeer-rosmarin-und-oregano/',
+      },
+      _status: 'published',
+    },
+  })
+  payload.logger.info(`${news.length + 2} News angelegt`)
 
   // --- Angebote (Beratung & Catering) ---
   const angebote = [

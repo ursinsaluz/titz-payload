@@ -51,13 +51,39 @@ async function seitenStand() {
   return new Map(docs.map((doc) => [doc.slug, doc.updatedAt]))
 }
 
+async function aktuellesStaende() {
+  const res = await fetch(
+    `${PAYLOAD_URL}/api/news?limit=200&depth=0&where[_status][equals]=published`,
+  )
+  if (!res.ok) throw new Error(`news: HTTP ${res.status}`)
+  const { docs } = await res.json()
+  return docs
+    .filter((doc) => Array.isArray(doc.body?.root?.children) && doc.body.root.children.length > 0)
+    .map((doc) => {
+      const slug = String(doc.title ?? '')
+        .toLowerCase()
+        .replace(/ä/g, 'ae')
+        .replace(/ö/g, 'oe')
+        .replace(/ü/g, 'ue')
+        .replace(/ß/g, 'ss')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80)
+        .replace(/-+$/, '')
+      return [`/aktuelles/${slug}/`, doc.updatedAt]
+    })
+}
+
 /** Pfad → ISO-Datum. Leer, wenn das CMS nicht antwortet. */
 const lastmod = new Map()
 
 try {
-  const [stempel, seiten, ...details] = await Promise.all([
+  const [stempel, seiten, artikel, ...details] = await Promise.all([
     Promise.all(STARTSEITE.map(juengstesUpdate)),
     seitenStand(),
+    aktuellesStaende(),
     ...Object.entries(DETAILSEITEN).map(([collection, prefix]) =>
       detailStaende(collection, prefix),
     ),
@@ -70,7 +96,7 @@ try {
     if (slug !== 'home' && stand) lastmod.set(`/${slug}/`, stand)
   }
 
-  for (const [pfad, stand] of details.flat()) {
+  for (const [pfad, stand] of [...artikel, ...details.flat()]) {
     if (stand) lastmod.set(pfad, stand)
   }
 } catch (fehler) {
@@ -111,7 +137,7 @@ export default defineConfig({
      * Indexierungsübersicht, und damit ist jede weitere Maßnahme unbelegt.
      */
     sitemap({
-      filter: (seite) => !seite.includes('/404'),
+      filter: (seite) => !seite.includes('/404') && !seite.endsWith('/webmcp.json'),
       i18n: undefined,
       serialize: (eintrag) => {
         const stand = lastmod.get(new URL(eintrag.url).pathname)
