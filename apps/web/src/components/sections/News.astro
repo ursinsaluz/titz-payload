@@ -41,7 +41,7 @@ const tilts = ['-0.3deg', '0.3deg']
           const image = mediaUrl(item.image, { breite: 350 })
           const responsiv = mediaSrcSet(item.image, 350)
           const eigenerBeitrag = hatLexicalInhalt(item.body)
-          const href = eigenerBeitrag ? aktuellesPfad(aktuellesSlug(item.title)) : item.link?.url
+          const href = eigenerBeitrag ? aktuellesPfad(aktuellesSlug(item)) : item.link?.url
           const extern = Boolean(href && !eigenerBeitrag && href.startsWith('http'))
           return (
             <article class="news__card" style={`--card-tilt:${tilts[index % 2]}`}>

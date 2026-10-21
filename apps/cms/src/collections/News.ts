@@ -1,11 +1,12 @@
 import type { CollectionConfig } from 'payload'
+import { slugFeld } from '../fields/slugFeld'
 
 export const News: CollectionConfig = {
   slug: 'news',
   labels: { singular: 'News-Eintrag', plural: 'Aktuelles' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'date', '_status'],
+    defaultColumns: ['title', 'slug', 'date', '_status'],
     group: 'Inhalt',
   },
   access: {
@@ -15,6 +16,7 @@ export const News: CollectionConfig = {
   defaultSort: '-date',
   fields: [
     { name: 'title', type: 'text', label: 'Titel', required: true },
+    slugFeld('news'),
     { name: 'date', type: 'date', label: 'Datum', required: true },
     { name: 'badge', type: 'text', label: 'Badge (z.B. «Neu», «Event»)' },
     { name: 'excerpt', type: 'textarea', label: 'Kurztext', required: true },

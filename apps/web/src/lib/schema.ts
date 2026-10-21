@@ -51,9 +51,18 @@ export const anlassPfad = (slug: string) => `/anlaesse/${slug}/`
 export const angebotPfad = (slug: string) => `/angebote/${slug}/`
 export const aktuellesPfad = (slug: string) => `/aktuelles/${slug}/`
 
-/** Leitet aus einem Beitragstitel den URL-Bestandteil ab. */
-export function aktuellesSlug(titel: string): string {
-  return titel
+/**
+ * Gibt den Slug eines Aktuelles-Eintrags zurück: aus dem Datenbankfeld `slug`,
+ * oder — falls die Migration auf der Gegenstelle noch aussteht — aus dem Titel.
+ */
+export function aktuellesSlug(
+  titelOderEintrag: string | { title: string; slug?: string | null },
+): string {
+  if (typeof titelOderEintrag === 'object' && titelOderEintrag !== null) {
+    if (titelOderEintrag.slug && titelOderEintrag.slug.trim()) return titelOderEintrag.slug.trim()
+    return aktuellesSlug(titelOderEintrag.title)
+  }
+  return titelOderEintrag
     .toLowerCase()
     .replace(/ä/g, 'ae')
     .replace(/ö/g, 'oe')
@@ -65,6 +74,19 @@ export function aktuellesSlug(titel: string): string {
     .replace(/^-+|-+$/g, '')
     .slice(0, 80)
     .replace(/-+$/, '')
+}
+
+/**
+ * Prüft zur Bauzeit, ob ein Anlass noch bevorsteht.
+ * Wöchentliche Anlässe bleiben immer stehen; Einzeltermine verschwinden ab dem
+ * Folgetag (UTC-Mitternacht).
+ */
+export function istKommenderAnlass(e: Pick<Event, 'rhythmus' | 'datum'>, stichtag?: Date): boolean {
+  if (e.rhythmus === 'woechentlich') return true
+  if (!e.datum) return false
+  const heute = stichtag ? new Date(stichtag) : new Date()
+  heute.setUTCHours(0, 0, 0, 0)
+  return new Date(e.datum) >= heute
 }
 
 /**
@@ -208,7 +230,9 @@ export function einAnlass(e: Event, domain: string) {
 }
 
 function anlaesse(events: Event[], domain: string) {
-  return events.filter((e) => e.title && e._status !== 'draft').map((e) => einAnlass(e, domain))
+  return events
+    .filter((e) => e.title && e._status !== 'draft' && istKommenderAnlass(e))
+    .map((e) => einAnlass(e, domain))
 }
 
 /** «2026-09-10» und «18:00» zu einem ISO-Zeitpunkt mit Schweizer Zone. */

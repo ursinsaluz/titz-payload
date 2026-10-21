@@ -7,6 +7,7 @@ import * as migration_20260831_111049_media_metadaten from './20260831_111049_me
 import * as migration_20260831_113204_mcp_schluessel from './20260831_113204_mcp_schluessel';
 import * as migration_20260902_082620_anlaesse from './20260902_082620_anlaesse';
 import * as migration_20260903_093910_anlass_angebot_slug from './20260903_093910_anlass_angebot_slug';
+import * as migration_20261021_065617_news_slug from './20261021_065617_news_slug';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260903_093910_anlass_angebot_slug.up,
     down: migration_20260903_093910_anlass_angebot_slug.down,
     name: '20260903_093910_anlass_angebot_slug',
+  },
+  {
+    up: migration_20261021_065617_news_slug.up,
+    down: migration_20261021_065617_news_slug.down,
+    name: '20261021_065617_news_slug'
   },
 ];

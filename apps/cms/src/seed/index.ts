@@ -144,6 +144,7 @@ async function run() {
       collection: 'news',
       data: {
         title: item.title,
+        slug: slugify(item.title),
         date: new Date(item.date).toISOString(),
         excerpt: item.excerpt,
         image: newsBilder[item.url] ? bild(newsBilder[item.url]) : null,
@@ -156,6 +157,7 @@ async function run() {
     collection: 'news',
     data: {
       title: 'Viermal Fläscher Bio-Senf mit Adanks Biofarm',
+      slug: slugify('Viermal Fläscher Bio-Senf mit Adanks Biofarm'),
       date: new Date('2026-10-20').toISOString(),
       badge: 'Produkte',
       excerpt:
@@ -195,6 +197,7 @@ async function run() {
     collection: 'news',
     data: {
       title: 'Kräutertour ums PINOT: Lorbeer, Rosmarin und Oregano',
+      slug: slugify('Kräutertour ums PINOT: Lorbeer, Rosmarin und Oregano'),
       date: new Date('2026-10-16').toISOString(),
       badge: 'Aus der Küche',
       excerpt:

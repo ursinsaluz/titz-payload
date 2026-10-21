@@ -1,7 +1,13 @@
 import type { APIRoute } from 'astro'
 import { getCollection, getGlobal } from '../lib/payload'
 import { hatLexicalInhalt, lexicalToPlainText } from '../lib/lexical'
-import { aktuellesPfad, aktuellesSlug, angebotPfad, anlassPfad } from '../lib/schema'
+import {
+  aktuellesPfad,
+  aktuellesSlug,
+  angebotPfad,
+  anlassPfad,
+  istKommenderAnlass,
+} from '../lib/schema'
 
 /**
  * Statischer Datenindex für die WebMCP-Tools im Browser (`/webmcp.json`).
@@ -24,14 +30,7 @@ export const GET: APIRoute = async () => {
     getCollection('stationen', '&sort=order'),
   ])
 
-  const heute = new Date()
-  heute.setUTCHours(0, 0, 0, 0)
-
-  const kommendeAnlaesse = events.filter((e) => {
-    if (e.rhythmus === 'woechentlich') return true
-    if (!e.datum) return false
-    return new Date(e.datum) >= heute
-  })
+  const kommendeAnlaesse = events.filter((e) => istKommenderAnlass(e))
 
   const daten = {
     person: {
@@ -87,7 +86,7 @@ export const GET: APIRoute = async () => {
     })),
     aktuelles: news.map((n) => {
       const eigenerBeitrag = hatLexicalInhalt(n.body)
-      const slug = aktuellesSlug(n.title)
+      const slug = aktuellesSlug(n)
       return {
         slug,
         eigenerBeitrag,

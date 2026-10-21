@@ -20,6 +20,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { getPayload, type Payload } from 'payload'
 import config from '@payload-config'
+import { slugify } from '../src/fields/slugFeld'
 import { toLexical } from '../src/seed/lexical'
 
 const APPLY = process.env.ARTIKEL_APPLY === '1'
@@ -201,6 +202,7 @@ const TITEL_SENF = 'Viermal Fläscher Bio-Senf mit Adanks Biofarm'
 
   const daten = {
     title: TITEL_SENF,
+    slug: slugify(TITEL_SENF),
     date: '2026-10-20T00:00:00.000Z',
     badge: 'Produkte',
     excerpt:
@@ -266,6 +268,7 @@ const TITEL_KRAEUTER = 'Kräutertour ums PINOT: Lorbeer, Rosmarin und Oregano'
 
   const daten = {
     title: TITEL_KRAEUTER,
+    slug: slugify(TITEL_KRAEUTER),
     date: '2026-10-16T00:00:00.000Z',
     badge: 'Aus der Küche',
     excerpt:

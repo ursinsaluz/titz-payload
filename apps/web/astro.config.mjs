@@ -60,18 +60,20 @@ async function aktuellesStaende() {
   return docs
     .filter((doc) => Array.isArray(doc.body?.root?.children) && doc.body.root.children.length > 0)
     .map((doc) => {
-      const slug = String(doc.title ?? '')
-        .toLowerCase()
-        .replace(/ä/g, 'ae')
-        .replace(/ö/g, 'oe')
-        .replace(/ü/g, 'ue')
-        .replace(/ß/g, 'ss')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-        .slice(0, 80)
-        .replace(/-+$/, '')
+      const slug =
+        (typeof doc.slug === 'string' && doc.slug.trim()) ||
+        String(doc.title ?? '')
+          .toLowerCase()
+          .replace(/ä/g, 'ae')
+          .replace(/ö/g, 'oe')
+          .replace(/ü/g, 'ue')
+          .replace(/ß/g, 'ss')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .slice(0, 80)
+          .replace(/-+$/, '')
       return [`/aktuelles/${slug}/`, doc.updatedAt]
     })
 }

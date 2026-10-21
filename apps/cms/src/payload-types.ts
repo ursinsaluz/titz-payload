@@ -516,6 +516,10 @@ export interface Angebote {
 export interface News {
   id: number;
   title: string;
+  /**
+   * Der Teil der Adresse nach dem Sammlungsnamen. Wird beim Anlegen aus dem Titel gebildet und danach nicht mehr geändert — ein neuer Slug bricht geteilte Links.
+   */
+  slug: string;
   date: string;
   badge?: string | null;
   excerpt: string;
@@ -1193,6 +1197,7 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface NewsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   date?: T;
   badge?: T;
   excerpt?: T;

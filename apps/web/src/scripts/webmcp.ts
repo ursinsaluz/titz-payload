@@ -12,12 +12,25 @@
  * oder Smoke-Tests aufrufen lassen.
  */
 
+interface WebMcpToolOptions {
+  signal?: AbortSignal
+}
+
 interface WebMcpTool {
   name: string
+  title?: string
   description: string
   inputSchema: Record<string, unknown>
-  annotations?: { readOnlyHint?: boolean }
-  execute: (input: Record<string, unknown>) => Promise<{
+  annotations?: {
+    readOnlyHint?: boolean
+    consequentialHint?: boolean
+    debugging?: boolean
+    untrustedContentHint?: boolean
+  }
+  execute: (
+    input: Record<string, unknown>,
+    options?: WebMcpToolOptions,
+  ) => Promise<{
     content: { type: 'text'; text: string }[]
   }>
 }
@@ -55,14 +68,37 @@ interface WebMcpIndex {
 
 let indexPromise: Promise<WebMcpIndex> | null = null
 
-function ladeIndex(): Promise<WebMcpIndex> {
+function ladeIndex(signal?: AbortSignal): Promise<WebMcpIndex> {
+  signal?.throwIfAborted()
   if (!indexPromise) {
-    indexPromise = fetch('/webmcp.json').then((res) => {
-      if (!res.ok) throw new Error(`webmcp.json: HTTP ${res.status}`)
-      return res.json() as Promise<WebMcpIndex>
-    })
+    // Kein `signal` an `fetch` übergeben: `indexPromise` wird über parallele
+    // Aufrufe geteilt — bricht ein einzelner Aufrufer ab, darf das nicht den
+    // gemeinsamen Ladevorgang für andere abbrechen.
+    indexPromise = fetch('/webmcp.json')
+      .then((res) => {
+        if (!res.ok) throw new Error(`webmcp.json: HTTP ${res.status}`)
+        return res.json() as Promise<WebMcpIndex>
+      })
+      .catch((fehler) => {
+        indexPromise = null
+        throw fehler
+      })
   }
-  return indexPromise
+  if (!signal) return indexPromise
+  return new Promise<WebMcpIndex>((resolve, reject) => {
+    const onAbort = () => reject(signal.reason ?? new DOMException('Aborted', 'AbortError'))
+    signal.addEventListener('abort', onAbort, { once: true })
+    indexPromise!.then(
+      (daten) => {
+        signal.removeEventListener('abort', onAbort)
+        resolve(daten)
+      },
+      (fehler) => {
+        signal.removeEventListener('abort', onAbort)
+        reject(fehler)
+      },
+    )
+  })
 }
 
 const alsAntwort = (daten: unknown) => ({
@@ -72,6 +108,7 @@ const alsAntwort = (daten: unknown) => ({
 const tools: WebMcpTool[] = [
   {
     name: 'angebote_und_anlaesse',
+    title: 'Angebote, Anlässe & Signature Dishes',
     description:
       'Liefert Angebote (Catering, Privatkoch, Gastroberatung samt Einsatzgebiet), kommende Anlässe im Restaurant PINOT (wöchentlicher Gourmetabend und Einzeltermine) sowie Signature Dishes von Sebastian Titz.',
     inputSchema: {
@@ -85,8 +122,8 @@ const tools: WebMcpTool[] = [
       },
     },
     annotations: { readOnlyHint: true },
-    execute: async ({ bereich = 'alle' }) => {
-      const daten = await ladeIndex()
+    execute: async ({ bereich = 'alle' }, options) => {
+      const daten = await ladeIndex(options?.signal)
       if (bereich === 'angebote') return alsAntwort({ angebote: daten.angebote })
       if (bereich === 'anlaesse') return alsAntwort({ anlaesse: daten.anlaesse })
       if (bereich === 'gerichte') return alsAntwort({ gerichte: daten.gerichte })
@@ -99,6 +136,7 @@ const tools: WebMcpTool[] = [
   },
   {
     name: 'aktuelles_und_artikel',
+    title: 'Aktuelles & Beiträge durchsuchen',
     description:
       'Durchsucht Beiträge und Presseberichte unter «Aktuelles» oder gibt den Volltext eines eigenen Artikels zurück (z.B. Fläscher Bio-Senf mit Adanks Biofarm oder Kräutertour ums Restaurant PINOT).',
     inputSchema: {
@@ -115,8 +153,8 @@ const tools: WebMcpTool[] = [
       },
     },
     annotations: { readOnlyHint: true },
-    execute: async ({ slug, suche }) => {
-      const { aktuelles } = await ladeIndex()
+    execute: async ({ slug, suche }, options) => {
+      const { aktuelles } = await ladeIndex(options?.signal)
       if (typeof slug === 'string' && slug.trim()) {
         const treffer = aktuelles.find((e) => e.slug === slug.trim())
         return alsAntwort(treffer ?? { fehler: `Kein Beitrag mit Slug «${slug}» gefunden.` })
@@ -138,6 +176,7 @@ const tools: WebMcpTool[] = [
   },
   {
     name: 'profil_und_stationen',
+    title: 'Profil & berufliche Stationen',
     description:
       'Gibt das Kurzprofil, Auszeichnungen, Kontaktdaten und die beruflichen Stationen (Lebenslauf, Ausbildung, Kompetenzen, Hobbies) von Küchenchef Sebastian Titz zurück.',
     inputSchema: {
@@ -151,14 +190,15 @@ const tools: WebMcpTool[] = [
       },
     },
     annotations: { readOnlyHint: true },
-    execute: async ({ gruppe = 'alle' }) => {
-      const { person, stationen } = await ladeIndex()
+    execute: async ({ gruppe = 'alle' }, options) => {
+      const { person, stationen } = await ladeIndex(options?.signal)
       const gefiltert = gruppe === 'alle' ? stationen : stationen.filter((s) => s.group === gruppe)
       return alsAntwort({ person, stationen: gefiltert })
     },
   },
   {
     name: 'anfrage_vorbereiten',
+    title: 'E-Mail-Anfrage vorbereiten',
     description:
       'Bereitet eine strukturierte E-Mail-Anfrage (mailto:info@titz.cooking) für Catering/Privatkoch, Gastroberatung oder eine Tischreservation beim Gourmetabend im Restaurant PINOT vor.',
     inputSchema: {
@@ -192,8 +232,9 @@ const tools: WebMcpTool[] = [
       },
       required: ['anliegen'],
     },
-    annotations: { readOnlyHint: false },
-    execute: async ({ anliegen, datum, personen, ort, nachricht, oeffnen }) => {
+    annotations: { readOnlyHint: false, consequentialHint: true },
+    execute: async ({ anliegen, datum, personen, ort, nachricht, oeffnen }, options) => {
+      options?.signal?.throwIfAborted()
       const betreffMap: Record<string, string> = {
         catering: 'Anfrage Catering / Privatkoch',
         beratung: 'Anfrage Gastroberatung',
@@ -225,30 +266,44 @@ const tools: WebMcpTool[] = [
 ]
 
 async function initWebMcp() {
-  const api =
-    (document as unknown as { modelContext?: ModelContextApi }).modelContext ??
-    (navigator as unknown as { modelContext?: ModelContextApi }).modelContext
-
-  if (api?.registerTool) {
-    for (const tool of tools) {
-      await api.registerTool(tool)
-    }
-  } else if (api?.provideContext) {
-    await api.provideContext({ tools })
-  }
-
   ;(window as unknown as { titzWebMCP?: unknown }).titzWebMCP = {
-    tools: tools.map(({ name, description, inputSchema, annotations }) => ({
+    tools: tools.map(({ name, title, description, inputSchema, annotations }) => ({
       name,
+      title,
       description,
       inputSchema,
       annotations,
     })),
-    callTool: async (name: string, input: Record<string, unknown> = {}) => {
+    callTool: async (
+      name: string,
+      input: Record<string, unknown> = {},
+      options?: WebMcpToolOptions,
+    ) => {
       const tool = tools.find((t) => t.name === name)
       if (!tool) throw new Error(`Unbekanntes WebMCP-Tool: ${name}`)
-      return tool.execute(input)
+      return tool.execute(input, options)
     },
+  }
+
+  const api =
+    (document as unknown as { modelContext?: ModelContextApi }).modelContext ??
+    (navigator as unknown as { modelContext?: ModelContextApi }).modelContext
+
+  if (!api) return
+
+  // Ab Chrome 151 lehnt `registerTool` per Promise ab, wenn z.B. die
+  // Permissions-Policy `tools` verbietet oder ein Toolname doppelt registriert
+  // wird. `titzWebMCP` steht darum bereits vorher bereit.
+  try {
+    if (api.registerTool) {
+      for (const tool of tools) {
+        await api.registerTool(tool)
+      }
+    } else if (api.provideContext) {
+      await api.provideContext({ tools })
+    }
+  } catch (fehler) {
+    console.warn('[WebMCP] Tool-Registrierung fehlgeschlagen:', fehler)
   }
 }
 

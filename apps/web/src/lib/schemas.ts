@@ -62,6 +62,7 @@ export const pageSchema = z.object({
 
 export const newsSchema = z.object({
   title: z.string(),
+  slug: z.string().nullish(),
   date: z.string(),
   excerpt: z.string(),
 })

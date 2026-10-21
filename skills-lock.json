@@ -1,11 +1,35 @@
 {
   "version": 1,
   "skills": {
+    "astro-best-practices": {
+      "source": "incluud/astro-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/astro-best-practices/SKILL.md",
+      "computedHash": "353ad7ebffed9a06dab2cb762b28ec6b8fb07abb00cb731b34c9df60315e0e7f"
+    },
+    "astro-framework": {
+      "source": "delineas/astro-framework-agents",
+      "sourceType": "github",
+      "skillPath": "skills/astro-framework/SKILL.md",
+      "computedHash": "7d8940b3fb7dab50f8303afdb3210cc9385da3a8d243fe99efdc08ce53aed90c"
+    },
+    "docs-lookup": {
+      "source": "incluud/astro-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/docs-lookup/SKILL.md",
+      "computedHash": "83c8e81458ba413089371e4b559e5b1b21f7745cafdb6105b8dc0f294b20b01c"
+    },
     "payload": {
       "source": "payloadcms/skills",
       "sourceType": "github",
       "skillPath": "skills/payload/SKILL.md",
       "computedHash": "4abfcc828ca2cc0d9142b2fee2456f257f73dd7a37bd1cce2d354231b08b8767"
+    },
+    "webmcp": {
+      "source": "webmaxru/web-ai-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/webmcp/SKILL.md",
+      "computedHash": "a069e998a761efafe7af139d8db9e15f78dfddad810b4dce96561449e399bc62"
     }
   }
 }

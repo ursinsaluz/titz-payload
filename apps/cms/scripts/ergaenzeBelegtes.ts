@@ -31,6 +31,7 @@
 import fs from 'fs'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { slugify } from '../src/fields/slugFeld'
 
 const APPLY = process.env.BELEGT_APPLY === '1'
 const COVER = '/tmp/wiesner_cover.webp'
@@ -112,6 +113,7 @@ if (award.totalDocs > 0) {
       collection: 'news',
       data: {
         title: TITEL_AWARD,
+        slug: slugify(TITEL_AWARD),
         date: '2026-03-22T00:00:00.000Z',
         excerpt:
           'Falstaff zeichnet das Pinot für das Wohl der Mitarbeitenden aus — ' +

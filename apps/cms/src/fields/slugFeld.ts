@@ -94,6 +94,7 @@ async function eindeutig(
       // Entwürfe zählen mit: Ein Entwurf mit diesem Slug wird später
       // veröffentlicht und kollidiert dann.
       draft: true,
+      req,
     })
     const belegt = treffer.docs.filter((d) => (d as { id?: unknown }).id !== eigeneId)
     if (belegt.length === 0) return kandidat

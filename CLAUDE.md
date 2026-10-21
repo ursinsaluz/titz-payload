@@ -10,31 +10,36 @@ ergänzt nur, was Claude Code betrifft.
 `core.hooksPath` auf `.githooks`, damit der Secret-Scan als pre-commit-Hook
 greift. Das Repo ist öffentlich.
 
-## Der MCP-Server
+## Die MCP-Server
 
-`.mcp.json` registriert das CMS unter `http://localhost:3000/api/mcp`. Damit
-liest und schreibt Claude Code den Inhalt direkt, ohne den Umweg über die
-REST-API von Hand. Zwei Voraussetzungen:
+`.mcp.json` registriert zwei Server:
 
-1. `pnpm dev:cms` läuft.
-2. `PAYLOAD_MCP_TOKEN` liegt in der **Umgebung** — `.mcp.json` expandiert
-   `${…}` aus den Umgebungsvariablen der Sitzung, nicht aus einer `.env`.
-   Prüfen mit `printenv PAYLOAD_MCP_TOKEN`.
-
-Fehlt eines von beiden, ist der Server nicht verbunden — kein Fehler, nur eine
-fehlende Fähigkeit.
+1. **`payload`** (`http://localhost:3000/api/mcp`) — liest und schreibt den
+   CMS-Inhalt direkt, ohne den Umweg über die REST-API von Hand. Zwei
+   Voraussetzungen:
+   - `pnpm dev:cms` läuft.
+   - `PAYLOAD_MCP_TOKEN` liegt in der **Umgebung** — `.mcp.json` expandiert
+     `${…}` aus den Umgebungsvariablen der Sitzung, nicht aus einer `.env`.
+     Prüfen mit `printenv PAYLOAD_MCP_TOKEN`.
+     Fehlt eines von beiden, ist der Server nicht verbunden — kein Fehler, nur
+     eine fehlende Fähigkeit.
+2. **`astro-docs`** (`https://mcp.docs.astro.build/mcp`) — offizielle
+   Astro-Dokumentation über Streamable HTTP, ohne Token nutzbar.
 
 **Gegen admin.titz.cooking gibt es keinen Eintrag, weil es dort nicht
 funktioniert** — der Handler läuft im Worker in einen Deadlock. Begründung und
 Messwerte in [README.md](README.md#gegen-produktion-geht-mcp-nicht).
 
-## Die Payload-Skill liegt zweimal im Baum
+## Die Skills liegen zweimal im Baum
 
-`.agents/skills/payload/` enthält die Dateien, `.claude/skills/payload` ist ein
+`.agents/skills/` enthält die Dateien (`payload`, `astro-framework`,
+`astro-best-practices`, `docs-lookup`, `webmcp`), `.claude/skills/` verweist per
 Symlink darauf — die eine Ablage ist die verbreitete, die andere die, in der
-Claude Code sucht. `skills-lock.json` hält Quelle (`payloadcms/skills`) und Hash
-fest, damit ein frischer Klon dieselbe Fassung bekommt. Alle drei sind
-eingecheckt; der Inhalt ist fremd und darum in `.prettierignore`.
+Claude Code sucht. `skills-lock.json` hält Quellen (`payloadcms/skills`,
+`delineas/astro-framework-agents`, `incluud/astro-agent-skills`,
+`webmaxru/web-ai-agent-skills`) und Hashes fest, damit ein frischer Klon
+dieselbe Fassung bekommt. Alle sind eingecheckt; der Inhalt ist fremd und darum
+in `.prettierignore`.
 
 ## Was beim Prüfen wirklich hilft
 

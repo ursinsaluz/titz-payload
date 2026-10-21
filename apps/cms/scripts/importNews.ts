@@ -30,6 +30,7 @@
  */
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { slugify } from '../src/fields/slugFeld'
 
 const APPLY = process.env.NEWS_IMPORT_APPLY === '1'
 
@@ -167,6 +168,7 @@ for (const eintrag of NEU) {
       collection: 'news',
       data: {
         title: eintrag.title,
+        slug: slugify(eintrag.title),
         date: `${eintrag.date}T00:00:00.000Z`,
         excerpt: eintrag.excerpt,
         link: eintrag.link,

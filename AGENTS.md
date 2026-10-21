@@ -115,6 +115,24 @@ Skriptlauf gegen Produktion muss man ihn selbst anstossen: `pnpm run deploy:web`
 pre-commit-Hook (`scripts/secret-scan.sh`) prüft das; er ist über
 `core.hooksPath` verdrahtet, was das `prepare`-Skript beim `pnpm install` setzt.
 
+## Skills & MCP bei Anpassungen heranziehen
+
+Die Projekt-Skills liegen unter `.agents/skills/` (mit Symlinks in `.claude/skills/`)
+und sind bei jeder Änderung am entsprechenden Teil zwingend zu laden:
+
+- **Änderungen an `apps/cms` oder `packages/types`:** Skill `payload`
+  ([`.agents/skills/payload/SKILL.md`](.agents/skills/payload/SKILL.md)) laden.
+- **Änderungen an `apps/web`:** Skills `astro-framework`
+  ([`.agents/skills/astro-framework/SKILL.md`](.agents/skills/astro-framework/SKILL.md))
+  und `astro-best-practices`
+  ([`.agents/skills/astro-best-practices/SKILL.md`](.agents/skills/astro-best-practices/SKILL.md))
+  laden; bei versionsspezifischen Astro-Fragen zusätzlich `docs-lookup`
+  ([`.agents/skills/docs-lookup/SKILL.md`](.agents/skills/docs-lookup/SKILL.md))
+  und den MCP-Server `astro-docs` (`https://mcp.docs.astro.build/mcp` in `.mcp.json`)
+  nutzen.
+- **Änderungen an `apps/web/src/scripts/webmcp.ts` oder `apps/web/src/pages/webmcp.json.ts`:**
+  Skill `webmcp` ([`.agents/skills/webmcp/SKILL.md`](.agents/skills/webmcp/SKILL.md)) laden.
+
 ## Typen sind die Absicherung
 
 `packages/types` enthält das generierte Content-Modell. Beide Apps prüfen

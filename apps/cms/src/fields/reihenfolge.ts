@@ -47,6 +47,7 @@ export const reihenfolge = (slug: CollectionSlug): NumberField => ({
           sort: '-order',
           limit: 1,
           depth: 0,
+          req,
         })
 
         const hoechste = (letzte.docs[0] as { order?: number } | undefined)?.order

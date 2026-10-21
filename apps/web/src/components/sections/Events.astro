@@ -1,6 +1,6 @@
 ---
 import { getCollection, mediaSrcSet, mediaUrl } from '../../lib/payload'
-import { anlassPfad } from '../../lib/schema'
+import { anlassPfad, istKommenderAnlass } from '../../lib/schema'
 import Icon from '../Icon.astro'
 import Egg from '../Egg.astro'
 import type { Block } from '../../lib/blocks'
@@ -32,15 +32,8 @@ const WOCHENTAGE: Record<string, string> = {
  *
  * Wöchentliche Anlässe bleiben immer stehen — sie haben kein Ablaufdatum.
  */
-const heute = new Date()
-heute.setUTCHours(0, 0, 0, 0)
-
 const kommende = alle
-  .filter((e) => {
-    if (e.rhythmus === 'woechentlich') return true
-    if (!e.datum) return false
-    return new Date(e.datum) >= heute
-  })
+  .filter((e) => istKommenderAnlass(e))
   // Wiederkehrendes zuerst: Es ist das verlässliche Angebot, ein einzelner
   // Termin die Ausnahme.
   .sort((a, b) => {
