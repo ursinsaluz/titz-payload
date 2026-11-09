@@ -39,6 +39,8 @@ const canonical = new URL(
   Astro.url.pathname,
   settings.domain ?? Astro.site ?? 'https://titz.cooking',
 )
+
+const sicheresJson = (daten: unknown) => JSON.stringify(daten).replace(/</g, '\\u003c')
 ---
 
 <!doctype html>
@@ -104,7 +106,7 @@ const canonical = new URL(
       type="font/woff2"
       crossorigin
     />
-    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={sicheresJson(jsonLd)} />}
   </head>
   <body>
     {
@@ -120,7 +122,7 @@ const canonical = new URL(
       <slot />
     </main>
     <Footer />
-    <script is:inline type="application/json" id="egg-data" set:html={JSON.stringify(eggData)} />
+    <script is:inline type="application/json" id="egg-data" set:html={sicheresJson(eggData)} />
     <script src="../scripts/playful.ts"></script>
     <script src="../scripts/webmcp.ts"></script>
   </body>

@@ -8,8 +8,9 @@
 // String an, nicht als undefined. Mit `??` hat der Build daraus eine relative
 // Adresse gemacht und mit «Failed to parse URL» abgebrochen.
 const PAYLOAD_URL =
-  import.meta.env.PAYLOAD_URL ||
-  (import.meta.env.PROD ? 'https://admin.titz.cooking' : 'http://localhost:3000')
+  import.meta.env?.PAYLOAD_URL ||
+  process.env.PAYLOAD_URL ||
+  (import.meta.env?.PROD ? 'https://admin.titz.cooking' : 'http://localhost:3000')
 
 /** Die Herkunft, von der die Bilder kommen — Base.astro baut daraus den
     Preconnect. Exportiert, damit die Adresse nur an einer Stelle steht. */
@@ -45,7 +46,7 @@ async function fetchJson<T>(path: string): Promise<T> {
 const responseCache = new Map<string, Promise<unknown>>()
 
 function get<T>(path: string): Promise<T> {
-  if (import.meta.env.DEV) return fetchJson<T>(path)
+  if (import.meta.env?.DEV) return fetchJson<T>(path)
   const cached = responseCache.get(path)
   if (cached) return cached as Promise<T>
   // Fehlgeschlagene Abfragen nicht behalten, sonst bricht der ganze Build an
@@ -92,7 +93,7 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
     Nur im Build cachen — im Dev-Server würde der Modul-Cache Reseeds überleben. */
 let iconCache: Map<number, Icon> | null = null
 export async function getIcons(): Promise<Map<number, Icon>> {
-  if (!iconCache || import.meta.env.DEV) {
+  if (!iconCache || import.meta.env?.DEV) {
     const icons = await getCollection('icons')
     iconCache = new Map(icons.map((icon) => [icon.id, icon]))
   }
@@ -151,7 +152,7 @@ export async function resolveIcon(ref: IconRef): Promise<Icon | null> {
  * `IMAGE_TRANSFORM=1` in die Build-Variablen von Workers Builds, und die
  * Grössenangaben unten greifen.
  */
-const TRANSFORM = import.meta.env.IMAGE_TRANSFORM === '1'
+const TRANSFORM = import.meta.env?.IMAGE_TRANSFORM === '1' || process.env.IMAGE_TRANSFORM === '1'
 
 /**
  * Die Adresse eines Bildes, optional auf eine Darstellungsbreite gebracht.

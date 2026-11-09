@@ -64,8 +64,10 @@ function renderNode(node: LexicalNode, optionen?: LexicalOptionen): string {
       return '<br>'
     case 'paragraph':
       return `<p>${renderChildren(node, optionen)}</p>`
-    case 'heading':
-      return `<${node.tag}>${renderChildren(node, optionen)}</${node.tag}>`
+    case 'heading': {
+      const tag = /^h[1-6]$/.test(node.tag ?? '') ? (node.tag as string) : 'h2'
+      return `<${tag}>${renderChildren(node, optionen)}</${tag}>`
+    }
     case 'quote':
       return `<blockquote>${renderChildren(node, optionen)}</blockquote>`
     case 'list': {
@@ -75,7 +77,8 @@ function renderNode(node: LexicalNode, optionen?: LexicalOptionen): string {
     case 'listitem':
       return `<li>${renderChildren(node, optionen)}</li>`
     case 'link': {
-      const url = node.fields?.url ?? node.url ?? '#'
+      const roh = (node.fields?.url ?? node.url ?? '#').trim()
+      const url = /^(javascript|data):/i.test(roh) ? '#' : roh
       const target = (node.fields?.newTab ?? node.newTab) ? ' target="_blank" rel="noopener"' : ''
       return `<a href="${escape(url)}"${target}>${renderChildren(node, optionen)}</a>`
     }
@@ -98,12 +101,20 @@ export function lexicalToHtml(value: unknown, optionen?: LexicalOptionen): strin
   return renderChildren(root, optionen)
 }
 
-/** Prüft, ob ein Lexical-Feld tatsächlich darstellbare Knoten enthält. */
+/** Prüft, ob ein Lexical-Feld tatsächlich darstellbare Knoten oder Text enthält. */
 export function hatLexicalInhalt(value: unknown): boolean {
-  const kinder = (value as { root?: { children?: LexicalNode[] } } | null)?.root?.children
-  return Array.isArray(kinder) && kinder.length > 0
+  const root = (value as { root?: LexicalNode } | null)?.root
+  if (!root) return false
+  return lexicalToPlainText(value).trim().length > 0 || hatMedien(root)
 }
 
+function hatMedien(node: LexicalNode): boolean {
+  if (node.type === 'upload') return true
+  for (const kind of node.children ?? []) {
+    if (hatMedien(kind)) return true
+  }
+  return false
+}
 /** Reiner Textauszug aus einem Lexical-Baum, etwa für WebMCP-Antworten. */
 export function lexicalToPlainText(value: unknown): string {
   const root = (value as { root?: LexicalNode } | null)?.root

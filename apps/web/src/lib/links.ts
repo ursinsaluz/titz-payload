@@ -13,8 +13,10 @@ export function hrefFor(link: NavLink): string {
       const slug = typeof link.page === 'object' && link.page ? link.page.slug : null
       return slug ? (slug === 'home' ? '/' : `/${slug}/`) : '/'
     }
-    case 'url':
-      return link.url ?? '#'
+    case 'url': {
+      const roh = (link.url ?? '#').trim()
+      return /^(javascript|data):/i.test(roh) ? '#' : roh
+    }
     case 'anchor':
     default:
       return `/#${link.anchor ?? ''}`

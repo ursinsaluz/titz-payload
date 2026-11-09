@@ -62,7 +62,8 @@ export function aktuellesSlug(
     if (titelOderEintrag.slug && titelOderEintrag.slug.trim()) return titelOderEintrag.slug.trim()
     return aktuellesSlug(titelOderEintrag.title)
   }
-  return titelOderEintrag
+  const text: string = String(titelOderEintrag)
+  return text
     .toLowerCase()
     .replace(/ä/g, 'ae')
     .replace(/ö/g, 'oe')
@@ -84,9 +85,11 @@ export function aktuellesSlug(
 export function istKommenderAnlass(e: Pick<Event, 'rhythmus' | 'datum'>, stichtag?: Date): boolean {
   if (e.rhythmus === 'woechentlich') return true
   if (!e.datum) return false
+  const zeitpunkt = new Date(e.datum).getTime()
+  if (Number.isNaN(zeitpunkt)) return false
   const heute = stichtag ? new Date(stichtag) : new Date()
   heute.setUTCHours(0, 0, 0, 0)
-  return new Date(e.datum) >= heute
+  return zeitpunkt >= heute.getTime()
 }
 
 /**
@@ -219,7 +222,7 @@ export function einAnlass(e: Event, domain: string) {
     offers: e.preis
       ? ohneLeere({
           '@type': 'Offer',
-          price: e.preis.replace(/[^\d.]/g, '') || undefined,
+          price: extrahierePreis(e.preis),
           priceCurrency: /chf/i.test(e.preis) ? 'CHF' : undefined,
           description: e.preis,
           url: e.cta?.url ?? undefined,
@@ -239,7 +242,30 @@ function anlaesse(events: Event[], domain: string) {
 function datumZeit(datum: string, zeit?: string | null): string {
   const tag = String(datum).slice(0, 10)
   if (!zeit) return tag
-  return `${tag}T${zeit.length === 5 ? zeit : zeit.padStart(5, '0')}:00+02:00`
+  const uhrzeit = zeit.length === 5 ? zeit : zeit.padStart(5, '0')
+  return `${tag}T${uhrzeit}:00${schweizerOffset(tag)}`
+}
+
+function schweizerOffset(datumStr: string): string {
+  try {
+    const formatter = new Intl.DateTimeFormat('en', {
+      timeZone: 'Europe/Zurich',
+      timeZoneName: 'shortOffset',
+    })
+    const parts = formatter.formatToParts(new Date(`${datumStr.slice(0, 10)}T12:00:00Z`))
+    const tz = parts.find((p) => p.type === 'timeZoneName')?.value
+    const treffer = tz?.match(/GMT([+-])(\d+)/)
+    if (treffer) return `${treffer[1]}${treffer[2].padStart(2, '0')}:00`
+  } catch {
+    /* Fallback MEZ */
+  }
+  return '+01:00'
+}
+
+function extrahierePreis(preisText: string): string | undefined {
+  const bereinigt = preisText.replace(/['’]/g, '')
+  const treffer = bereinigt.match(/\d+(?:\.\d{1,2})?/)
+  return treffer ? treffer[0] : undefined
 }
 
 /**

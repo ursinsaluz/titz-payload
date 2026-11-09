@@ -36,11 +36,14 @@ export const slugFeld = (collection: CollectionSlug, quelle = 'title'): TextFiel
   hooks: {
     beforeValidate: [
       async ({ data, operation, originalDoc, req, value }) => {
-        // Von Hand gesetzt gewinnt immer, auch beim Anlegen.
-        if (typeof value === 'string' && value.trim()) return slugify(value)
+        // Von Hand gesetzt gewinnt, wird aber gegen fremde Kollisionen abgesichert.
+        if (typeof value === 'string' && value.trim()) {
+          const sauber = slugify(value)
+          if (operation === 'update' && originalDoc?.slug === sauber) return sauber
+          return eindeutig(sauber, collection, req, originalDoc?.id)
+        }
 
-        // Beim Aktualisieren den bestehenden behalten. Ohne diese Zeile bekäme
-        // ein Anlass, dessen Titel korrigiert wird, eine neue Adresse.
+        // Beim Aktualisieren den bestehenden behalten, wenn kein manueller Wert vorliegt.
         if (operation === 'update' && originalDoc?.slug) return originalDoc.slug
 
         const roh = (data as Record<string, unknown> | undefined)?.[quelle]
@@ -84,21 +87,29 @@ async function eindeutig(
   req: PayloadRequest,
   eigeneId?: string | number,
 ): Promise<string> {
-  for (let n = 1; n < 50; n++) {
-    const kandidat = n === 1 ? basis : `${basis}-${n}`
-    const treffer = await req.payload.find({
-      collection,
-      where: { slug: { equals: kandidat } },
-      limit: 1,
-      depth: 0,
-      // Entwürfe zählen mit: Ein Entwurf mit diesem Slug wird später
-      // veröffentlicht und kollidiert dann.
-      draft: true,
-      req,
-    })
-    const belegt = treffer.docs.filter((d) => (d as { id?: unknown }).id !== eigeneId)
-    if (belegt.length === 0) return kandidat
+  // Eine einzige Abfrage holt alle potenziellen Namenskonflikte.
+  const treffer = await req.payload.find({
+    collection,
+    where: { slug: { like: `${basis}%` } },
+    limit: 100,
+    depth: 0,
+    draft: true,
+    req,
+  })
+
+  const belegteSlugs = new Set<string>()
+  for (const doc of treffer.docs) {
+    const d = doc as { id?: unknown; slug?: unknown }
+    if (d.id !== eigeneId && typeof d.slug === 'string') {
+      belegteSlugs.add(d.slug)
+    }
   }
-  // Nach 49 gleichnamigen Einträgen ist etwas anderes falsch als der Slug.
+
+  if (!belegteSlugs.has(basis)) return basis
+
+  for (let n = 2; n < 100; n++) {
+    const kandidat = `${basis}-${n}`
+    if (!belegteSlugs.has(kandidat)) return kandidat
+  }
   return `${basis}-${Date.now()}`
 }
