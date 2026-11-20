@@ -95,9 +95,8 @@ export const Media: CollectionConfig = {
           admin: { width: '50%', description: 'Aufnahmejahr, sofern bekannt.' },
         },
         {
-          // Trennt Bildmaterial für die Seite von privaten Aufnahmen, die nur im
-          // Archiv liegen. Die Collection ist öffentlich lesbar — `intern` ist
-          // eine redaktionelle Kennzeichnung, keine Zugriffsbeschränkung.
+          // Trennt öffentliches Bildmaterial von internen und privaten Aufnahmen.
+          // `mediaLesen` wertet dieses Feld für Liste und Datei-Route aus.
           name: 'verwendung',
           type: 'select',
           label: 'Verwendung',

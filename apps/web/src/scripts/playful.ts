@@ -23,6 +23,9 @@ function showToast(message: string) {
   document.querySelector('.toast')?.remove()
   const el = document.createElement('div')
   el.className = 'toast'
+  el.setAttribute('role', 'status')
+  el.setAttribute('aria-live', 'polite')
+  el.setAttribute('aria-atomic', 'true')
   el.textContent = message
   document.body.appendChild(el)
   toastTimer = setTimeout(() => el.remove(), 4200)

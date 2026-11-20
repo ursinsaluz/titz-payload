@@ -17,6 +17,7 @@ const icon = await getIconByName(name)
   icon?.svg && (
     <span class="egg" style={`${pos}${anim ? `;animation:${anim}` : ''}`}>
       <button
+        type="button"
         class="egg__btn"
         data-egg={name}
         aria-label={`Zutat: ${name}`}

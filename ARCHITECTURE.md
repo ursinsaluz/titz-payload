@@ -190,6 +190,20 @@ Dateien direkt aus dem Bucket, kein Worker im Pfad. Das ist verworfen, weil es
 die Zugriffsprüfung unten umgehen würde; die Begründung steht bei den
 verworfenen Wegen.
 
+### Security-Header und CSP
+
+Die Inhalts-CSP erzeugt Astro zur Bauzeit über `security.csp` in
+`apps/web/astro.config.mjs` als `<meta http-equiv="content-security-policy">`
+samt automatischen Hashes für gebündelte Inline-Skripte und Inline-Styles
+(`inlineStylesheets: 'always'`). `style-src-attr` erlaubt `'unsafe-inline'`, weil
+Komponenten dynamische Token-Farben, Kippwinkel und Positionen der
+Gemüse-Eier über `style`-Attribute setzen.
+
+HTTP-Header wie `X-Content-Type-Options`, `Referrer-Policy`,
+`Permissions-Policy`, `X-Frame-Options` und `Content-Security-Policy: frame-ancestors 'none'`
+liegen in `apps/web/public/_headers`, weil `frame-ancestors` in einem
+`<meta>`-Tag von Browsern ignoriert wird und Warnungen auslöst.
+
 ## Daten und Dateien
 
 **D1 `titz-payload-site`** hält den Inhalt, **R2 `titz-payload-media`** die
@@ -340,6 +354,21 @@ Funktion.
   `alvier-payload`: `astro check` treibt TypeScript über die programmatische API,
   die der Go-Port nicht anbietet — das Frontend verlöre seine Typprüfung. Bleibt
   bei 5.9.
+
+- **Rewrite auf Solid 2.0.** Geprüft im November 2026 nach dem Stable-Release von
+  Solid 2.0.0. `titz.cooking` ist eine statische, marken- und inhaltsgetriebene
+  Gastronomie-, Beratungs- und Catering-Website mit externer Tischreservation.
+  Astro 7 auf Cloudflare Workers Assets liefert standardmässig 0 KB
+  Client-Framework aus und bringt native Cloudflare-Parität (`workerd`) mit.
+  Ein Umbau auf Solid 2.0 (samt Router 2.0 und Client-Hydration) verursachte
+  hohen Migrationsaufwand ohne Mehrwert für Besucher.
+
+  Wechselkriterium für eine spätere Neubewertung: Erst wenn sich das Projekt zu
+  einer transaktionalen Plattform entwickelt (Kundenbereich, eigene
+  Echtzeit-Buchung auf D1 statt externer Verlinkung oder Shop mit Warenkorb),
+  lohnt sich ein Applikations-Framework. Einzelne zustandsintensive Widgets
+  liessen sich vorher gezielt als Astro Island einbetten statt eines
+  Komplett-Rewrites.
 
 ## Offene Punkte
 

@@ -33,7 +33,9 @@ const locationLine = footer.contact?.address?.split('\n').pop()
   }
   <div class="site-footer__meta">
     <span data-egg-count>0</span> / {eggTotal} Zutaten entdeckt · {footer.copyright}
-    <span data-egg-star aria-hidden="true" style="cursor:pointer;color:var(--gold)">✦</span>
+    <button type="button" class="egg-star" data-egg-star aria-label="Geheimer Stern-Hinweis"
+      >✦</button
+    >
   </div>
 </footer>
 

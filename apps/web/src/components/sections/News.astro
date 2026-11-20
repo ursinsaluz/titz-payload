@@ -13,11 +13,13 @@ const { block } = Astro.props
 const items = await getCollection('news', `&sort=-date&where[_status][equals]=published`)
 const visible = items.slice(0, block.limit ?? 4)
 
-const formatDate = (iso: string) => {
-  const date = new Date(iso)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${pad(date.getUTCDate())}.${pad(date.getUTCMonth() + 1)}.${date.getUTCFullYear()}`
-}
+const datumsFormat = new Intl.DateTimeFormat('de-CH', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+const formatDate = (iso: string) => datumsFormat.format(new Date(iso))
 const tilts = ['-0.3deg', '0.3deg']
 ---
 

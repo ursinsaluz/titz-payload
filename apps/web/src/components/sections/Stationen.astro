@@ -98,14 +98,17 @@ const dotColors = [
                   <div>
                     {hobby.title}
                     {index === hobbies.length - 1 && (
-                      <span
-                        data-egg-star
-                        aria-hidden="true"
-                        style="cursor:pointer;color:var(--gold)"
-                      >
+                      <>
                         {' '}
-                        ✦
-                      </span>
+                        <button
+                          type="button"
+                          class="egg-star"
+                          data-egg-star
+                          aria-label="Geheimer Stern-Hinweis"
+                        >
+                          ✦
+                        </button>
+                      </>
                     )}
                   </div>
                 ))}

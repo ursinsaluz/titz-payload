@@ -53,7 +53,8 @@ function renderUpload(node: LexicalNode, optionen?: LexicalOptionen): string {
     : ''
   const masse =
     media.width && media.height ? ` width="${media.width}" height="${media.height}"` : ''
-  return `<figure class="richtext-media"><img src="${escape(bild)}"${srcset} alt="${escape(media.alt ?? '')}"${masse} loading="lazy" decoding="async">${legende}</figure>`
+  const lazy = masse ? ' loading="lazy"' : ''
+  return `<figure class="richtext-media"><img src="${escape(bild)}"${srcset} alt="${escape(media.alt ?? '')}"${masse}${lazy} decoding="async">${legende}</figure>`
 }
 
 function renderNode(node: LexicalNode, optionen?: LexicalOptionen): string {

@@ -18,6 +18,7 @@ import sitemap from '@astrojs/sitemap'
  * sonst bricht `astro check` ohne laufenden Server ab.
  */
 const PAYLOAD_URL = (process.env.PAYLOAD_URL || 'https://admin.titz.cooking').replace(/\/+$/, '')
+const PAYLOAD_ORIGIN = new URL(PAYLOAD_URL).origin
 
 /** Die Collections, deren Inhalt auf der Startseite steht. */
 const STARTSEITE = ['news', 'events', 'angebote', 'stationen', 'signature-dishes', 'pages']
@@ -127,6 +128,24 @@ export default defineConfig({
      * Neu zu bewerten, wenn die Anlässe einmal zweistellig werden.
      */
     inlineStylesheets: 'always',
+  },
+  security: {
+    csp: {
+      styleDirective: {
+        // 19 Komponenten setzen dynamische Token- und Winkel-Werte über inline `style="..."`.
+        resources: [{ resource: "'unsafe-inline'", kind: 'attribute' }],
+      },
+      directives: [
+        "default-src 'self'",
+        `img-src 'self' ${PAYLOAD_ORIGIN} data:`,
+        `media-src 'self' ${PAYLOAD_ORIGIN}`,
+        "font-src 'self'",
+        "connect-src 'self'",
+        "base-uri 'self'",
+        "object-src 'none'",
+        "form-action 'self'",
+      ],
+    },
   },
   integrations: [
     /**

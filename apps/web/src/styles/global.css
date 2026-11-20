@@ -234,6 +234,16 @@ main:focus {
   outline: none;
 }
 
+section[id],
+footer[id] {
+  scroll-margin-top: 84px;
+}
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
 /* Icon-Kreis (Karten) */
 .icon-circle {
   display: grid;
@@ -281,6 +291,16 @@ main:focus {
 .egg__btn svg {
   width: 50%;
   height: 50%;
+}
+
+.egg-star {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  font: inherit;
+  color: var(--gold);
+  cursor: pointer;
+  vertical-align: baseline;
 }
 
 /* Scroll-Reveal */
@@ -474,6 +494,13 @@ main:focus {
 
   .egg {
     display: none;
+  }
+}
+
+/* Sanfte Dokument-Übergänge zwischen Startseite und Detailseiten (0 KB JS). */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
   }
 }
 

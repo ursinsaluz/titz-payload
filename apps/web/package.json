@@ -13,13 +13,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/sitemap": "^3.7.6",
     "@titz/types": "workspace:*",
-    "astro": "^7.2.9",
+    "astro": "^7.4.13",
     "zod": "^4.5.4"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
     "cross-env": "^7.0.3",

@@ -117,6 +117,9 @@ test('Alle vier WebMCP-Werkzeuge lassen sich erfolgreich ausführen', async ({ p
     const api = fenster.titzWebMCP as ToolApi
     const angebote = await api.callTool('angebote_und_anlaesse', {})
     const profil = await api.callTool('profil_und_stationen', {})
+    const qualifikationen = await api.callTool('profil_und_stationen', {
+      gruppe: 'qualifikationen',
+    })
     const anfrage = await api.callTool('anfrage_vorbereiten', {
       anliegen: 'catering',
       nachricht: 'Musterkunde Anfrage für 20 Personen',
@@ -126,6 +129,7 @@ test('Alle vier WebMCP-Werkzeuge lassen sich erfolgreich ausführen', async ({ p
     return {
       angeboteText: angebote.content[0]?.text ?? '',
       profilText: profil.content[0]?.text ?? '',
+      qualifikationenText: qualifikationen.content[0]?.text ?? '',
       anfrageText: anfrage.content[0]?.text ?? '',
       aktuellesText: aktuelles.content[0]?.text ?? '',
     }
@@ -134,6 +138,7 @@ test('Alle vier WebMCP-Werkzeuge lassen sich erfolgreich ausführen', async ({ p
   expect(ergebnisse).not.toBeNull()
   expect(ergebnisse!.angeboteText).toContain('Catering')
   expect(ergebnisse!.profilText).toContain('Sebastian Titz')
+  expect(ergebnisse!.qualifikationenText).toContain('qualifikationen')
   expect(ergebnisse!.anfrageText).toContain('Musterkunde')
   expect(ergebnisse!.aktuellesText).toContain('Adanks Biofarm')
 })

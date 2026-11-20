@@ -42,15 +42,20 @@ const kommende = alle
   })
   .slice(0, block.limit ?? 4)
 
+const datumsFormat = new Intl.DateTimeFormat('de-CH', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+
 const datumsText = (e: (typeof kommende)[number]) => {
   if (e.rhythmus === 'woechentlich') {
     const tag = e.wochentag ? WOCHENTAGE[e.wochentag] : null
     return tag ? `Jeden ${tag}` : 'Wöchentlich'
   }
   if (!e.datum) return null
-  const d = new Date(e.datum)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${pad(d.getUTCDate())}.${pad(d.getUTCMonth() + 1)}.${d.getUTCFullYear()}`
+  return datumsFormat.format(new Date(e.datum))
 }
 ---
 

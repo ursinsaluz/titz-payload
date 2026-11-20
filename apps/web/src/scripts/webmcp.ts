@@ -6,10 +6,9 @@
  * Tool-Aufruf aus `/webmcp.json` (beim Astro-Build aus dem CMS erzeugt).
  *
  * Unterstützt sowohl `document.modelContext` (aktueller W3C-Entwurf) als auch
- * `navigator.modelContext` (frühe Chromium-Implementierung) sowie `registerTool`
- * und `provideContext`. Zusätzlich liegt dieselbe Schnittstelle unter
- * `window.titzWebMCP`, damit sich die Tools auch ohne Browser-Flag in DevTools
- * oder Smoke-Tests aufrufen lassen.
+ * `navigator.modelContext` (frühe Chromium-Implementierung) über `registerTool`.
+ * Zusätzlich liegt dieselbe Schnittstelle unter `window.titzWebMCP`, damit sich
+ * die Tools auch ohne Browser-Flag in DevTools oder Smoke-Tests aufrufen lassen.
  */
 
 interface WebMcpToolOptions {
@@ -37,7 +36,6 @@ interface WebMcpTool {
 
 interface ModelContextApi {
   registerTool?: (tool: WebMcpTool) => Promise<void> | void
-  provideContext?: (options: { tools: WebMcpTool[] }) => Promise<void> | void
 }
 
 interface WebMcpIndex {
@@ -184,7 +182,7 @@ const tools: WebMcpTool[] = [
       properties: {
         gruppe: {
           type: 'string',
-          enum: ['alle', 'stationen', 'ausbildung', 'skills', 'hobbies'],
+          enum: ['alle', 'stationen', 'ausbildung', 'qualifikationen', 'hobbies'],
           description: 'Optionaler Filter für den Lebenslauf.',
         },
       },
@@ -192,7 +190,9 @@ const tools: WebMcpTool[] = [
     annotations: { readOnlyHint: true },
     execute: async ({ gruppe = 'alle' }, options) => {
       const { person, stationen } = await ladeIndex(options?.signal)
-      const gefiltert = gruppe === 'alle' ? stationen : stationen.filter((s) => s.group === gruppe)
+      const zielGruppe = gruppe === 'skills' ? 'qualifikationen' : gruppe
+      const gefiltert =
+        zielGruppe === 'alle' ? stationen : stationen.filter((s) => s.group === zielGruppe)
       return alsAntwort({ person, stationen: gefiltert })
     },
   },
@@ -299,8 +299,6 @@ async function initWebMcp() {
       for (const tool of tools) {
         await api.registerTool(tool)
       }
-    } else if (api.provideContext) {
-      await api.provideContext({ tools })
     }
   } catch (fehler) {
     console.warn('[WebMCP] Tool-Registrierung fehlgeschlagen:', fehler)
