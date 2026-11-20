@@ -6,6 +6,7 @@ import type {
   Footer,
   Header,
   Icon,
+  InstagramPost,
   News,
   Page,
   SignatureDish,
@@ -67,6 +68,14 @@ export const newsSchema = z.object({
   excerpt: z.string(),
 })
 
+export const instagramPostSchema = z.object({
+  instagramId: z.string(),
+  publishedAt: z.string(),
+  mediaType: z.enum(['IMAGE', 'VIDEO', 'CAROUSEL_ALBUM']),
+  permalink: z.string(),
+  caption: z.string(),
+})
+
 export const eventSchema = z.object({
   title: z.string(),
   // Ohne Slug lässt sich `/anlaesse/<slug>` nicht bauen — und `getStaticPaths`
@@ -93,6 +102,7 @@ export const mediaSchema = z.object({ alt: z.string() })
 export const collectionSchemas = {
   pages: pageSchema,
   news: newsSchema,
+  'instagram-posts': instagramPostSchema,
   events: eventSchema,
   angebote: angeboteSchema,
   'signature-dishes': signatureDishSchema,
@@ -144,6 +154,7 @@ export type ModelleErfuellenSchemata = [
   Erfuellt<Footer, z.infer<typeof footerSchema>>,
   Erfuellt<Page, z.infer<typeof pageSchema>>,
   Erfuellt<News, z.infer<typeof newsSchema>>,
+  Erfuellt<InstagramPost, z.infer<typeof instagramPostSchema>>,
   Erfuellt<Event, z.infer<typeof eventSchema>>,
   Erfuellt<Angebote, z.infer<typeof angeboteSchema>>,
   Erfuellt<SignatureDish, z.infer<typeof signatureDishSchema>>,

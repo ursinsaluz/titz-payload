@@ -1,0 +1,312 @@
+---
+import { getCollection, mediaSrcSet, mediaUrl } from '../../lib/payload'
+import Egg from '../Egg.astro'
+import type { Block } from '../../lib/blocks'
+
+interface Props {
+  block: Block<'instagramSection'>
+}
+
+const { block } = Astro.props
+const posts = await getCollection('instagram-posts', '&sort=-publishedAt')
+const visible = posts.slice(0, block.limit ?? 4)
+const handle = block.handle ?? '@titzsebastian'
+const profileUrl = block.profileUrl ?? 'https://www.instagram.com/titzsebastian/'
+
+const datumsFormat = new Intl.DateTimeFormat('de-CH', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+const formatDate = (iso: string) => datumsFormat.format(new Date(iso))
+
+const cardColors = ['var(--mint)', 'var(--cream)', 'var(--rosa)', 'var(--pfirsich)']
+const cardTilts = ['-0.6deg', '0.5deg', '-0.4deg', '0.6deg']
+---
+
+{
+  visible.length > 0 && (
+    <section class="ig" id={block.anchor ?? 'instagram'}>
+      <Egg
+        name="apfel"
+        size={56}
+        bg="var(--pfirsich)"
+        pos="right:6%;top:110px"
+        anim="tzBreath 7s ease-in-out infinite 0.5s"
+      />
+      <div class="container">
+        <div class="ig__head">
+          <div class="ig__title-wrap">
+            {block.eyebrow && <div class="eyebrow">{block.eyebrow}</div>}
+            <h2>{block.heading}</h2>
+          </div>
+          <a class="ig__follow" href={profileUrl} target="_blank" rel="noopener noreferrer">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+            </svg>
+            <span>{handle} folgen</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+
+        <div class="ig__grid">
+          {visible.map((post, index) => {
+            const image = mediaUrl(post.image, { breite: 400 })
+            const responsiv = mediaSrcSet(post.image, 400)
+            const alt =
+              typeof post.image === 'object' && post.image?.alt
+                ? post.image.alt
+                : post.caption.slice(0, 90)
+            return (
+              <a
+                href={post.permalink}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-rev={index * 100}
+                class="ig__card"
+                style={`--ig-frame:${cardColors[index % 4]};--card-tilt:${cardTilts[index % 4]}`}
+              >
+                <div class="ig__media">
+                  {image && (
+                    <img
+                      src={image}
+                      srcset={responsiv?.srcset}
+                      sizes={responsiv?.sizes}
+                      alt={alt}
+                      width="360"
+                      height="450"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                  {post.mediaType === 'VIDEO' && (
+                    <span class="ig__badge" aria-label="Reel / Video">
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <polygon points="6 3 20 12 6 21 6 3" />
+                      </svg>
+                      Reel
+                    </span>
+                  )}
+                  {post.mediaType === 'CAROUSEL_ALBUM' && (
+                    <span class="ig__badge" aria-label="Bilderstrecke">
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                      </svg>
+                      Serie
+                    </span>
+                  )}
+                </div>
+                <div class="ig__body">
+                  <div class="ig__meta">
+                    <span>{formatDate(post.publishedAt)}</span>
+                    <span class="ig__arrow" aria-hidden="true">
+                      ↗
+                    </span>
+                  </div>
+                  <p class="ig__caption">{post.caption}</p>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .ig {
+    position: relative;
+    padding: 88px 40px 56px;
+    background: var(--bg-soft);
+  }
+
+  .ig__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 42px;
+  }
+
+  .ig__title-wrap h2 {
+    margin: 8px 0 0;
+    font-size: 38px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .ig__follow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1.5px solid var(--rule);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+    transition:
+      transform 220ms,
+      border-color 220ms,
+      color 220ms;
+  }
+
+  .ig__follow:hover {
+    transform: translateY(-2px);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .ig__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+
+  .ig__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--ig-frame, var(--cream));
+    padding: 11px 11px 18px;
+    border-radius: 24px;
+    transform: rotate(var(--card-tilt, 0deg));
+    transition:
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 280ms;
+  }
+
+  .ig__card:hover {
+    transform: translateY(-7px) rotate(0deg);
+    box-shadow: 0 18px 40px rgba(47, 53, 56, 0.11);
+  }
+
+  .ig__media {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: #fff;
+  }
+
+  .ig__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .ig__card:hover .ig__media img {
+    transform: scale(1.04);
+  }
+
+  .ig__badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(47, 53, 56, 0.82);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .ig__body {
+    padding: 14px 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ig__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .ig__arrow {
+    font-size: 13px;
+    transition: transform 200ms;
+  }
+
+  .ig__card:hover .ig__arrow {
+    transform: translate(2px, -2px);
+  }
+
+  .ig__caption {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--ink);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (max-width: 980px) {
+    .ig__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .ig__card {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .ig {
+      padding: 64px 22px 40px;
+    }
+
+    .ig__title-wrap h2 {
+      font-size: 30px;
+    }
+
+    .ig__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

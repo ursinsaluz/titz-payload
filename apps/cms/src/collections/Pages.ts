@@ -67,6 +67,24 @@ const NewsBlock: Block = {
   ],
 }
 
+const InstagramBlock: Block = {
+  slug: 'instagramSection',
+  labels: { singular: 'Instagram', plural: 'Instagram' },
+  fields: [
+    { name: 'anchor', type: 'text', label: 'Anker', defaultValue: 'instagram' },
+    { name: 'eyebrow', type: 'text', label: 'Eyebrow / Überzeile' },
+    { name: 'heading', type: 'text', label: 'Überschrift', required: true },
+    { name: 'handle', type: 'text', label: 'Instagram-Handle', defaultValue: '@titzsebastian' },
+    {
+      name: 'profileUrl',
+      type: 'text',
+      label: 'Profil-URL',
+      defaultValue: 'https://www.instagram.com/titzsebastian/',
+    },
+    { name: 'limit', type: 'number', label: 'Max. Beiträge', defaultValue: 4 },
+  ],
+}
+
 const SignatureDishesBlock: Block = {
   slug: 'signatureDishesSection',
   labels: { singular: 'Signature Dishes', plural: 'Signature Dishes' },
@@ -173,6 +191,7 @@ export const Pages: CollectionConfig = {
         AngeboteBlock,
         EventsBlock,
         NewsBlock,
+        InstagramBlock,
         SignatureDishesBlock,
         StationenBlock,
         VisitBlock,

@@ -22,6 +22,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:unit",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts",
+    "sync:instagram": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore INSTAGRAM_APPLY=1 NODE_OPTIONS=--no-deprecation payload run scripts/syncInstagram.ts",
     "generate:types:shared": "node scripts/syncSharedTypes.mjs",
     "test:unit": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",

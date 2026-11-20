@@ -75,6 +75,7 @@ export interface Config {
     icons: Icon;
     pages: Page;
     news: News;
+    'instagram-posts': InstagramPost;
     events: Event;
     angebote: Angebote;
     'signature-dishes': SignatureDish;
@@ -92,6 +93,7 @@ export interface Config {
     icons: IconsSelect<false> | IconsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
+    'instagram-posts': InstagramPostsSelect<false> | InstagramPostsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     angebote: AngeboteSelect<false> | AngeboteSelect<true>;
     'signature-dishes': SignatureDishesSelect<false> | SignatureDishesSelect<true>;
@@ -359,6 +361,17 @@ export interface Page {
             anchor?: string | null;
             eyebrow?: string | null;
             heading: string;
+            handle?: string | null;
+            profileUrl?: string | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'instagramSection';
+          }
+        | {
+            anchor?: string | null;
+            eyebrow?: string | null;
+            heading: string;
             intro?: string | null;
             id?: string | null;
             blockName?: string | null;
@@ -551,6 +564,27 @@ export interface News {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "instagram-posts".
+ */
+export interface InstagramPost {
+  id: number;
+  /**
+   * Eindeutige ID des Beitrags (für den täglichen Sync ohne Duplikate).
+   */
+  instagramId: string;
+  publishedAt: string;
+  mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
+  /**
+   * Direkter Link zum Beitrag auf instagram.com
+   */
+  permalink: string;
+  caption: string;
+  image: number | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
 export interface Event {
@@ -725,6 +759,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete news.
+     */
+    delete?: boolean | null;
+  };
+  instagramPosts?: {
+    /**
+     * Allow clients to find instagram-posts.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create instagram-posts.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update instagram-posts.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete instagram-posts.
      */
     delete?: boolean | null;
   };
@@ -916,6 +968,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'news';
         value: number | News;
+      } | null)
+    | ({
+        relationTo: 'instagram-posts';
+        value: number | InstagramPost;
       } | null)
     | ({
         relationTo: 'events';
@@ -1118,6 +1174,18 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        instagramSection?:
+          | T
+          | {
+              anchor?: T;
+              eyebrow?: T;
+              heading?: T;
+              handle?: T;
+              profileUrl?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
         signatureDishesSection?:
           | T
           | {
@@ -1214,6 +1282,20 @@ export interface NewsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "instagram-posts_select".
+ */
+export interface InstagramPostsSelect<T extends boolean = true> {
+  instagramId?: T;
+  publishedAt?: T;
+  mediaType?: T;
+  permalink?: T;
+  caption?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1348,6 +1430,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         delete?: T;
       };
   news?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  instagramPosts?:
     | T
     | {
         find?: T;

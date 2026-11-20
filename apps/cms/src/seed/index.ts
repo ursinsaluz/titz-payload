@@ -36,7 +36,14 @@ async function run() {
 
   // Wipe-Reihenfolge wegen FK-Referenzen: erst referenzierende Inhalte und
   // Global-Referenzen, dann Icons/Media.
-  for (const collection of ['pages', 'news', 'angebote', 'signature-dishes', 'stationen']) {
+  for (const collection of [
+    'pages',
+    'news',
+    'instagram-posts',
+    'angebote',
+    'signature-dishes',
+    'stationen',
+  ]) {
     await wipe(payload, collection)
   }
   // Auf frischer DB existieren die Globals noch nicht / scheitern an Pflichtfeldern — dann gibt es auch nichts abzuräumen.
@@ -232,6 +239,70 @@ async function run() {
     },
   })
   payload.logger.info(`${news.length + 2} News angelegt`)
+
+  // --- Instagram-Beiträge (@titzsebastian) ---
+  const instagramPosts: {
+    instagramId: string
+    publishedAt: string
+    mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
+    permalink: string
+    caption: string
+    bildSchluessel: MedienSchluessel
+  }[] = [
+    {
+      instagramId: 'ig-seed-flaescher-senf',
+      publishedAt: '2026-10-20T10:00:00.000Z',
+      mediaType: 'CAROUSEL_ALBUM',
+      permalink: 'https://www.instagram.com/titzsebastian/',
+      caption:
+        'Viermal Fläscher Bio-Senf aus der Ernte von Adanks Biofarm: Gelbsenf, Braunsenf, Knoblauchsenf und Safransenf — mit Birnell statt raffiniertem Zucker.',
+      bildSchluessel: 'gelbsenf',
+    },
+    {
+      instagramId: 'ig-seed-kraeutertour-pinot',
+      publishedAt: '2026-10-16T14:00:00.000Z',
+      mediaType: 'VIDEO',
+      permalink: 'https://www.instagram.com/titzsebastian/',
+      caption:
+        'Kräutertour ums Restaurant PINOT in Fläsch: frischer Lorbeer, junge Rosmarinspitzen für die Beurre blanc und wilder Oregano von der warmen Steinmauer.',
+      bildSchluessel: 'kraeuterBild',
+    },
+    {
+      instagramId: 'ig-seed-gourmetabend-pinot',
+      publishedAt: '2026-10-08T17:00:00.000Z',
+      mediaType: 'IMAGE',
+      permalink: 'https://www.instagram.com/titzsebastian/',
+      caption:
+        'Donnerstag ist Gourmetabend im PINOT: ein Überraschungsmenü aus dem, was die Woche in der Bündner Herrschaft und im St. Galler Rheintal hergibt.',
+      bildSchluessel: 'pinotTeller',
+    },
+    {
+      instagramId: 'ig-seed-handwerk-am-pass',
+      publishedAt: '2026-09-28T18:30:00.000Z',
+      mediaType: 'IMAGE',
+      permalink: 'https://www.instagram.com/titzsebastian/',
+      caption:
+        'Letzter Handgriff am Pass: schnörkellose Gerichte, ehrliches Handwerk und volle Konzentration auf den Geschmack.',
+      bildSchluessel: 'anrichten',
+    },
+  ]
+
+  for (const post of instagramPosts) {
+    const imageId = bild(post.bildSchluessel)
+    if (!imageId) continue
+    await payload.create({
+      collection: 'instagram-posts',
+      data: {
+        instagramId: post.instagramId,
+        publishedAt: post.publishedAt,
+        mediaType: post.mediaType,
+        permalink: post.permalink,
+        caption: post.caption,
+        image: imageId,
+      },
+    })
+  }
+  payload.logger.info(`${instagramPosts.length} Instagram-Beiträge angelegt`)
 
   // --- Angebote (Beratung & Catering) ---
   const angebote = [
@@ -489,6 +560,15 @@ async function run() {
       anchor: 'aktuelles',
       eyebrow: 'Aktuelles',
       heading: 'Aktuelles',
+      limit: 4,
+    },
+    {
+      blockType: 'instagramSection',
+      anchor: 'instagram',
+      eyebrow: 'Aus der Küche · @titzsebastian',
+      heading: 'Einblicke auf Instagram',
+      handle: '@titzsebastian',
+      profileUrl: 'https://www.instagram.com/titzsebastian/',
       limit: 4,
     },
   ]

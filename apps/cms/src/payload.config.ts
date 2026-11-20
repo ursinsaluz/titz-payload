@@ -14,6 +14,7 @@ import { Media } from './collections/Media'
 import { Icons } from './collections/Icons'
 import { Pages } from './collections/Pages'
 import { News } from './collections/News'
+import { InstagramPosts } from './collections/InstagramPosts'
 import { Events } from './collections/Events'
 import { Angebote } from './collections/Angebote'
 import { SignatureDishes } from './collections/SignatureDishes'
@@ -104,9 +105,18 @@ export default buildConfig({
   },
   // `mitRebuild` hängt an allem, was auf titz.cooking sichtbar ist, einen Hook,
   // der den Frontend-Build anstösst — siehe hooks/rebuildWeb.ts.
-  collections: [Users, Media, Icons, Pages, News, Events, Angebote, SignatureDishes, Stationen].map(
-    mitRebuild,
-  ),
+  collections: [
+    Users,
+    Media,
+    Icons,
+    Pages,
+    News,
+    InstagramPosts,
+    Events,
+    Angebote,
+    SignatureDishes,
+    Stationen,
+  ].map(mitRebuild),
   globals: [Header, Footer, SiteSettings].map(mitRebuild),
   editor: lexicalEditor(),
   // Ohne Adapter verschickt Payload nichts und schreibt nur eine Warnung ins
@@ -160,6 +170,10 @@ export default buildConfig({
       collections: {
         pages: { enabled: true, description: 'Seiten mit Sektionen (Startseite, Impressum, …)' },
         news: { enabled: true, description: 'Aktuelles — Presse, Auszeichnungen, Beiträge' },
+        'instagram-posts': {
+          enabled: true,
+          description: 'Instagram-Beiträge von @titzsebastian',
+        },
         events: {
           enabled: true,
           description: 'Anlässe — Gourmetabend und einzelne Termine',

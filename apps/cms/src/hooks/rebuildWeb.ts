@@ -140,6 +140,7 @@ const rebuildNachGlobalAenderung: GlobalAfterChangeHook = ({ doc, req }) => {
 export const SAMMLUNGEN_MIT_REBUILD = [
   'pages',
   'news',
+  'instagram-posts',
   'events',
   'angebote',
   'signature-dishes',

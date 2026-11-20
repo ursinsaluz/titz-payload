@@ -11,6 +11,7 @@
     "build": "pnpm --filter @titz/cms run build && pnpm --filter @titz/web run build",
     "deploy:cms": "pnpm --filter @titz/cms run deploy",
     "deploy:web": "pnpm --filter @titz/web run deploy",
+    "sync:instagram": "pnpm --filter @titz/cms run sync:instagram",
     "seed": "pnpm --filter @titz/cms run seed",
     "generate:types": "pnpm --filter @titz/cms run generate:types",
     "migrate:status": "pnpm --filter @titz/cms run migrate:status",

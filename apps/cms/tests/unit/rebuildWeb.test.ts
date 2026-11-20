@@ -14,6 +14,7 @@ import { Media } from '../../src/collections/Media'
 import { Icons } from '../../src/collections/Icons'
 import { Pages } from '../../src/collections/Pages'
 import { News } from '../../src/collections/News'
+import { InstagramPosts } from '../../src/collections/InstagramPosts'
 import { Events } from '../../src/collections/Events'
 import { Angebote } from '../../src/collections/Angebote'
 import { SignatureDishes } from '../../src/collections/SignatureDishes'
@@ -34,6 +35,7 @@ const ALLE_SAMMLUNGEN = [
   Icons,
   Pages,
   News,
+  InstagramPosts,
   Events,
   Angebote,
   SignatureDishes,

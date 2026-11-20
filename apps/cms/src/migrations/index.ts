@@ -8,6 +8,7 @@ import * as migration_20260831_113204_mcp_schluessel from './20260831_113204_mcp
 import * as migration_20260902_082620_anlaesse from './20260902_082620_anlaesse';
 import * as migration_20260903_093910_anlass_angebot_slug from './20260903_093910_anlass_angebot_slug';
 import * as migration_20261021_065617_news_slug from './20261021_065617_news_slug';
+import * as migration_20261120_152412_instagram_posts from './20261120_152412_instagram_posts';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20261021_065617_news_slug.up,
     down: migration_20261021_065617_news_slug.down,
-    name: '20261021_065617_news_slug'
+    name: '20261021_065617_news_slug',
+  },
+  {
+    up: migration_20261120_152412_instagram_posts.up,
+    down: migration_20261120_152412_instagram_posts.down,
+    name: '20261120_152412_instagram_posts'
   },
 ];
