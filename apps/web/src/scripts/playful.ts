@@ -17,18 +17,60 @@ const found = new Set<string>()
 const clicks: Record<string, number> = {}
 let toastTimer: ReturnType<typeof setTimeout> | undefined
 
-function showToast(message: string) {
+interface ToastOptions {
+  eyebrow?: string
+  chipBg?: string
+  iconSvg?: SVGSVGElement | null
+  iconText?: string
+}
+
+function resolveChipBg(source?: HTMLElement): string {
+  if (!source) return 'var(--cream)'
+  if (source.style.background) return source.style.background
+  const parentWithBg = source.closest<HTMLElement>('[style*="background"]')
+  return parentWithBg?.style.background || 'var(--mint)'
+}
+
+function showToast(message: string, options: ToastOptions = {}) {
   if (!message) return
   clearTimeout(toastTimer)
   document.querySelector('.toast')?.remove()
+
   const el = document.createElement('div')
   el.className = 'toast'
   el.setAttribute('role', 'status')
   el.setAttribute('aria-live', 'polite')
   el.setAttribute('aria-atomic', 'true')
-  el.textContent = message
+
+  const iconWrap = document.createElement('div')
+  iconWrap.className = 'toast__icon'
+  iconWrap.setAttribute('aria-hidden', 'true')
+  iconWrap.style.background = options.chipBg ?? 'var(--cream)'
+  if (options.iconSvg) {
+    iconWrap.appendChild(options.iconSvg.cloneNode(true))
+  } else {
+    iconWrap.textContent = options.iconText ?? '✦'
+  }
+  el.appendChild(iconWrap)
+
+  const content = document.createElement('div')
+  content.className = 'toast__content'
+
+  if (options.eyebrow) {
+    const meta = document.createElement('div')
+    meta.className = 'toast__meta'
+    meta.textContent = options.eyebrow
+    content.appendChild(meta)
+  }
+
+  const msg = document.createElement('div')
+  msg.className = 'toast__msg'
+  msg.textContent = message
+  content.appendChild(msg)
+
+  el.appendChild(content)
   document.body.appendChild(el)
-  toastTimer = setTimeout(() => el.remove(), 4200)
+  toastTimer = setTimeout(() => el.remove(), 4800)
 }
 
 function updateCount() {
@@ -41,26 +83,58 @@ function updateCount() {
   })
 }
 
+function triggerPop(el: HTMLElement) {
+  el.classList.remove('egg--pop')
+  void el.offsetWidth
+  el.classList.add('egg--pop')
+}
+
 function initEggs() {
   document.querySelectorAll<HTMLElement>('[data-egg]').forEach((el) => {
     el.addEventListener('click', () => {
       const name = el.dataset.egg!
       const list = vegToasts[name]
       if (!list?.length) return
+      triggerPop(el)
+
+      const iconSvg = el.querySelector('svg')
+      const chipBg = resolveChipBg(el)
       const i = (clicks[name] = (clicks[name] ?? -1) + 1)
+
       if (!found.has(name)) {
         found.add(name)
         updateCount()
         if (found.size === TOTAL) {
-          showToast(eggData.completionToast)
+          showToast(eggData.completionToast, {
+            eyebrow: `Alle ${TOTAL} Zutaten entdeckt`,
+            chipBg,
+            iconSvg,
+          })
           return
         }
+        showToast(list[i % list.length], {
+          eyebrow: `Zutat ${found.size} von ${TOTAL} entdeckt`,
+          chipBg,
+          iconSvg,
+        })
+        return
       }
-      showToast(list[i % list.length])
+
+      showToast(list[i % list.length], {
+        eyebrow: `Zutat (${found.size} / ${TOTAL} entdeckt)`,
+        chipBg,
+        iconSvg,
+      })
     })
   })
   document.querySelectorAll<HTMLElement>('[data-egg-star]').forEach((el) => {
-    el.addEventListener('click', () => showToast(eggData.starToast))
+    el.addEventListener('click', () =>
+      showToast(eggData.starToast, {
+        eyebrow: 'Verstecktes Detail',
+        chipBg: 'var(--cream)',
+        iconText: '✦',
+      }),
+    )
   })
 }
 
