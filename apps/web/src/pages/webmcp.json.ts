@@ -50,7 +50,7 @@ export const GET: APIRoute = async () => {
         'Ostschweiz',
       ],
       kontakt: {
-        email: footer.contact?.email ?? 'info@titz.cooking',
+        email: footer.contact?.email ?? 'sebastian@titz.cooking',
         phone: footer.contact?.phone ?? null,
         address: footer.contact?.address ?? 'Steigstrasse 12, 7306 Fläsch',
       },
@@ -62,7 +62,7 @@ export const GET: APIRoute = async () => {
       eyebrow: a.eyebrow ?? null,
       beschreibung: lexicalToPlainText(a.description),
       merkmale: (a.features ?? []).map((f) => f.text),
-      ctaUrl: a.cta?.url ?? 'mailto:info@titz.cooking',
+      ctaUrl: a.cta?.url ?? 'mailto:sebastian@titz.cooking',
     })),
     anlaesse: kommendeAnlaesse.map((e) => ({
       slug: e.slug,
@@ -77,7 +77,7 @@ export const GET: APIRoute = async () => {
       excerpt: e.excerpt,
       beschreibung: lexicalToPlainText(e.body),
       menue: (e.menu ?? []).map((g) => g.text),
-      ctaUrl: e.cta?.url ?? 'mailto:info@titz.cooking',
+      ctaUrl: e.cta?.url ?? 'mailto:sebastian@titz.cooking',
     })),
     gerichte: dishes.map((d) => ({
       name: d.name,

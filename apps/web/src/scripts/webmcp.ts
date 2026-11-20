@@ -200,7 +200,7 @@ const tools: WebMcpTool[] = [
     name: 'anfrage_vorbereiten',
     title: 'E-Mail-Anfrage vorbereiten',
     description:
-      'Bereitet eine strukturierte E-Mail-Anfrage (mailto:info@titz.cooking) für Catering/Privatkoch, Gastroberatung oder eine Tischreservation beim Gourmetabend im Restaurant PINOT vor.',
+      'Bereitet eine strukturierte E-Mail-Anfrage (mailto:sebastian@titz.cooking) für Catering/Privatkoch, Gastroberatung oder eine Tischreservation beim Gourmetabend im Restaurant PINOT vor.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -251,12 +251,12 @@ const tools: WebMcpTool[] = [
       }
       zeilen.push('', 'Freundliche Grüsse')
 
-      const mailto = `mailto:info@titz.cooking?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(zeilen.join('\n'))}`
+      const mailto = `mailto:sebastian@titz.cooking?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(zeilen.join('\n'))}`
       if (oeffnen === true) {
         window.location.href = mailto
       }
       return alsAntwort({
-        empfaenger: 'info@titz.cooking',
+        empfaenger: 'sebastian@titz.cooking',
         betreff,
         mailto,
         geoeffnet: Boolean(oeffnen),

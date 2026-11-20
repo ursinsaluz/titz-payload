@@ -242,7 +242,7 @@ async function run() {
         'Kulinarische Konzepte für Health- & Lifestyle-Resorts: Küchenplanung und Workflow-Optimierung, Menükonzeption und Rezepturentwicklung, Mitarbeiter-Coaching — Leadership statt klassischer Hierarchien.',
         'Ein Blick von aussen hilft, Prozesse zu erkennen und das volle Potenzial des Teams zu entfalten — bis es selbstständig auf Sterneniveau umsetzt.',
       ],
-      cta: { label: 'Beratung anfragen', url: 'mailto:info@titz.cooking?subject=Beratung' },
+      cta: { label: 'Beratung anfragen', url: 'mailto:sebastian@titz.cooking?subject=Beratung' },
     },
     {
       title: 'Catering',
@@ -251,7 +251,7 @@ async function run() {
         'Nachhaltige Sternenküche für Ihren Event, 10 bis 100 Personen — vom Soil-to-Soul-Menü über Classic Fine Dining bis Flying Dinner & Tavolata.',
         'Graubünden & Bündner Herrschaft, St. Galler Rheintal, ganze Ostschweiz — auf Anfrage schweizweit. Pflanzenbasierte Gerichte haben einen extrem hohen Stellenwert.',
       ],
-      cta: { label: 'Catering anfragen', url: 'mailto:info@titz.cooking?subject=Catering' },
+      cta: { label: 'Catering anfragen', url: 'mailto:sebastian@titz.cooking?subject=Catering' },
     },
   ]
   let order = 0
@@ -470,7 +470,7 @@ async function run() {
         label: 'Tisch reservieren',
         url: 'https://mytools.aleno.me/reservations/v2.0/reservations.html?k=eyJrIjoid2l2dTVrM2lsNm15cnBiOWlwdzZ4bmViajhycnVkaWRpZ280bGZwODBsbzlhNGlweTEiLCJyIjoiNkJ5RnNmTFl0REFjY3NMeGgiLCJzIjoiaHR0cHM6Ly9teXRvb2xzLmFsZW5vLm1lLyJ9',
       },
-      secondaryCta: { label: 'E-Mail schreiben', url: 'mailto:info@titz.cooking' },
+      secondaryCta: { label: 'E-Mail schreiben', url: 'mailto:sebastian@titz.cooking' },
     },
     {
       blockType: 'stationenSection',
@@ -588,7 +588,7 @@ async function run() {
     data: {
       contact: {
         address: 'Restaurant PINOT\nSteigstrasse 14, 7306 Fläsch\nFläsch GR, Schweiz',
-        email: 'info@titz.cooking',
+        email: 'sebastian@titz.cooking',
       },
       socials: [
         {

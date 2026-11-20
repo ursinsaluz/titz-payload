@@ -228,7 +228,7 @@ const TITEL_ABEND = 'Gourmetabend im PINOT'
             'was gerade aus der Bündner Herrschaft und dem St. Galler Rheintal kommt. ' +
             'Es wechselt jede Woche — zweimal dasselbe gibt es nicht.',
           ort: 'Restaurant PINOT, Steigstrasse 12, 7306 Fläsch',
-          cta: { label: 'Tisch reservieren', url: 'mailto:info@titz.cooking' },
+          cta: { label: 'Tisch reservieren', url: 'mailto:sebastian@titz.cooking' },
           _status: 'published',
         },
       })

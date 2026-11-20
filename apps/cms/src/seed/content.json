@@ -331,7 +331,7 @@
           ],
           "cta": {
             "label": "Jetzt anfragen",
-            "href": "mailto:info@titz.cooking?subject=Anfrage: Beratung"
+            "href": "mailto:sebastian@titz.cooking?subject=Anfrage: Beratung"
           }
         }
       },
@@ -439,7 +439,7 @@
           ],
           "cta": {
             "label": "Jetzt anfragen",
-            "href": "mailto:info@titz.cooking?subject=Anfrage: Catering"
+            "href": "mailto:sebastian@titz.cooking?subject=Anfrage: Catering"
           }
         }
       },
@@ -475,7 +475,7 @@
           ],
           "cta": {
             "label": "Jetzt anfragen",
-            "href": "mailto:info@titz.cooking?subject=Anfrage: Restaurant Pinot"
+            "href": "mailto:sebastian@titz.cooking?subject=Anfrage: Restaurant Pinot"
           }
         }
       }
@@ -548,7 +548,7 @@
       },
       {
         "label": "Email schreiben",
-        "href": "mailto:info@titz.cooking"
+        "href": "mailto:sebastian@titz.cooking"
       }
     ],
     "map": {
@@ -561,8 +561,8 @@
     "text": "Interessiert an einem unvergesslichen kulinarischen Erlebnis? Schreiben Sie mir oder rufen Sie an.",
     "contact": {
       "email": {
-        "label": "info@titz.cooking",
-        "href": "mailto:info@titz.cooking",
+        "label": "sebastian@titz.cooking",
+        "href": "mailto:sebastian@titz.cooking",
         "icon": "mail"
       },
       "phone": {
@@ -866,7 +866,7 @@
       },
       {
         "type": "paragraph",
-        "text": "Kontakt: E-Mail: info@titz.cooking Telefon: +41 79 123 45 67"
+        "text": "Kontakt: E-Mail: sebastian@titz.cooking Telefon: +41 79 123 45 67"
       },
       {
         "type": "paragraph",

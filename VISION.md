@@ -11,7 +11,7 @@ Gestalterisch folgt das Projekt der Designsprache «Verspielt» (`DESIGN.md`): h
 ## 2. Stakeholder & Personas
 
 - **Gäste des Restaurant PINOT:** Suchen Öffnungszeiten, Adresse, Anlässe wie den wöchentlichen Gourmetabend und einen direkten Weg zur Tischreservation (`restaurant-pinot.ch`).
-- **Catering- und Beratungskunden:** Organisieren Events in der Region (Bündner Herrschaft, Sarganserland, Werdenberg, Graubünden, St. Galler Rheintal, Liechtenstein, Ostschweiz) oder suchen kulinarische Konzepte für Resorts und nehmen direkt per E-Mail (`info@titz.cooking`) Kontakt auf.
+- **Catering- und Beratungskunden:** Organisieren Events in der Region (Bündner Herrschaft, Sarganserland, Werdenberg, Graubünden, St. Galler Rheintal, Liechtenstein, Ostschweiz) oder suchen kulinarische Konzepte für Resorts und nehmen direkt per E-Mail (`sebastian@titz.cooking`) Kontakt auf.
 - **Presse und Fachwelt:** Orientieren sich über Stationen, Auszeichnungen, Signature Dishes und aktuelle Medienberichte sowie eigene Beiträge zu lokalen Produzenten.
 - **Redaktion (Sebastian Titz / Administration):** Pflegt Seiten, Anlässe, Angebote, Gerichte, Stationen, Aktuelles, Icons und Medien im Admin-Panel (`admin.titz.cooking`) ohne Code-Deployment.
 - **KI-Browser und Agenten:** Nutzen die eingebetteten strukturierten Daten (JSON-LD), `/webmcp.json` sowie die vier WebMCP-Werkzeuge im Browser.
