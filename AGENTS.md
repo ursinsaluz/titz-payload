@@ -117,21 +117,27 @@ pre-commit-Hook (`scripts/secret-scan.sh`) prüft das; er ist über
 
 ## Skills & MCP bei Anpassungen heranziehen
 
-Die Projekt-Skills liegen unter `.agents/skills/` (mit Symlinks in `.claude/skills/`)
-und sind bei jeder Änderung am entsprechenden Teil zwingend zu laden:
+Die Projekt-Skills liegen unter `.agents/skills/` (mit Symlinks in `.claude/skills/`).
+Um Kontextüberladung zu vermeiden, werden pro Aufgabe höchstens 2 bis 3 Skills
+nach Phase geladen:
 
 - **Änderungen an `apps/cms` oder `packages/types`:** Skill `payload`
   ([`.agents/skills/payload/SKILL.md`](.agents/skills/payload/SKILL.md)) laden.
-- **Änderungen an `apps/web`:** Skills `astro-framework`
+- **Änderungen an `apps/web` (Implementierung):** Skills `astro-framework`
   ([`.agents/skills/astro-framework/SKILL.md`](.agents/skills/astro-framework/SKILL.md))
-  und `astro-best-practices`
-  ([`.agents/skills/astro-best-practices/SKILL.md`](.agents/skills/astro-best-practices/SKILL.md))
+  und `modern-web-guidance`
+  ([`.agents/skills/modern-web-guidance/SKILL.md`](.agents/skills/modern-web-guidance/SKILL.md))
   laden; bei versionsspezifischen Astro-Fragen zusätzlich `docs-lookup`
   ([`.agents/skills/docs-lookup/SKILL.md`](.agents/skills/docs-lookup/SKILL.md))
   und den MCP-Server `astro-docs` (`https://mcp.docs.astro.build/mcp` in `.mcp.json`)
   nutzen.
 - **Änderungen an `apps/web/src/scripts/webmcp.ts` oder `apps/web/src/pages/webmcp.json.ts`:**
   Skill `webmcp` ([`.agents/skills/webmcp/SKILL.md`](.agents/skills/webmcp/SKILL.md)) laden.
+- **Review und Abnahme (getrennt von der Implementierung):** Skill `web-design-guidelines`
+  ([`.agents/skills/web-design-guidelines/SKILL.md`](.agents/skills/web-design-guidelines/SKILL.md))
+  explizit für Audits nutzen (bei Stilkonflikten haben [DESIGN.md](DESIGN.md)
+  und diese `AGENTS.md` Vorrang). Für die Laufzeit-Prüfung gegen `web-preview`
+  (Port 4400) `chrome-devtools-mcp` oder `agent-browser` einsetzen.
 
 ## Typen sind die Absicherung
 

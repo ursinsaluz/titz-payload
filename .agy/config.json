@@ -1,0 +1,42 @@
+{
+  "project_name": "titz-monorepo",
+  "site_name": "titz.cooking",
+  "description": "Website für Sebastian Titz (Küchenchef & Gastgeber im Restaurant PINOT in Fläsch) mit Payload CMS 3 als Backend und Astro als statischem Frontend auf Cloudflare Workers.",
+  "standards": {
+    "frontend": "Astro 7 (output: 'static', TypeScript 5.9, natives CSS mit Custom Properties, kein Client-Framework)",
+    "backend": "Payload CMS 3 auf Next.js 16 (@opennextjs/cloudflare, REST-API, GraphQL deaktiviert)",
+    "database": "Cloudflare D1 (titz-payload-site) und Cloudflare R2 (titz-payload-media)",
+    "ci_cd": "GitHub Actions (pnpm verify) und Cloudflare Workers Builds (Deploy-Hook rebuildWeb)",
+    "deployment": "Cloudflare Workers (titz-payload-admin -> admin.titz.cooking, titz-payload-web -> titz.cooking)"
+  },
+  "commands": {
+    "dev": "pnpm dev",
+    "dev_cms": "pnpm dev:cms",
+    "dev_web": "pnpm dev:web",
+    "build": "pnpm build",
+    "check": "pnpm check",
+    "lint": "pnpm lint",
+    "test": "pnpm test",
+    "verify": "pnpm verify",
+    "generate_types": "pnpm generate:types",
+    "deploy_cms": "pnpm deploy:cms",
+    "deploy_web": "pnpm deploy:web"
+  },
+  "docs": {
+    "agents": "AGENTS.md",
+    "claude": "CLAUDE.md",
+    "vision": "VISION.md",
+    "architecture": "ARCHITECTURE.md",
+    "design": "DESIGN.md",
+    "readme": "README.md"
+  },
+  "mcp_servers": ["payload", "astro-docs"],
+  "project_skills": [
+    "payload",
+    "astro-framework",
+    "docs-lookup",
+    "modern-web-guidance",
+    "web-design-guidelines",
+    "webmcp"
+  ]
+}

@@ -32,14 +32,15 @@ Messwerte in [README.md](README.md#gegen-produktion-geht-mcp-nicht).
 
 ## Die Skills liegen zweimal im Baum
 
-`.agents/skills/` enthält die Dateien (`payload`, `astro-framework`,
-`astro-best-practices`, `docs-lookup`, `webmcp`), `.claude/skills/` verweist per
-Symlink darauf — die eine Ablage ist die verbreitete, die andere die, in der
-Claude Code sucht. `skills-lock.json` hält Quellen (`payloadcms/skills`,
-`delineas/astro-framework-agents`, `incluud/astro-agent-skills`,
-`webmaxru/web-ai-agent-skills`) und Hashes fest, damit ein frischer Klon
-dieselbe Fassung bekommt. Alle sind eingecheckt; der Inhalt ist fremd und darum
-in `.prettierignore`.
+`.agents/skills/` enthält die 6 Projekt-Skills (`payload`, `astro-framework`,
+`docs-lookup`, `modern-web-guidance`, `web-design-guidelines`, `webmcp`),
+`.claude/skills/` verweist per Symlink darauf — die eine Ablage ist die
+verbreitete, die andere die, in der Claude Code sucht. `skills-lock.json` hält
+Quellen (`payloadcms/skills`, `delineas/astro-framework-agents`,
+`incluud/astro-agent-skills`, `GoogleChrome/modern-web-guidance`,
+`vercel-labs/agent-skills`, `webmaxru/web-ai-agent-skills`) und Hashes fest,
+damit ein frischer Klon dieselbe Fassung bekommt. Alle sind eingecheckt; der
+Inhalt ist fremd und darum in `.prettierignore`.
 
 ## Was beim Prüfen wirklich hilft
 
@@ -58,8 +59,10 @@ Der Web-Build braucht erreichbaren Content. Ohne laufendes CMS:
 
 Für einen Blick auf die gebaute Seite die Konfiguration `web-preview` aus
 `.claude/launch.json` starten (Port 4400) — die liefert `dist/` aus, also genau
-das, was auch bei Cloudflare landet. `web` (Port 4321) ist der Dev-Server und
-braucht das CMS daneben.
+das, was auch bei Cloudflare landet. Für Live-Prüfungen (DOM, Konsole, CSP,
+`prefers-reduced-motion`, Traces) `chrome-devtools-mcp` oder `agent-browser`
+gegen Port 4400 einsetzen. `web` (Port 4321) ist der Dev-Server und braucht das
+CMS daneben.
 
 Astro legt `preview` ab Version 7 selbst in den Hintergrund; `astro preview
 stop` beendet ihn.

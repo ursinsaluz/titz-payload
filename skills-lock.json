@@ -1,35 +1,43 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
-    "astro-best-practices": {
-      "source": "incluud/astro-agent-skills",
-      "sourceType": "github",
-      "skillPath": "skills/astro-best-practices/SKILL.md",
-      "computedHash": "353ad7ebffed9a06dab2cb762b28ec6b8fb07abb00cb731b34c9df60315e0e7f"
-    },
     "astro-framework": {
       "source": "delineas/astro-framework-agents",
       "sourceType": "github",
       "skillPath": "skills/astro-framework/SKILL.md",
-      "computedHash": "7d8940b3fb7dab50f8303afdb3210cc9385da3a8d243fe99efdc08ce53aed90c"
+      "computedHash": "553fa9c9ab8fe26d194aacd4199a1653340c3994265f0a05bce36c8f26895021"
     },
     "docs-lookup": {
       "source": "incluud/astro-agent-skills",
       "sourceType": "github",
       "skillPath": "skills/docs-lookup/SKILL.md",
-      "computedHash": "83c8e81458ba413089371e4b559e5b1b21f7745cafdb6105b8dc0f294b20b01c"
+      "computedHash": "e9ee5c43cf33cbe6e507890c868e9455ca72516fb1778579c18e4ce1e0d9e564"
+    },
+    "modern-web-guidance": {
+      "source": "GoogleChrome/modern-web-guidance",
+      "commit": "64a6d708f5a43f2cd3fde5d4d7db3905ba1bdf65",
+      "sourceType": "github",
+      "skillPath": "skills/modern-web-guidance/SKILL.md",
+      "computedHash": "d9f3ceba8b5c77b12ae6f852932a349843ce086d03ce76ab5e2257e7e5acd16d"
     },
     "payload": {
       "source": "payloadcms/skills",
       "sourceType": "github",
       "skillPath": "skills/payload/SKILL.md",
-      "computedHash": "4abfcc828ca2cc0d9142b2fee2456f257f73dd7a37bd1cce2d354231b08b8767"
+      "computedHash": ""
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "commit": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "4f68ae07187fb0d1fb78c88b503d089da4cf5a9d9625d1f2e425b1590bf96d92"
     },
     "webmcp": {
       "source": "webmaxru/web-ai-agent-skills",
       "sourceType": "github",
       "skillPath": "skills/webmcp/SKILL.md",
-      "computedHash": "a069e998a761efafe7af139d8db9e15f78dfddad810b4dce96561449e399bc62"
+      "computedHash": "1ca7dd7fdaf7142c60acb86f366827b8f59ae04e78bee8fc817dcfd13595e4d2"
     }
   }
 }
