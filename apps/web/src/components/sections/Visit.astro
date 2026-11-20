@@ -32,7 +32,7 @@ const { block } = Astro.props
                 class="pill pill--green"
                 href={block.cta.url ?? '#'}
                 target={block.cta.url?.startsWith('http') ? '_blank' : undefined}
-                rel="noopener"
+                rel={block.cta.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
               >
                 {block.cta.label}
               </a>

@@ -80,8 +80,11 @@ const dotColors = [
               <div class="cv__list">
                 {ausbildung.map((entry) => (
                   <div class="cv__list-item">
-                    <strong>{entry.title}</strong>
-                    {entry.place ? ` — ${entry.place}` : ''}
+                    {entry.period && <div class="cv__period">{entry.period}</div>}
+                    <div>
+                      <strong>{entry.title}</strong>
+                      {entry.place ? ` — ${entry.place}` : ''}
+                    </div>
                     {full && entry.description && <div>{entry.description}</div>}
                   </div>
                 ))}
@@ -236,7 +239,16 @@ const dotColors = [
   }
 
   .cv__list-item {
+    line-height: 1.5;
     margin-bottom: 13px;
+  }
+
+  .cv__list-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .cv__list-item strong {
+    color: var(--ink);
   }
 
   @media (max-width: 860px) {

@@ -142,7 +142,12 @@ const jsonLd = anlassSeitenSchema(anlass, domain)
 
       {
         anlass.cta?.url && (
-          <a class="pill pill--dark detail__cta" href={anlass.cta.url}>
+          <a
+            class="pill pill--dark detail__cta"
+            href={anlass.cta.url}
+            target={anlass.cta.url.startsWith('http') ? '_blank' : undefined}
+            rel={anlass.cta.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+          >
             {anlass.cta.label ?? 'Reservieren'}
           </a>
         )

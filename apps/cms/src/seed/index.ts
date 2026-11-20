@@ -368,10 +368,39 @@ async function run() {
     { group: 'qualifikationen', title: 'Event-Gastronomie' },
     {
       group: 'ausbildung',
-      title: 'Kochlehre',
-      place: 'Restaurant Schneggen',
+      period: '2014 – 2016',
+      title: 'Eidg. Dipl. Küchenchef (HFP)',
+      place: 'Hotel & Gastro Formation Weggis',
       description:
-        'Klassische französische Basisküche, verfeinert über Stationen in den besten Küchen Europas',
+        'Höhere Fachprüfung: Planungs-, Führungs-, Steuerungs-, Fach-, Kommunikations- und Informationsaufgaben als Küchenchef',
+    },
+    {
+      group: 'ausbildung',
+      period: '2011 – 2012',
+      title: 'Chefkoch mit eidg. Fachausweis',
+      description:
+        'Menüplanung, Lebensmittelbeschaffung, Lagerung, Zubereitung, Anrichten, Lebensmittelgesetzgebung und gesunde Ernährung',
+    },
+    {
+      group: 'ausbildung',
+      period: '2004',
+      title: 'Abverdienen Unteroffizier / Küchenchef',
+      place: 'Infanterieschulen Aarau und Chur',
+    },
+    {
+      group: 'ausbildung',
+      period: '2003',
+      title: 'Unteroffiziersschule für Küchenchefs',
+      place: 'Thun',
+      description: 'Ausbildung zum militärischen Küchenchef',
+    },
+    {
+      group: 'ausbildung',
+      period: '1999 – 2002',
+      title: 'Kochlehre',
+      place: 'Restaurant Schneggen, Buchs SG',
+      description:
+        '14 GaultMillau-Punkte — klassische französische Basisküche, verfeinert über Stationen in den besten Küchen Europas',
     },
     { group: 'hobbies', title: 'Familie & Freunde' },
     { group: 'hobbies', title: 'Trailrunning — am liebsten über Fläsch' },
@@ -437,7 +466,10 @@ async function run() {
         },
         { label: 'Ausgezeichnet', value: 'Bib Gourmand — «Simply brilliant»\nFalstaff Guide 2026' },
       ],
-      cta: { label: 'Tisch reservieren', url: 'https://www.restaurant-pinot.ch/' },
+      cta: {
+        label: 'Tisch reservieren',
+        url: 'https://mytools.aleno.me/reservations/v2.0/reservations.html?k=eyJrIjoid2l2dTVrM2lsNm15cnBiOWlwdzZ4bmViajhycnVkaWRpZ280bGZwODBsbzlhNGlweTEiLCJyIjoiNkJ5RnNmTFl0REFjY3NMeGgiLCJzIjoiaHR0cHM6Ly9teXRvb2xzLmFsZW5vLm1lLyJ9',
+      },
       secondaryCta: { label: 'E-Mail schreiben', url: 'mailto:info@titz.cooking' },
     },
     {
@@ -532,7 +564,10 @@ async function run() {
         { label: 'Angebote', linkType: 'anchor', anchor: 'angebote' },
         { label: 'Aktuelles', linkType: 'anchor', anchor: 'aktuelles' },
       ],
-      cta: { label: 'Reservieren', url: 'https://www.restaurant-pinot.ch/' },
+      cta: {
+        label: 'Reservieren',
+        url: 'https://mytools.aleno.me/reservations/v2.0/reservations.html?k=eyJrIjoid2l2dTVrM2lsNm15cnBiOWlwdzZ4bmViajhycnVkaWRpZ280bGZwODBsbzlhNGlweTEiLCJyIjoiNkJ5RnNmTFl0REFjY3NMeGgiLCJzIjoiaHR0cHM6Ly9teXRvb2xzLmFsZW5vLm1lLyJ9',
+      },
       stage: {
         eyebrow: 'Sebastian Titz · Chefkoch · Fläsch',
         headline: 'Authentisch. Regional. Exzellent.',

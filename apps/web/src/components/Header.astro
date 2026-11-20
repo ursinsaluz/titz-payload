@@ -18,7 +18,7 @@ const header = await getGlobal('header')
           href={header.cta.url ?? '#'}
           class="pill pill--mint"
           target={header.cta.url?.startsWith('http') ? '_blank' : undefined}
-          rel="noopener"
+          rel={header.cta.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
         >
           {header.cta.label}
         </a>

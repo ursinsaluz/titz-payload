@@ -110,7 +110,12 @@ const datumsText = (e: (typeof kommende)[number]) => {
                       Details <span aria-hidden="true">→</span>
                     </a>
                     {e.cta?.url && (
-                      <a class="event__cta" href={e.cta.url}>
+                      <a
+                        class="event__cta"
+                        href={e.cta.url}
+                        target={e.cta.url.startsWith('http') ? '_blank' : undefined}
+                        rel={e.cta.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      >
                         {e.cta.label ?? 'Reservieren'} <span aria-hidden="true">→</span>
                       </a>
                     )}
