@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url'
 import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import { GetPlatformProxyOptions } from 'wrangler'
 import { r2Storage } from '@payloadcms/storage-r2'
-import { mcpPlugin } from '@payloadcms/plugin-mcp'
+import { type MCPPluginConfig, mcpPlugin } from '@payloadcms/plugin-mcp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -24,13 +24,41 @@ import { Footer } from './globals/Footer'
 import { SiteSettings } from './globals/SiteSettings'
 import { mitRebuild } from './hooks/rebuildWeb'
 import { cloudflareEmail } from './email/cloudflareEmail'
+import { type WorkerMcpOptionen, workerMcpEndpointPlugin } from './mcp/workerMcpHandler'
+
+const mcpOptionen: WorkerMcpOptionen = {
+  collections: {
+    pages: { enabled: true, description: 'Seiten mit Sektionen (Startseite, Impressum, …)' },
+    news: { enabled: true, description: 'Aktuelles — Presse, Auszeichnungen, Beiträge' },
+    'instagram-posts': {
+      enabled: true,
+      description: 'Instagram-Beiträge von @titzsebastian',
+    },
+    events: {
+      enabled: true,
+      description: 'Anlässe — Gourmetabend und einzelne Termine',
+    },
+    angebote: { enabled: true, description: 'Angebote (Beratung, Catering)' },
+    'signature-dishes': { enabled: true, description: 'Signature Dishes und Starter' },
+    stationen: { enabled: true, description: 'Lebenslauf — Stationen, Skills, Ausbildung' },
+    icons: { enabled: true, description: 'SVG-Icon-Bibliothek samt Toast-Sprüchen' },
+    media: { enabled: true, description: 'Bilder' },
+  },
+  globals: {
+    header: { enabled: true, description: 'Navigation, Logo und Stage/Hero' },
+    footer: { enabled: true, description: 'Fusszeile, Kontakt, Social-Links' },
+    'site-settings': { enabled: true, description: 'SEO-Defaults und Easter-Egg-Texte' },
+  },
+}
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
 const isBuild = process.env.NEXT_PHASE === 'phase-production-build'
-const isCLI = process.argv.some((value) => realpath(value).endsWith(path.join('payload', 'bin.js')))
+const isCLI = process.argv.some((value) =>
+  realpath(value)?.endsWith(path.join('payload', 'bin.js')),
+)
 const isProduction = process.env.NODE_ENV === 'production'
 
 /**
@@ -167,34 +195,15 @@ export default buildConfig({
     // `users` ist bewusst nicht freigegeben: Über die MCP-Tools liessen sich
     // sonst Konten anlegen und Passwörter setzen.
     mcpPlugin({
-      collections: {
-        pages: { enabled: true, description: 'Seiten mit Sektionen (Startseite, Impressum, …)' },
-        news: { enabled: true, description: 'Aktuelles — Presse, Auszeichnungen, Beiträge' },
-        'instagram-posts': {
-          enabled: true,
-          description: 'Instagram-Beiträge von @titzsebastian',
-        },
-        events: {
-          enabled: true,
-          description: 'Anlässe — Gourmetabend und einzelne Termine',
-        },
-        angebote: { enabled: true, description: 'Angebote (Beratung, Catering)' },
-        'signature-dishes': { enabled: true, description: 'Signature Dishes und Starter' },
-        stationen: { enabled: true, description: 'Lebenslauf — Stationen, Skills, Ausbildung' },
-        icons: { enabled: true, description: 'SVG-Icon-Bibliothek samt Toast-Sprüchen' },
-        media: { enabled: true, description: 'Bilder' },
-      },
-      globals: {
-        header: { enabled: true, description: 'Navigation, Logo und Stage/Hero' },
-        footer: { enabled: true, description: 'Fusszeile, Kontakt, Social-Links' },
-        'site-settings': { enabled: true, description: 'SEO-Defaults und Easter-Egg-Texte' },
-      },
+      collections: mcpOptionen.collections as MCPPluginConfig['collections'],
+      globals: mcpOptionen.globals as MCPPluginConfig['globals'],
       overrideApiKeyCollection: (collection) => ({
         ...collection,
         labels: { singular: 'MCP-Schlüssel', plural: 'MCP-Schlüssel' },
         admin: { ...collection.admin, group: 'Einstellungen' },
       }),
     }),
+    workerMcpEndpointPlugin(mcpOptionen),
   ],
 })
 
