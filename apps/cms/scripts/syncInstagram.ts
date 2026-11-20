@@ -254,8 +254,6 @@ async function legeInitialePostsAnFallsLeer(payload: Payload) {
     }
   }
 
-  if (bestehende.totalDocs > 0) return
-
   const medien = await payload.find({
     collection: 'media',
     where: {
@@ -278,50 +276,87 @@ async function legeInitialePostsAnFallsLeer(payload: Payload) {
     mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM'
     permalink: string
     caption: string
-    image: number | undefined
+    imageUrl?: string
+    image?: number | undefined
   }> = [
     {
-      instagramId: 'ig-seed-flaescher-senf',
-      publishedAt: '2026-10-20T10:00:00.000Z',
-      mediaType: 'CAROUSEL_ALBUM',
-      permalink: 'https://www.instagram.com/titzsebastian/',
-      caption:
-        'Viermal Fläscher Bio-Senf aus der Ernte von Adanks Biofarm: Gelbsenf, Braunsenf, Knoblauchsenf und Safransenf — mit Birnell statt raffiniertem Zucker.',
-      image: findeBild('gelbsenf'),
-    },
-    {
-      instagramId: 'ig-seed-kraeutertour-pinot',
-      publishedAt: '2026-10-16T14:00:00.000Z',
+      instagramId: '3946198640584862668',
+      publishedAt: '2026-07-21T12:00:00.000Z',
       mediaType: 'VIDEO',
-      permalink: 'https://www.instagram.com/titzsebastian/',
+      permalink: 'https://www.instagram.com/restaurantpinot/reel/DbDtsF5MKvM/',
       caption:
-        'Kräutertour ums Restaurant PINOT in Fläsch: frischer Lorbeer, junge Rosmarinspitzen für die Beurre blanc und wilder Oregano von der warmen Steinmauer.',
+        'Die perfekte Basis für deine Grillsaison: Küchenchef Sebastian Titz zeigt, wie eine cremige vegane Mayonnaise gelingt — nach Lust verfeinert mit Knoblauch, frischen Kräutern oder Chili.',
+      imageUrl:
+        'https://scontent-zrh1-1.cdninstagram.com/v/t51.82787-15/754069846_17914589025425226_1281995960499053465_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=105&_nc_map=urlgen_bucketless&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiQ0xJUFMuYmVzdF9pbWFnZV91cmxnZW4uQzMifQ%3D%3D&_nc_ohc=rxSiz1w3kW4Q7kNvwHitFo2&_nc_oc=AdqO0BMwUJ2jjnNVu-NWJaZk_UYRJNpfOeh8SzHtGo0iScZ2Wq-5ELyzcqB1G0SWhClqyYuu9DVeXWsYL8nAWbOs&_nc_zt=23&_nc_ht=scontent-zrh1-1.cdninstagram.com&_nc_gid=hj-P2Srf35EsW7dFcgQ4Jg&_nc_ss=7a689&_nc_ct=RQosPBUKFQQAAAA&oh=00_AQTfm4RfC2zbVg7AIzcaSVfhwcRC3ceYko3kfoTjitGCrQ&oe=6B062140',
       image: findeBild('kraeuter'),
     },
     {
-      instagramId: 'ig-seed-gourmetabend-pinot',
-      publishedAt: '2026-10-08T17:00:00.000Z',
+      instagramId: '3749049001652790757',
+      publishedAt: '2025-10-22T12:00:00.000Z',
       mediaType: 'IMAGE',
-      permalink: 'https://www.instagram.com/titzsebastian/',
+      permalink: 'https://www.instagram.com/restaurantpinot/p/DQHTDQlDCXl/',
       caption:
-        'Donnerstag ist Gourmetabend im PINOT: ein Überraschungsmenü aus dem, was die Woche in der Bündner Herrschaft und im St. Galler Rheintal hergibt.',
+        'Wir haben wieder den Bib Gourmand erhalten! Ein grosses Dankeschön an unser engagiertes PINOT-Team und an unsere Gäste für die Unterstützung.',
+      imageUrl:
+        'https://scontent-zrh1-1.cdninstagram.com/v/t51.82787-15/569842640_17876632503425226_8828631227009563096_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=102&_nc_map=urlgen_bucketless&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=S3JfrnYyuF8Q7kNvwEZ9Z40&_nc_oc=AdqTIABGtmaeqVv1K3BnHrr03GgM7N5zcXIznqHMzJaiY-MFLaungS51YXGAfkxTJ57CylJAF1GMOCcWe1FjWJBR&_nc_zt=23&_nc_ht=scontent-zrh1-1.cdninstagram.com&_nc_gid=hj-P2Srf35EsW7dFcgQ4Jg&_nc_ss=7a689&_nc_ct=RQosPBUKFQIAAAA&oh=00_AQT_pPyPfDbY1_0T1KRRagDqM3noac2KVAbFG-G4AMm0yw&oe=6B065692',
       image: findeBild('teller'),
     },
     {
-      instagramId: 'ig-seed-handwerk-am-pass',
-      publishedAt: '2026-09-28T18:30:00.000Z',
-      mediaType: 'IMAGE',
-      permalink: 'https://www.instagram.com/titzsebastian/',
+      instagramId: '3748459963245710899',
+      publishedAt: '2025-10-21T12:00:00.000Z',
+      mediaType: 'VIDEO',
+      permalink: 'https://www.instagram.com/spitzner_kn/reel/DQFNHn0CM4z/',
       caption:
-        'Letzter Handgriff am Pass: schnörkellose Gerichte, ehrliches Handwerk und volle Konzentration auf den Geschmack.',
+        'Was kochst du?! Mit den Chefs Andy Piesche, Sebastian Titz und Felix Jarzina im Restaurant Spitzner Münster. Das ganze Gespräch auf YouTube.',
+      imageUrl:
+        'https://scontent-zrh1-1.cdninstagram.com/v/t51.71878-15/568843828_1271058464790973_2282361462662486864_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=107&_nc_map=urlgen_bucketless&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiQ0xJUFMuYmVzdF9pbWFnZV91cmxnZW4uQzMifQ%3D%3D&_nc_ohc=GR25zV0d-eUQ7kNvwFdwJuv&_nc_oc=AdrbcOdP3a_EN36Lnr_Cb_AwLMFy70-dLYB8uYs7f6_bY6u1FQXyt5BNmWPxwuvFzrdHWrDAchrXMa6I1Rh-bvR2&_nc_zt=23&_nc_ht=scontent-zrh1-1.cdninstagram.com&_nc_gid=hj-P2Srf35EsW7dFcgQ4Jg&_nc_ss=7a689&_nc_ct=RQosPBUKFQgAAAA&oh=00_AQRHUktdepDswS8VayMAt4J0LuiN8nDNFLNEi7bKqu_TQQ&oe=6B065665',
       image: findeBild('anrichten'),
+    },
+    {
+      instagramId: '3743811748840139453',
+      publishedAt: '2025-10-15T12:00:00.000Z',
+      mediaType: 'IMAGE',
+      permalink: 'https://www.instagram.com/restaurantpinot/p/DP0sPMzjOq9/',
+      caption:
+        'Ausgezeichnet im Falstaff Magazin mit drei Gabeln als eines der besten Restaurants der Schweiz — regionale, saisonale Küche im Restaurant PINOT in Fläsch.',
+      imageUrl:
+        'https://scontent-zrh1-1.cdninstagram.com/v/t51.82787-15/565878900_17875852152425226_7656015288598478607_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=106&_nc_map=urlgen_bucketless&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=au2zYmPUyM4Q7kNvwGZkqvG&_nc_oc=AdoeblLrSO3hScbFJo8I2GxEN4kPaHNAybbR1_Y4fze6W-NiFSwoDCdGoxhBWwWtG5L57C73zanBBVbbEm_-FGnK&_nc_zt=23&_nc_ht=scontent-zrh1-1.cdninstagram.com&_nc_gid=hj-P2Srf35EsW7dFcgQ4Jg&_nc_ss=7a689&_nc_ct=RQosPBUKFQIAAAA&oh=00_AQSV4C3HGRnonuvTp2AevCaIxqJgIgrrQl8PiuFNJmcRTw&oe=6B0627BA',
+      image: findeBild('tisch'),
     },
   ]
 
+  // Alte Platzhalter (`ig-seed-*`) entfernen, falls vorhanden
+  for (const doc of bestehende.docs) {
+    if (doc.instagramId.startsWith('ig-seed-')) {
+      console.log(`  ${tat}Platzhalter «${doc.instagramId}» durch echten Post ersetzen`)
+      if (APPLY) {
+        await payload.delete({ collection: 'instagram-posts', id: doc.id })
+      }
+    }
+  }
+
   for (const eintrag of initial) {
-    if (!eintrag.image) continue
-    console.log(`  ${tat}initialer Instagram-Beitrag «${eintrag.instagramId}»`)
+    const schonDa = bestehende.docs.find((d) => d.instagramId === eintrag.instagramId)
+    if (schonDa) {
+      console.log(`  vorhanden: ${eintrag.instagramId} (${eintrag.permalink})`)
+      continue
+    }
+
+    console.log(`  ${tat}echter Instagram-Beitrag «${eintrag.instagramId}» (${eintrag.permalink})`)
     if (APPLY) {
+      let imageId: number | null | undefined = undefined
+      if (eintrag.imageUrl) {
+        imageId = await speichereBildInMedia(payload, {
+          id: eintrag.instagramId,
+          caption: eintrag.caption,
+          mediaType: eintrag.mediaType,
+          imageUrl: eintrag.imageUrl,
+          permalink: eintrag.permalink,
+          timestamp: eintrag.publishedAt,
+        })
+      }
+      const finalImage = imageId ?? eintrag.image
+      if (!finalImage) continue
       await payload.create({
         collection: 'instagram-posts',
         data: {
@@ -330,7 +365,7 @@ async function legeInitialePostsAnFallsLeer(payload: Payload) {
           mediaType: eintrag.mediaType,
           permalink: eintrag.permalink,
           caption: eintrag.caption,
-          image: eintrag.image,
+          image: finalImage,
         },
       })
     }

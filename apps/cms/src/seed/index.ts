@@ -250,40 +250,40 @@ async function run() {
     bildSchluessel: MedienSchluessel
   }[] = [
     {
-      instagramId: 'ig-seed-flaescher-senf',
-      publishedAt: '2026-10-20T10:00:00.000Z',
-      mediaType: 'CAROUSEL_ALBUM',
-      permalink: 'https://www.instagram.com/titzsebastian/',
-      caption:
-        'Viermal Fläscher Bio-Senf aus der Ernte von Adanks Biofarm: Gelbsenf, Braunsenf, Knoblauchsenf und Safransenf — mit Birnell statt raffiniertem Zucker.',
-      bildSchluessel: 'gelbsenf',
-    },
-    {
-      instagramId: 'ig-seed-kraeutertour-pinot',
-      publishedAt: '2026-10-16T14:00:00.000Z',
+      instagramId: '3946198640584862668',
+      publishedAt: '2026-07-21T12:00:00.000Z',
       mediaType: 'VIDEO',
-      permalink: 'https://www.instagram.com/titzsebastian/',
+      permalink: 'https://www.instagram.com/restaurantpinot/reel/DbDtsF5MKvM/',
       caption:
-        'Kräutertour ums Restaurant PINOT in Fläsch: frischer Lorbeer, junge Rosmarinspitzen für die Beurre blanc und wilder Oregano von der warmen Steinmauer.',
+        'Die perfekte Basis für deine Grillsaison: Küchenchef Sebastian Titz zeigt, wie eine cremige vegane Mayonnaise gelingt — nach Lust verfeinert mit Knoblauch, frischen Kräutern oder Chili.',
       bildSchluessel: 'kraeuterBild',
     },
     {
-      instagramId: 'ig-seed-gourmetabend-pinot',
-      publishedAt: '2026-10-08T17:00:00.000Z',
+      instagramId: '3749049001652790757',
+      publishedAt: '2025-10-22T12:00:00.000Z',
       mediaType: 'IMAGE',
-      permalink: 'https://www.instagram.com/titzsebastian/',
+      permalink: 'https://www.instagram.com/restaurantpinot/p/DQHTDQlDCXl/',
       caption:
-        'Donnerstag ist Gourmetabend im PINOT: ein Überraschungsmenü aus dem, was die Woche in der Bündner Herrschaft und im St. Galler Rheintal hergibt.',
+        'Wir haben wieder den Bib Gourmand erhalten! Ein grosses Dankeschön an unser engagiertes PINOT-Team und an unsere Gäste für die Unterstützung.',
       bildSchluessel: 'pinotTeller',
     },
     {
-      instagramId: 'ig-seed-handwerk-am-pass',
-      publishedAt: '2026-09-28T18:30:00.000Z',
-      mediaType: 'IMAGE',
-      permalink: 'https://www.instagram.com/titzsebastian/',
+      instagramId: '3748459963245710899',
+      publishedAt: '2025-10-21T12:00:00.000Z',
+      mediaType: 'VIDEO',
+      permalink: 'https://www.instagram.com/spitzner_kn/reel/DQFNHn0CM4z/',
       caption:
-        'Letzter Handgriff am Pass: schnörkellose Gerichte, ehrliches Handwerk und volle Konzentration auf den Geschmack.',
-      bildSchluessel: 'anrichten',
+        'Was kochst du?! Mit den Chefs Andy Piesche, Sebastian Titz und Felix Jarzina im Restaurant Spitzner Münster. Das ganze Gespräch auf YouTube.',
+      bildSchluessel: 'kuecheFinish',
+    },
+    {
+      instagramId: '3743811748840139453',
+      publishedAt: '2025-10-15T12:00:00.000Z',
+      mediaType: 'IMAGE',
+      permalink: 'https://www.instagram.com/restaurantpinot/p/DP0sPMzjOq9/',
+      caption:
+        'Ausgezeichnet im Falstaff Magazin mit drei Gabeln als eines der besten Restaurants der Schweiz — regionale, saisonale Küche im Restaurant PINOT in Fläsch.',
+      bildSchluessel: 'pinotTisch',
     },
   ]
 
